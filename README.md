@@ -1,6 +1,6 @@
-# Sushi restaurant
+# Mursu
 
-This project was developed as part of a course assignment to build a full-stack restaurant web application.
+A full-stack sushi restaurant application featuring a custom combo builder, cart and payment flow, real-time order tracking, and an admin panel for live order management, menu editing, and daily specials configuration.
 
 ## Core requirements
 
