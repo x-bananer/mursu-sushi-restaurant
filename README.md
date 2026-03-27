@@ -17,15 +17,20 @@ This project was developed as part of a course assignment to build a full-stack 
 - [ ] Price display for all items
 - [ ] Support for dietary information (vegan, gluten-free, lactose-free)
 
-- [ ] User functionality:
+### User functionality:
 - [ ] Registration and login
 - [ ] Shopping cart
 - [ ] Order placement
 
-- [ ] Admin panel:
+### Admin panel:
 - [ ] Admin authentication
 - [ ] Menu management (create / update / delete)
 - [ ] Order management and status updates
+
+### Additional features:
+- [ ] Custom combo builder
+- [ ] Real-time order tracking
+- [ ] User profile and reward system
 
 ## Additional requirements
 
@@ -35,11 +40,6 @@ This project was developed as part of a course assignment to build a full-stack 
 - [ ] Integration with external API (e.g. HSL)
 - [ ] Subtle animations and polished interface
 
-- [ ] Additional features:
-- [ ] Custom combo builder
-- [ ] Real-time order tracking
-- [ ] User profile and reward system
-
 ## Quality requirements
 
 - [ ] Clear project structure (frontend / backend / database separation)
@@ -47,7 +47,7 @@ This project was developed as part of a course assignment to build a full-stack 
 - [ ] Valid HTML and CSS
 - [ ] Code documentation (JSDoc / ApiDoc)
 
-- [ ] Testing:
+## Testing:
 - [ ] At least 5 integration tests
 - [ ] At least 5 end-to-end tests
 
