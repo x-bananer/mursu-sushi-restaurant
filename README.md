@@ -4,53 +4,53 @@ This project was developed as part of a course assignment to build a full-stack 
 
 ## Core requirements
 
-— Restaurant web application with an order / pickup system
-— Frontend implemented using JavaScript or React (ES6+)
-— Backend implemented using Node.js and Express
-— SQL database (no hardcoded data)
-— RESTful API with clear endpoint structure
+x Restaurant web application with an order / pickup system
+x Frontend implemented using JavaScript or React (ES6+)
+x Backend implemented using Node.js and Express
+x SQL database (no hardcoded data)
+x RESTful API with clear endpoint structure
 
 ## Main functionality
 
-— Menu page with items loaded from a custom API (JSON)
-— Highlighting of today’s special or daily menu
-— Price display for all items
-— Support for dietary information (vegan, gluten-free, lactose-free)
+x Menu page with items loaded from a custom API (JSON)
+x Highlighting of today’s special or daily menu
+x Price display for all items
+x Support for dietary information (vegan, gluten-free, lactose-free)
 
-— User functionality:
-— Registration and login
-— Shopping cart
-— Order placement
+x User functionality:
+x Registration and login
+x Shopping cart
+x Order placement
 
-— Admin panel:
-— Admin authentication
-— Menu management (create / update / delete)
-— Order management and status updates
+x Admin panel:
+x Admin authentication
+x Menu management (create / update / delete)
+x Order management and status updates
 
 ## Additional requirements
 
-— Responsive design (mobile and desktop)
-— Clean and structured UI/UX
-— Multilingual support (Finnish / English)
-— Integration with external API (e.g. HSL)
-— Subtle animations and polished interface
+x Responsive design (mobile and desktop)
+x Clean and structured UI/UX
+x Multilingual support (Finnish / English)
+x Integration with external API (e.g. HSL)
+x Subtle animations and polished interface
 
-— Additional features:
-— Custom combo builder
-— Real-time order tracking
-— User profile and reward system
+x Additional features:
+x Custom combo builder
+x Real-time order tracking
+x User profile and reward system
 
 ## Quality requirements
 
-— Clear project structure (frontend / backend / database separation)
-— Proper API handling (loading / error states)
-— Valid HTML and CSS
-— Code documentation (JSDoc / ApiDoc)
+x Clear project structure (frontend / backend / database separation)
+x Proper API handling (loading / error states)
+x Valid HTML and CSS
+x Code documentation (JSDoc / ApiDoc)
 
-— Testing:
-— At least 5 integration tests
-— At least 5 end-to-end tests
+x Testing:
+x At least 5 integration tests
+x At least 5 end-to-end tests
 
 ## Deployment
 
-— The application must be deployed online (e.g. Vercel, Azure, eCloud)
+x The application must be deployed online (e.g. Vercel, Azure, eCloud)
