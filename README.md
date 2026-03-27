@@ -4,7 +4,7 @@ This project was developed as part of a course assignment to build a full-stack 
 
 ## Core requirements
 
-[] Restaurant web application with an order / pickup system
+- [ ] Restaurant web application with an order / pickup system
 - [ ] Frontend implemented using JavaScript or React (ES6+)
 - [ ] Backend implemented using Node.js and Express
 - [ ] SQL database (no hardcoded data)
