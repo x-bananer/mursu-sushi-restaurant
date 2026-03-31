@@ -1,10 +1,11 @@
 import React from "react";
 import { Link, useLocation } from "react-router";
+import "./nav.css";
 
 export default function Navbar() {
   const location = useLocation();
 
-  const isAdmin = location.pathname.startsWith("/admin");
+  const isAdmin = location.pathname.startsWith("/adm");
 
   // FI/EN toggle
   const [language, setLanguage] = React.useState<"en" | "fi">("en");
