@@ -29,7 +29,10 @@ export default function Navbar() {
 
       {/* CENTER */}
       <div className="nav-center">
-        <Link to="/" className="logo">Mursu</Link>
+        <Link to={isAdmin ? "/adm-panel" : "/"} className="logo">
+          Mursu
+        </Link>
+
       </div>
 
       {/* RIGHT */}
