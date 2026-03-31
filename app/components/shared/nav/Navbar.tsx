@@ -40,7 +40,7 @@ export default function Navbar() {
         </button>
 
         {isAdmin ? (
-          <Link to="/profile" className="nav-icon">👤</Link>
+          <Link to="/adm-profile" className="nav-icon">👤</Link>
         ) : (
           <>
             <Link to="/login" className="nav-icon">👤</Link>
