@@ -1,6 +1,6 @@
 # HTML Page Branch
 
-## Temporary structure for HTML assignment
+## Temporary README and temporary structure for HTML assignment
 The main idea is NOT perfect reusability, but splitting the page into INDEPENDENT components.
 
 So if Unna has a card and I also have a card, that’s not a problem, later we can rename them and use separately when we move to React components.
