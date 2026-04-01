@@ -1,6 +1,6 @@
 # HTML Page Branch
 
-Please review this before you start::
+Please review this before you start:
 [https://docs.google.com/presentation/d/1c-o8IS2arje1uz3si3oiPXBjGbXN3iA02ymb2bt0fVI/edit?slide=id.p#slide=id.p](https://docs.google.com/presentation/d/1c-o8IS2arje1uz3si3oiPXBjGbXN3iA02ymb2bt0fVI/edit?slide=id.p#slide=id.p) 
 
 The main idea is not perfect reuse, but splitting the page into independent components.
