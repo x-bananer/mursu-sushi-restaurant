@@ -1,5 +1,7 @@
 # HTML Page Branch
 
+Use Node.js 24.
+
 ## Temporary README and temporary structure for HTML assignment
 The main idea is NOT perfect reusability, but splitting the page into INDEPENDENT components.
 
