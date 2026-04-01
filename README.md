@@ -1,16 +1,11 @@
 # HTML Page Branch
 
-Use Node.js 24.
+This is the temporary project structure where we create and develop markup and styles of the project.
 
 Check this explanation of our workflow before starting:
 [https://docs.google.com/presentation/d/1c-o8IS2arje1uz3si3oiPXBjGbXN3iA02ymb2bt0fVI/edit?slide=id.p#slide=id.p](https://docs.google.com/presentation/d/1c-o8IS2arje1uz3si3oiPXBjGbXN3iA02ymb2bt0fVI/edit?slide=id.p#slide=id.p) 
 
-Figma: [https://www.figma.com/design/IWKfvxiUBzCYYw7LjABXUF/mursu-sushi?node-id=0-1&p=f&t=fekTv9c8j6WuJHsW-0](https://www.figma.com/design/IWKfvxiUBzCYYw7LjABXUF/mursu-sushi?node-id=0-1&p=f&t=fekTv9c8j6WuJHsW-0)
-
-## Temporary README and temporary structure for HTML assignment
 The main idea is NOT perfect reusability, but splitting the page into INDEPENDENT components.
-
-So if Unna has a card and I also have a card, that’s not a problem, later we can rename them and use separately when we move to React components.
 
 The main goal is to avoid creating one large, messy layout that will be hard to break into components later.
 
@@ -18,9 +13,10 @@ The main goal is to avoid creating one large, messy layout that will be hard to 
 
 ```text
 /styles
-  global.css        // colors, fonts, variables
+  global.css        // layout
+  variables         // colors, fonts
   base.css          // reset, base styles
-  /pages
+  /pages // styles of the pages
     home.css
     admin.css
     login.css
@@ -30,7 +26,7 @@ The main goal is to avoid creating one large, messy layout that will be hard to 
     cart.css
     tracker.css
 
-/pages
+/pages // markup of the pages
   home.html
   admin.html
   login.html
@@ -49,19 +45,12 @@ shared.html
 
 - Each person builds their own page
 - Use shared components from `shared.html`
-- Structure your page using components (not one large block)
-
-### Styles
-
-- `base.css` → reset and base browser styles
-- `global.css` → variables (colors, fonts, spacing)
-- `pages/*.css` → page-specific layout only
+- Structure the page using components (not one large block)
 
 ### Important
 
 - Reuse components (header, card, button, etc.)
 - Keep class names consistent (BEM)
-- Avoid nested selectors like `.page .card`
 - Each component should be independent
 
 ### CSS Breakpoints
