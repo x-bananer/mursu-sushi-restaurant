@@ -2,6 +2,9 @@
 
 Use Node.js 24.
 
+Check this explanation of our workflow before starting:
+[https://docs.google.com/presentation/d/1c-o8IS2arje1uz3si3oiPXBjGbXN3iA02ymb2bt0fVI/edit?slide=id.p#slide=id.p](https://docs.google.com/presentation/d/1c-o8IS2arje1uz3si3oiPXBjGbXN3iA02ymb2bt0fVI/edit?slide=id.p#slide=id.p) 
+
 ## Temporary README and temporary structure for HTML assignment
 The main idea is NOT perfect reusability, but splitting the page into INDEPENDENT components.
 
