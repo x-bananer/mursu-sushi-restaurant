@@ -63,7 +63,8 @@ shared.html
 - Each component should be independent
 
 ### CSS Breakpoints
-
+```
 @media (max-width: 480px) {}   /* mobile */
 @media (max-width: 768px) {}   /* tablet */
 @media (max-width: 1024px) {}  /* desktop (default styles) */
+```
