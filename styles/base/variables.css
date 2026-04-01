@@ -1,0 +1,20 @@
+:root {
+  --font-title: "Amatic SC", cursive;
+  --font-text: "Space Grotesk", sans-serif;
+
+  --background-color: #474747;
+  --text-color: #ffffff;
+
+  --color-dark-gray: #1b1b1b;
+  --color-gray: #808080;
+  --color-light-gray: #c6c6c6;
+}
+
+.light-theme {
+  --background-color: #ffffff;
+  --text-color: #1b1b1b;
+
+  --color-dark-gray: #c6c6c6;
+  --color-gray: #808080;
+  --color-light-gray: #474747;
+}
