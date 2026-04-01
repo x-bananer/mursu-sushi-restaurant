@@ -1,6 +1,4 @@
 .layout {
-	height: 100%;
-
 	--layout-padding: 40px;
 	--layout-width: 1280px;
 
@@ -14,4 +12,16 @@
 	.layout {
 		--layout-padding: 20px;
 	}
+}
+
+.page {
+    padding-top: 60px;
+    padding-bottom: 40px;
+}
+
+@media (max-width: 768px) {
+    .page {
+        padding-top: 32px;
+        padding-bottom: 20px;
+    }
 }

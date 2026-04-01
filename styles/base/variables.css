@@ -1,8 +1,11 @@
 :root {
   --font-title: "Amatic SC", cursive;
   --font-text: "Space Grotesk", sans-serif;
+  --font-button: "Inter", sans-serif;
+  --color-black: #131313;
+  --color-white: #ffffff;
 
-  /* use #1b1b1b instead of #131313*/
+  /* use #131313  instead of #1b1b1b*/
   --background-color: #131313; 
   
   --text-color: #ffffff;
@@ -14,7 +17,7 @@
 
 .light-theme {
   --background-color: #ffffff;
-  --text-color: #1b1b1b;
+  --text-color: #131313;
 
   --color-dark-gray: #c6c6c6;
   --color-gray: #808080;

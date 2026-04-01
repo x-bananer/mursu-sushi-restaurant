@@ -11,8 +11,9 @@
 		<link rel="stylesheet" href="../styles/pages/shared.css" />
 	</head>
 	<body>
-		<!-- Default header -->
+		<!-- user header -->
 		<header class="header">
+			<!-- user nav -->
 			<nav class="nav layout">
 				<div class="nav__left">
 					<a href="./menu.html" class="nav__link nav__link--active"
@@ -102,8 +103,9 @@
 			</nav>
 		</header>
 
-		<!-- Admin header -->
+		<!-- admin header -->
 		<header class="header">
+			<!-- admin nav -->
 			<nav class="nav layout">
 				<div class="nav__left"></div>
 
@@ -158,7 +160,7 @@
 			</nav>
 		</header>
 
-		<!-- Mobile bottom nav -->
+		<!-- bottom nav -->
 		<nav class="bottom-nav">
 			<div class="bottom-nav__container layout">
 				<a href="./menu.html" class="bottom-nav__link">
@@ -318,5 +320,250 @@
 				</a>
 			</div>
 		</nav>
+
+		<!-- layout and page -->
+		<div
+			class="layout page"
+			style="font-size: 14px; color: #c6c6c6; line-height: 1.5"
+		>
+			use class <b>layout</b> as a wrapper for a page or a container on a
+			page<br />
+			layout adds side paddings so wrappers keep the same horizontal
+			spacing<br />
+			use it on wrappers and sections where content should align
+			consistently
+			<br />
+			<br />
+			use class <b>page</b> as a wrapper for a page<br />
+			page adds top and bottom spacing so pages keep the same vertical
+			rhythm<br />
+			use it on every page except home and admin
+		</div>
+		<br />
+
+		<p
+			class="layout"
+			style="font-size: 20px; color: #c6c6c6; line-height: 1.5"
+		>
+			<b>Components and their modifiers</b>
+		</p>
+
+		<!-- dark components -->
+		<section class="layout" style="padding-block: 20px">
+			<p style="font-size: 10px; color: #c6c6c6">
+				tag: div<br />classes: btn-counter
+			</p>
+
+			<!-- btn-counter -->
+			<div class="btn-counter">
+				<button class="btn-counter__btn" type="button">−</button>
+				<span class="btn-counter__value">1</span>
+				<button class="btn-counter__btn" type="button">+</button>
+			</div>
+
+			<br /><br />
+
+			<p style="font-size: 10px; color: #c6c6c6">
+				tag: span<br />classes: badge
+			</p>
+
+			<!-- badge -->
+			<span class="badge">GF</span>
+
+			<br /><br />
+
+			<p style="font-size: 10px; color: #c6c6c6">
+				tag: button<br />classes: btn btn--xsmall
+			</p>
+
+			<!-- btn xsmall -->
+			<button class="btn btn--xsmall" type="button">Button</button>
+
+			<br /><br />
+
+			<p style="font-size: 10px; color: #c6c6c6">
+				tag: button<br />classes: btn btn--small
+			</p>
+
+			<!-- btn small -->
+			<button class="btn btn--small" type="button">+ ADD</button>
+
+			<br /><br />
+
+			<p style="font-size: 10px; color: #c6c6c6">
+				tag: button<br />classes: btn
+			</p>
+
+			<!-- btn default -->
+			<button class="btn" type="button">Button</button>
+
+			<br /><br />
+
+			<p style="font-size: 10px; color: #c6c6c6">
+				tag: button<br />classes: btn btn--gray
+			</p>
+
+			<!-- btn gray -->
+			<button class="btn btn--gray" type="button">Button Gray</button>
+
+			<br /><br />
+
+			<p style="font-size: 10px; color: #c6c6c6">
+				tag: button<br />classes: btn btn--large
+			</p>
+
+			<!-- btn large -->
+			<button class="btn btn--large" type="button">Create Account</button>
+
+			<br /><br />
+
+			<p style="font-size: 10px; color: #c6c6c6">
+				tag: button<br />classes: btn btn--link
+			</p>
+
+			<!-- btn link -->
+			<button class="btn btn--link" type="button">
+				Forgot Credentials?
+			</button>
+
+			<br /><br />
+
+			<p style="font-size: 10px; color: #c6c6c6">
+				tag: button<br />classes: btn btn--light btn--xsmall
+			</p>
+
+			<!-- btn light xsmall -->
+			<button class="btn btn--light btn--xsmall" type="button">
+				Button
+			</button>
+
+			<br /><br />
+
+			<p style="font-size: 10px; color: #c6c6c6">
+				tag: button<br />classes: btn btn--light
+			</p>
+
+			<!-- btn light default -->
+			<button class="btn btn--light" type="button">Start Assembly</button>
+
+			<br /><br />
+
+			<p style="font-size: 10px; color: #c6c6c6">
+				tag: button<br />classes: btn btn--light btn--small
+			</p>
+
+			<!-- btn light small -->
+			<button class="btn btn--light btn--small" type="button">
+				Added
+			</button>
+
+			<br /><br />
+
+			<p style="font-size: 10px; color: #c6c6c6">
+				tag: button<br />classes: btn btn--light btn--large
+			</p>
+
+			<!-- btn light large -->
+			<button class="btn btn--light btn--large" type="button">
+				Create Account
+			</button>
+
+			<br /><br />
+		</section>
+
+		<!-- light components -->
+		<section
+			class="layout"
+			style="background: #ffffff; padding-block: 20px"
+		>
+			<p style="font-size: 10px; color: #131313">
+				tag: div<br />classes: btn-counter btn-counter--light
+			</p>
+
+			<!-- btn-counter light -->
+			<div class="btn-counter btn-counter--light">
+				<button class="btn-counter__btn" type="button">−</button>
+				<span class="btn-counter__value">1</span>
+				<button class="btn-counter__btn" type="button">+</button>
+			</div>
+
+			<br /><br />
+
+			<p style="font-size: 10px; color: #131313">
+				tag: button<br />classes: btn btn--xsmall btn--dark
+			</p>
+
+			<!-- btn dark xsmall -->
+			<button class="btn btn--xsmall btn--dark" type="button">
+				Button
+			</button>
+
+			<br /><br />
+
+			<p style="font-size: 10px; color: #131313">
+				tag: button<br />classes: btn btn--small btn--dark
+			</p>
+
+			<!-- btn dark small -->
+			<button class="btn btn--small btn--dark" type="button">
+				Added
+			</button>
+
+			<br /><br />
+
+			<p style="font-size: 10px; color: #131313">
+				tag: button<br />classes: btn btn--dark
+			</p>
+
+			<!-- btn dark default -->
+			<button class="btn btn--dark" type="button">Button dark</button>
+
+			<br /><br />
+
+			<p style="font-size: 10px; color: #131313">
+				tag: button<br />classes: btn btn--dark btn--large
+			</p>
+
+			<!-- btn dark large -->
+			<button class="btn btn--dark btn--large" type="button">
+				Create Account
+			</button>
+		</section>
+
+		<section class="layout" style="padding-block: 20px">
+			<p style="font-size: 10px; color: #c6c6c6">
+				tag: label, span, input<br />classes: input-field, input-field__label,  input-field__input
+			</p>
+			<br />
+
+			<!-- input text -->
+			<label class="input-field">
+				<span class="input-field__label">First Name</span>
+				<input
+					class="input-field__input"
+					type="text"
+					placeholder="Bombom"
+				/>
+			</label>
+
+			<br /><br />
+
+			<!-- input password -->
+			<label class="input-field">
+				<span class="input-field__label">Password</span>
+				<input
+					class="input-field__input"
+					type="password"
+					placeholder="••••••••••"
+				/>
+			</label>
+		</section>
+
+		<!-- footer -->
+		<footer class="footer">
+			<div class="footer__content layout">
+				© 2026 MURSU. Sushi restaurant.
+			</div>
+		</footer>
 	</body>
 </html>
