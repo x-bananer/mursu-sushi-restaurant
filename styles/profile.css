@@ -1,0 +1,78 @@
+/* profile hero */
+.profile {
+  margin-bottom: 32px;
+}
+
+.profile__name {
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+
+.profile__meta {
+  color: var(--color-muted);
+  font-size: 14px;
+}
+
+/* badges list */
+.badges {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+/* badge */
+.badge {
+  padding: 12px 16px;
+  border: 1px solid var(--color-border);
+}
+
+.badge--locked {
+  opacity: 0.4;
+}
+
+/* combos list */
+.combos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+/* combo layout */
+.combo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 12px;
+}
+
+.combo__title {
+  font-size: 18px;
+}
+
+.combo__price {
+  color: var(--color-muted);
+}
+
+/* stats list */
+.stats {
+  display: flex;
+  gap: 16px;
+}
+
+/* one stat */
+.stat {
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  min-width: 120px;
+}
+
+.stat__value {
+  font-size: 24px;
+}
+
+.stat__label {
+  font-size: 12px;
+  color: var(--color-muted);
+}
