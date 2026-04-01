@@ -1,57 +1,44 @@
 # HTML Page Branch
 
-This is the temporary project structure where we create and develop markup and styles of the project.
-
-Check this explanation of our workflow before starting:
+Please review this before you start::
 [https://docs.google.com/presentation/d/1c-o8IS2arje1uz3si3oiPXBjGbXN3iA02ymb2bt0fVI/edit?slide=id.p#slide=id.p](https://docs.google.com/presentation/d/1c-o8IS2arje1uz3si3oiPXBjGbXN3iA02ymb2bt0fVI/edit?slide=id.p#slide=id.p) 
 
-The main idea is NOT perfect reusability, but splitting the page into INDEPENDENT components.
+The main idea is not perfect reuse, but splitting the page into independent components.
 
-The main goal is to avoid creating one large, messy layout that will be hard to break into components later.
+The goal is to avoid one large, messy layout that will be hard to break into components later.
 
 ### Project structure
 
 ```text
 /styles
-  global.css        // layout
-  variables         // colors, fonts
-  base.css          // reset, base styles
-  /pages // styles of the pages
-    home.css
-    admin.css
-    login.css
-    profile.css
-    combo.css
-    menu.css
-    cart.css
-    tracker.css
+  index.css                // all styles entry file
+  /base
+    base.css              // reset and base styles
+    fonts.css             // font imports
+    global.css            // layout helpers
+    variables.css         // colors, fonts, theme variables
+  /pages
+    shared.css            // shared reusable components styles
 
-/pages // markup of the pages
-  home.html
-  admin.html
-  login.html
-  profile.html
-  combo.html
-  menu.html
-  cart.html
-  tracker.html
-
-shared.html
-  // contains basic components (header, footer, buttons, inputs, cards)
-  // copy markup from here and reuse in your pages
+/pages
+  shared.html             // reference page with reusable global components
 ```
-
 ### How to work
 
 - Each person builds their own page
 - Use shared components from `shared.html`
-- Structure the page using components (not one large block)
+- Structure your page with components, not as one large block
+- Connect shared styles through `styles/index.css`
 
 ### Important
 
-- Reuse components (header, card, button, etc.)
-- Keep class names consistent (BEM)
+- **Use variables from the variables file** instead of hardcoding colors and fonts, this will make it easier to add a light theme later
+- Reuse shared components such as header, button and footer
+- Keep class names consistent and follow BEM
 - Each component should be independent
+- Use `layout` and `page` classes where needed
+- Follow the spacing, sizes and styles from the design as closely as possible
+- But some Figma screens may look slightly inconsistent or use different colors. Keep things simple and avoid creating unnecessary variations
 
 ### CSS Breakpoints
 ```
