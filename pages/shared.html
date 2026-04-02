@@ -328,14 +328,49 @@
 			spacing<br />
 			use it on wrappers and sections where content should align
 			consistently
-			<br />
-			<br />
+
+			<br /><br />
+
 			use class <b>page</b> as a wrapper for a page<br />
 			page adds top and bottom spacing so pages keep the same vertical
 			rhythm<br />
 			use it on every page except home and admin
+
+			<br /><br />
+
+			use variables from <b>variables.css</b> instead of hardcoding colors
+			and fonts<br />
+			this makes styles consistent and will make a light theme possible
+			later
+
+			<br />
+
+			examples:<br /><br />
+			<div class="layout">
+				<code>color: var(--text-color);</code><br />
+				<code>background: var(--background-color);</code><br />
+				<code>border-color: var(--color-dark-gray);</code><br />
+
+				<br />
+
+				<code>font-family: var(--font-text);</code> //
+				<span style="font-family: var(--font-text)">Default font</span>
+
+				<br />
+
+				<code>font-family: var(--font-title);</code> //
+				<span style="font-family: var(--font-title)">Title font</span>
+
+				<br />
+
+				<code>font-family: var(--font-button);</code> //
+				<span style="font-family: var(--font-button)">Button font</span>
+
+				<br /><br />
+
+				etc.
+			</div>
 		</div>
-		<br />
 
 		<p
 			class="layout"
@@ -528,7 +563,8 @@
 
 		<section class="layout" style="padding-block: 20px">
 			<p style="font-size: 10px; color: #c6c6c6">
-				tag: label, span, input<br />classes: input-field, input-field__label,  input-field__input
+				tag: label, span, input<br />classes: input-field,
+				input-field__label, input-field__input
 			</p>
 			<br />
 
@@ -553,7 +589,6 @@
 					placeholder="••••••••••"
 				/>
 			</label>
-			
 		</section>
 
 		<!-- footer -->
