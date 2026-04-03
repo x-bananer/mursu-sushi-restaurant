@@ -118,10 +118,6 @@
   .cart-page__summary {
     margin-top: 12px;
   }
-
-  .cart-item + .cart-item {
-    margin-top: 42px;
-  }
 }
 
 /* delivery.css */
