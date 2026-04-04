@@ -106,7 +106,61 @@
                 </div>
             </div>
 
+			<!-- MAIN PANEL -->
+            <div class="order__panel">
 
+                <!-- LEFT: white sidebar -->
+                <aside class="order__sidebar">
+
+                    <!-- Order Status accordion -->
+                    <details class="accordion" open>
+                        <summary class="accordion__header">
+                            <span class="accordion__title">Order Status</span>
+                            <span class="accordion__icon">
+                                <svg viewBox="0 0 24 24" fill="none" width="14" height="14">
+                                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </summary>
+                        <div class="accordion__body">
+                            <ul class="order-steps">
+                                <li class="order-step order-step--done">
+                                    <span class="order-step__dot"></span>
+                                    <div>
+                                        <p class="order-step__label">Order Placed</p>
+                                        <p class="order-step__meta">13:32 — Payment confirmed via MobilePay</p>
+                                    </div>
+                                </li>
+                                <li class="order-step order-step--active">
+                                    <span class="order-step__dot"></span>
+                                    <div>
+                                        <p class="order-step__label">Order Confirmed</p>
+                                        <p class="order-step__meta">13:35 — Kitchen has received your order</p>
+                                    </div>
+                                </li>
+                                <li class="order-step order-step--pending">
+                                    <span class="order-step__dot"></span>
+                                    <div>
+                                        <p class="order-step__label">Ready for Pickup</p>
+                                        <p class="order-step__meta">We will notify you when it's ready</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </details>
+
+                    </details>
+
+                    <!-- Ready at — pinned to bottom of white card -->
+                    <div class="order__ready">
+                        <div class="order__ready-divider"></div>
+                        <p class="order__ready-label">Ready at</p>
+                        <p class="order__ready-time">11:20</p>
+                    </div>
+
+                </aside>
+
+            </div>
 
         </main>
 
