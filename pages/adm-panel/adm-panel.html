@@ -8,63 +8,130 @@
         <link rel="stylesheet" href="adm-panel.css" />
     </head>
     <body class="admin-body">
+	<!-- admin header -->
+		<header class="header">
+			<!-- admin nav -->
+			<nav class="nav layout">
+				<div class="nav__left"></div>
+
+				<div class="nav__center">
+					<a href="./admin.html" class="nav__logo">
+						<span class="nav__logo-letter nav__logo-letter--1">
+							<span class="nav__logo-face">Mu</span>
+							<span class="nav__logo-back">ム</span>
+						</span>
+						<span class="nav__logo-letter nav__logo-letter--2">
+							<span class="nav__logo-face">r</span>
+							<span class="nav__logo-back">ル</span>
+						</span>
+						<span class="nav__logo-letter nav__logo-letter--3">
+							<span class="nav__logo-face">su</span>
+							<span class="nav__logo-back">ス</span>
+						</span>
+					</a>
+				</div>
+
+				<div class="nav__right">
+					<button class="nav__link" type="button">🇫🇮 FI</button>
+					<a href="./profile.html" class="nav__link nav__icon-link">
+						<svg
+							viewBox="0 0 48 48"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<circle
+								cx="24"
+								cy="24"
+								r="18"
+								stroke="currentColor"
+								stroke-width="2"
+							/>
+							<circle
+								cx="24"
+								cy="18"
+								r="5"
+								stroke="currentColor"
+								stroke-width="2"
+							/>
+							<path
+								d="M14 34C14 29 18 26 24 26C30 26 34 29 34 34"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+							/>
+						</svg>
+					</a>
+				</div>
+			</nav>
+		</header>
         <div class="admin-shell">
-            <!-- admin header -->
-			<header class="header">
-				<!-- admin nav -->
-				<nav class="nav layout">
-					<div class="nav__left"></div>
+			<!-- ── sidebar ── -->
+            <aside class="admin-sidebar">
+                <nav class="admin-nav">
 
-					<div class="nav__center">
-						<a href="./admin.html" class="nav__logo">
-							<span class="nav__logo-letter nav__logo-letter--1">
-								<span class="nav__logo-face">Mu</span>
-								<span class="nav__logo-back">ム</span>
-							</span>
-							<span class="nav__logo-letter nav__logo-letter--2">
-								<span class="nav__logo-face">r</span>
-								<span class="nav__logo-back">ル</span>
-							</span>
-							<span class="nav__logo-letter nav__logo-letter--3">
-								<span class="nav__logo-face">su</span>
-								<span class="nav__logo-back">ス</span>
-							</span>
-						</a>
-					</div>
+                    <label class="admin-nav__item" for="nav-dashboard">
+                        <svg class="admin-nav__icon" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                            <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                            <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                            <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/>
+                        </svg>
+                        Dashboard
+                    </label>
 
-					<div class="nav__right">
-						<button class="nav__link" type="button">🇫🇮 FI</button>
-						<a href="./profile.html" class="nav__link nav__icon-link">
-							<svg
-								viewBox="0 0 48 48"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<circle
-									cx="24"
-									cy="24"
-									r="18"
-									stroke="currentColor"
-									stroke-width="2"
-								/>
-								<circle
-									cx="24"
-									cy="18"
-									r="5"
-									stroke="currentColor"
-									stroke-width="2"
-								/>
-								<path
-									d="M14 34C14 29 18 26 24 26C30 26 34 29 34 34"
-									stroke="currentColor"
-									stroke-width="2"
-									stroke-linecap="round"
-								/>
-							</svg>
-						</a>
-					</div>
-				</nav>
-			</header>
+                    <label class="admin-nav__item" for="nav-live-orders">
+                        <svg class="admin-nav__icon" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M12 2V4M12 20V22M2 12H4M20 12H22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                            <path d="M5.64 5.64L7.05 7.05M16.95 16.95L18.36 18.36M5.64 18.36L7.05 16.95M16.95 7.05L18.36 5.64" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        Live Orders
+                    </label>
+
+                    <label class="admin-nav__item" for="nav-menu-editor">
+                        <svg class="admin-nav__icon" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="5" width="18" height="2" rx="1" fill="currentColor"/>
+                            <rect x="3" y="11" width="18" height="2" rx="1" fill="currentColor"/>
+                            <rect x="3" y="17" width="12" height="2" rx="1" fill="currentColor"/>
+                        </svg>
+                        Menu Editor
+                    </label>
+
+                    <label class="admin-nav__item" for="nav-daily-special">
+                        <svg class="admin-nav__icon" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2L14.4 8.8H21.6L15.8 12.9L18.2 19.7L12 15.6L5.8 19.7L8.2 12.9L2.4 8.8H9.6L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                        Daily Special
+                    </label>
+
+                    <label class="admin-nav__item" for="nav-customers">
+                        <svg class="admin-nav__icon" viewBox="0 0 24 24" fill="none">
+                            <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M2 21C2 17.13 5.13 14 9 14C10.08 14 11.1 14.25 12 14.68" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                            <circle cx="18" cy="17" r="3" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M18 14V17L20 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Customers
+                    </label>
+
+                    <label class="admin-nav__item" for="nav-reviews">
+                        <svg class="admin-nav__icon" viewBox="0 0 24 24" fill="none">
+                            <path d="M21 15C21 16.1 20.1 17 19 17H7L3 21V5C3 3.9 3.9 3 5 3H19C20.1 3 21 3.9 21 5V15Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                        Reviews
+                    </label>
+
+                    <label class="admin-nav__item" for="nav-settings">
+                        <svg class="admin-nav__icon" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M19.4 15C19.2 15.3 19.2 15.7 19.4 16L20.9 18.6C21.1 19 21 19.5 20.6 19.7L18.1 21.2C17.7 21.4 17.2 21.3 17 20.9L15.5 18.3C15.2 17.9 14.8 17.8 14.4 18C13.9 18.2 13.5 18.3 13 18.3C12.6 18.3 12.1 18.2 11.6 18C11.2 17.8 10.8 17.9 10.5 18.3L9 20.9C8.8 21.3 8.3 21.4 7.9 21.2L5.4 19.7C5 19.5 4.9 19 5.1 18.6L6.6 16C6.8 15.7 6.8 15.3 6.6 15C6.3 14.5 6.2 14 6.2 13.5C6.2 13 6.3 12.5 6.6 12C6.8 11.7 6.8 11.3 6.6 11L5.1 8.4C4.9 8 5 7.5 5.4 7.3L7.9 5.8C8.3 5.6 8.8 5.7 9 6.1L10.5 8.7C10.8 9.1 11.2 9.2 11.6 9C12.1 8.8 12.5 8.7 13 8.7C13.5 8.7 13.9 8.8 14.4 9C14.8 9.2 15.2 9.1 15.5 8.7L17 6.1C17.2 5.7 17.7 5.6 18.1 5.8L20.6 7.3C21 7.5 21.1 8 20.9 8.4L19.4 11C19.2 11.3 19.2 11.7 19.4 12C19.7 12.5 19.8 13 19.8 13.5C19.8 14 19.7 14.5 19.4 15Z" stroke="currentColor" stroke-width="1.5"/>
+                        </svg>
+                        Settings
+                    </label>
+
+                </nav>
+            </aside>
+
 
         </div><!-- /admin-shell -->
 
