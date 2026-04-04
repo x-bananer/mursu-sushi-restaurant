@@ -13,7 +13,6 @@
 .admin-shell {
     display: grid;
     grid-template-columns: 180px 1fr;
-    grid-template-rows: 60px 1fr;
     grid-template-areas:
         "topbar topbar"
         "sidebar main";
