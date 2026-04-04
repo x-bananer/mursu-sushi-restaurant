@@ -82,3 +82,76 @@ details[open] > .accordion__header .accordion__icon {
     padding: 2px 20px 20px;
 }
 
+/* ── order steps ─────────────────────────────── */
+
+.order-steps {
+    display: flex;
+    flex-direction: column;
+}
+
+.order-step {
+    display: grid;
+    grid-template-columns: 13px 1fr;
+    gap: 12px;
+    align-items: start;
+    position: relative;
+    padding-bottom: 22px;
+}
+
+.order-step:last-child {
+    padding-bottom: 0;
+}
+
+.order-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 13px;
+    left: 6px;
+    width: 1px;
+    height: calc(100% - 13px);
+    background: #d0d0d0;
+}
+
+.order-step--done::after,
+.order-step--active::after {
+    background: #131313;
+}
+
+.order-step__dot {
+    width: 13px;
+    height: 13px;
+    border: 2px solid #c8c8c8;
+    background: transparent;
+    flex-shrink: 0;
+    margin-top: 1px;
+    position: relative;
+    z-index: 1;
+}
+
+.order-step--done .order-step__dot,
+.order-step--active .order-step__dot {
+    background: #131313;
+    border-color: #131313;
+}
+
+.order-step__label {
+    font-family: var(--font-button);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #131313;
+    line-height: 1.3;
+}
+
+.order-step--pending .order-step__label {
+    color: #c0c0c0;
+}
+
+.order-step__meta {
+    font-family: var(--font-text);
+    font-size: 10px;
+    color: #909090;
+    margin-top: 2px;
+    line-height: 1.4;
+}
