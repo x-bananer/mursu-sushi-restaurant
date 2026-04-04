@@ -1,0 +1,30 @@
+/* ═══════════════════════════════════════════════
+   order-tracker.css
+═══════════════════════════════════════════════ */
+
+
+/* ── hero ─────────────────────────────────────── */
+
+.order__hero {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.order__title {
+    font-family: var(--font-title);
+    font-size: 96px;
+    font-weight: 700;
+    line-height: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.order__hero-right {
+    flex-shrink: 0;
+    margin-top: 14px;
+}
+
+
