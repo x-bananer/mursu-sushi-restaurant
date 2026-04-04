@@ -27,6 +27,15 @@
     margin-top: 14px;
 }
 
+/* ── main panel grid ───────────────────────────── */
+
+.order__panel {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    border: 1px solid var(--color-dark-gray);
+    margin-bottom: 1px;
+}
+
 /* ── sidebar (white) ──────────────────────────── */
 
 .order__sidebar {
@@ -406,3 +415,4 @@ details[open] > .accordion__header .accordion__icon {
     line-height: 1;
     color: var(--color-white);
 }
+
