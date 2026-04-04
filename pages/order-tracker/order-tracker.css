@@ -2,7 +2,6 @@
    order-tracker.css
 ═══════════════════════════════════════════════ */
 
-
 /* ── hero ─────────────────────────────────────── */
 
 .order__hero {
@@ -447,3 +446,59 @@ details[open] > .accordion__header .accordion__icon {
     color: var(--color-white);
 }
 
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+    .order__title {
+        font-size: 56px;
+    }
+
+    .order__hero {
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .order__hero-right {
+        margin-top: 0;
+    }
+
+    .order__panel {
+        grid-template-columns: 1fr;
+    }
+
+    .order__sidebar {
+        border-right: none;
+        border-bottom: 1px solid #e8e8e8;
+    }
+
+    .order__map {
+        min-height: 220px;
+    }
+
+    .order__ready-time {
+        font-size: 44px;
+    }
+
+    .order__bottom {
+        grid-template-columns: 1fr;
+    }
+
+    .order-summary,
+    .order-guest {
+        border-right: none;
+        border-bottom: 1px solid var(--color-dark-gray);
+    }
+}
+
+@media (max-width: 480px) {
+    .order__title {
+        font-size: 44px;
+    }
+
+    .order-price__value {
+        font-size: 40px;
+    }
+}
