@@ -206,7 +206,7 @@
 
 .home-info-card__title {
 	font-family: var(--font-title);
-	font-size: 28px;
+	font-size: 30px;
 	font-weight: 300;
 	letter-spacing: 2px;
 	color: var(--color-light-gray);
@@ -214,7 +214,7 @@
 }
 
 .home-info-card__text {
-	font-size: 12px;
+	font-size: 14px;
 	line-height: 1.8;
 	letter-spacing: 0.5px;
 	color: var(--color-light-gray);
@@ -240,7 +240,7 @@
 
 .home-info-card__note {
 	margin-top: 12px;
-	font-size: 10px;
+	font-size: 14px;
 	color: var(--color-dark-gray);
 	letter-spacing: 1px;
 }

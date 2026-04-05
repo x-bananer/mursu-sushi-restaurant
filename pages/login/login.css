@@ -48,7 +48,7 @@ body {
 }
 .auth-card__body {
 	flex: 1;
-	padding: 40px 46px;
+	padding: 32px 46px;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -60,7 +60,7 @@ body {
 	gap: 10px;
 }
 .input-field__label {
-	font-size: 8px;
+	font-size: 11px;
 	color: var(--color-gray);
 	text-transform: uppercase;
 	letter-spacing: 2.6px;
@@ -71,7 +71,7 @@ body {
 	border: none;
 	border-bottom: 1px solid var(--color-dark-gray);
 	color: var(--color-white);
-	font-size: 20px;
+	font-size: 14px;
 	padding: 6px 0 10px;
 	outline: none;
 	transition: border-color 0.3s;
