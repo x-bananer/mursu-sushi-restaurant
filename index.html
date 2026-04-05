@@ -4,8 +4,8 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Mursu Sushi</title>
-		<link rel="stylesheet" href="../../styles/index.css" />
-		<link rel="stylesheet" href="./home.css" />
+		<link rel="stylesheet" href="./styles/index.css" />
+		<link rel="stylesheet" href="./pages/home/home.css" />
 	</head>
 	<body>
 		<!-- user header -->
@@ -14,17 +14,17 @@
 			<nav class="nav layout">
 				<div class="nav__left">
 					<a
-						href="../menu/menu.html"
+						href="./pages/menu/menu.html"
 						class="nav__link nav__link--active"
 						>MENU</a
 					>
-					<a href="../combo/combo.html" class="nav__link"
+					<a href="./pages/combo/combo.html" class="nav__link"
 						>BUILD A SET</a
 					>
 				</div>
 
 				<div class="nav__center">
-					<a href="./home.html" class="nav__logo">
+					<a href="./index.html" class="nav__logo">
 						<span class="nav__logo-letter nav__logo-letter--1">
 							<span class="nav__logo-face">Mu</span>
 							<span class="nav__logo-back">ム</span>
@@ -49,7 +49,7 @@
 						🇫🇮 FI
 					</button>
 					<a
-						href="../login/login.html"
+						href="./pages/login/login.html"
 						class="nav__link nav__icon-link"
 					>
 						<svg
@@ -81,7 +81,7 @@
 					</a>
 
 					<a
-						href="../cart/cart.html"
+						href="./pages/cart/cart.html"
 						class="nav__link nav__icon-link"
 					>
 						<svg
@@ -119,7 +119,7 @@
 		<!-- bottom nav -->
 		<nav class="bottom-nav">
 			<div class="bottom-nav__container layout">
-				<a href="../menu/menu.html" class="bottom-nav__link">
+				<a href="./pages/menu/menu.html" class="bottom-nav__link">
 					<svg
 						viewBox="0 0 48 48"
 						fill="none"
@@ -139,7 +139,7 @@
 						/>
 					</svg>
 				</a>
-				<a href="../combo/combo.html" class="bottom-nav__link">
+				<a href="./pages/combo/combo.html" class="bottom-nav__link">
 					<svg
 						viewBox="0 0 48 48"
 						fill="none"
@@ -195,7 +195,7 @@
 						/>
 					</svg>
 				</a>
-				<a href="./home.html" class="bottom-nav__link">
+				<a href="./index.html" class="bottom-nav__link">
 					<svg
 						viewBox="0 0 48 48"
 						fill="none"
@@ -217,7 +217,7 @@
 						/>
 					</svg>
 				</a>
-				<a href="../login/login.html" class="bottom-nav__link">
+				<a href="./pages/login/login.html" class="bottom-nav__link">
 					<svg
 						viewBox="0 0 48 48"
 						fill="none"
@@ -245,7 +245,7 @@
 						/>
 					</svg>
 				</a>
-				<a href="../cart/cart.html" class="bottom-nav__link">
+				<a href="./pages/cart/cart.html" class="bottom-nav__link">
 					<svg
 						viewBox="0 0 48 48"
 						fill="none"
@@ -301,10 +301,12 @@
 			<br /><br />
 
 			<div class="home-hero__actions">
-				<a href="../menu/menu.html" class="btn btn--small btn--light"
+				<a
+					href="./pages/menu/menu.html"
+					class="btn btn--small btn--light"
 					>View Menu</a
 				>
-				<a href="../combo/combo.html" class="btn btn--small"
+				<a href="./pages/combo/combo.html" class="btn btn--small"
 					>Build A Set</a
 				>
 			</div>
@@ -313,7 +315,7 @@
 		<!-- bonsai-->
 		<section class="layout home-bonsai">
 			<img
-				src="../../assets/Bonsai.png"
+				src="./assets/Bonsai.png"
 				alt="Bonsai"
 				class="home-bonsai__image"
 			/>
