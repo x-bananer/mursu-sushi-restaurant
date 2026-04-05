@@ -2,31 +2,43 @@
    Admin dashboard — Mursu.
 ═══════════════════════════════════════════════ */
 
-/* ── shell layout ────────────────────────────── */
+/* ── lock the viewport ───────────────────────── */
+/*
+   The header (.header) is 60px tall and sticky from shared.css.
+   The shell sits below it and fills the remaining height.
+   Only .admin-main scrolls — sidebar stays fixed.
+*/
 
 .admin-body {
-    min-height: 100dvh;
-    background: var(--background-color);
+    /* prevent the body itself from scrolling */
     overflow: hidden;
+    height: 100dvh;
 }
 
 .admin-shell {
     display: grid;
     grid-template-columns: 180px 1fr;
-    grid-template-areas:
-        "topbar topbar"
-        "sidebar main";
-    height: 100dvh;
-    overflow: hidden;
+    grid-template-rows: 1fr;
+    grid-template-areas: "sidebar main";
+
+    height: calc(100dvh - 60px);
+    overflow: hidden;                 /* shell itself never scrolls */
 }
 
-/* ── sidebar ─────────────────────────────────── */
+
+/* ── sidebar — fixed, never scrolls ─────────── */
 
 .admin-sidebar {
     grid-area: sidebar;
+    height: 100%;
+    overflow-y: auto;                 /* scroll only if nav items overflow */
     border-right: 1px solid var(--color-dark-gray);
-    overflow-y: auto;
     background: var(--background-color);
+
+    /* keep it in place when main scrolls */
+    position: sticky;
+    top: 0;
+    align-self: start;
 }
 
 .admin-nav {
@@ -50,6 +62,7 @@
     transition: color 0.15s ease, background 0.15s ease;
     user-select: none;
     border-left: 2px solid transparent;
+    text-decoration: none;
 }
 
 .admin-nav__item:hover {
@@ -57,11 +70,21 @@
     background: rgba(255,255,255,0.03);
 }
 
+.admin-nav__item--active {
+    color: var(--color-white);
+    background: rgba(255,255,255,0.06);
+    border-left-color: var(--color-white);
+}
+
+.admin-nav__item--active .admin-nav__icon {
+    opacity: 1;
+}
+
 .admin-nav__icon {
     width: 16px;
     height: 16px;
     flex-shrink: 0;
-    opacity: 0.6;
+    opacity: 0.5;
     transition: opacity 0.15s ease;
 }
 
@@ -69,14 +92,50 @@
     opacity: 0.8;
 }
 
-/* ── main content ────────────────────────────── */
+
+/* ── main content — only this scrolls ───────── */
 
 .admin-main {
     grid-area: main;
-    overflow-y: auto;
-    padding: 32px 32px 48px;
-    position: relative;
+    height: 100%;
+    overflow-y: auto;                 /* ← only scroll target */
+    overflow-x: hidden;
+    padding: 32px 32px 64px;
 }
+
+
+/* ── pages ───────────────────────────────────── */
+
+.admin-page {
+    display: none;
+}
+
+.admin-page--active {
+    display: block;
+}
+
+
+/* ── section title ───────────────────────────── */
+
+.admin-section-title {
+    font-family: var(--font-title);
+    font-size: 40px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--color-white);
+    margin-bottom: 24px;
+    line-height: 1;
+}
+
+.admin-placeholder-text {
+    font-family: var(--font-text);
+    font-size: 12px;
+    color: var(--color-gray);
+    margin-bottom: 24px;
+    letter-spacing: 0.5px;
+}
+
 
 /* ── stat cards ──────────────────────────────── */
 
@@ -114,33 +173,12 @@
     line-height: 1;
 }
 
-/* ── section title ───────────────────────────── */
-
-.admin-section-title {
-    font-family: var(--font-title);
-    font-size: 40px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--color-white);
-    margin-bottom: 24px;
-    line-height: 1;
-}
-
-.admin-placeholder-text {
-    font-family: var(--font-text);
-    font-size: 12px;
-    color: var(--color-gray);
-    margin-bottom: 24px;
-    letter-spacing: 0.5px;
-}
 
 /* ── order board ─────────────────────────────── */
 
 .order-board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0;
     border: 1px solid var(--color-dark-gray);
 }
 
@@ -201,6 +239,7 @@
     flex-direction: column;
     gap: 12px;
 }
+
 
 /* ── order card ──────────────────────────────── */
 
@@ -287,82 +326,90 @@
     color: var(--color-white);
 }
 
+
 /* ═══════════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════════ */
 
 @media (max-width: 1024px) {
-  .admin-shell {
-    grid-template-columns: 160px 1fr;
-  }
+    .admin-shell {
+        grid-template-columns: 160px 1fr;
+    }
 
-  .admin-stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
+    .admin-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
 
-  .stat-card:nth-child(2) {
-    border-right: none;
-  }
-
-  .stat-card:nth-child(3) {
-    border-top: 1px solid var(--color-dark-gray);
-  }
-
-  .stat-card:nth-child(4) {
-    border-top: 1px solid var(--color-dark-gray);
-    border-right: none;
-  }
+    .stat-card:nth-child(2) { border-right: none; }
+    .stat-card:nth-child(3) { border-top: 1px solid var(--color-dark-gray); }
+    .stat-card:nth-child(4) {
+        border-top: 1px solid var(--color-dark-gray);
+        border-right: none;
+    }
 }
 
 @media (max-width: 768px) {
-  .admin-shell {
-    grid-template-columns: 1fr;
-    grid-template-rows: 60px auto 1fr;
-    grid-template-areas:
-      "topbar"
-      "sidebar"
-      "main";
-    height: auto;
-    overflow: auto;
-  }
+    .admin-body {
+        height: auto;
+        overflow: auto;
+    }
 
-  .admin-sidebar {
-    border-right: none;
-    border-bottom: 1px solid var(--color-dark-gray);
-    overflow: hidden;
-  }
+    .admin-shell {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        grid-template-areas:
+            "sidebar"
+            "main";
+        height: auto;
+        overflow: visible;
+    }
 
-  .admin-nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-    padding: 4px;
-    gap: 2px;
-  }
+    .admin-sidebar {
+        height: auto;
+        overflow: visible;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid var(--color-dark-gray);
+    }
 
-  .admin-nav__item {
-    border-left: none;
-    border-bottom: 2px solid transparent;
-    padding: 8px 10px;
-    font-size: 8px;
-    letter-spacing: 1px;
-    flex: 1 1 auto;
-    justify-content: center;
-  }
+    .admin-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 4px;
+        gap: 2px;
+    }
 
-  .admin-main {
-    padding: 20px 16px 40px;
-  }
+    .admin-nav__item {
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        padding: 8px 10px;
+        font-size: 8px;
+        letter-spacing: 1px;
+        flex: 1 1 auto;
+        justify-content: center;
+    }
 
-  .order-board {
-    grid-template-columns: 1fr;
-  }
+    .admin-nav__item--active {
+        border-left-color: transparent;
+        border-bottom-color: var(--color-white);
+    }
 
-  .order-col {
-    border-right: none;
-    border-bottom: 1px solid var(--color-dark-gray);
-  }
+    .admin-main {
+        height: auto;
+        overflow: visible;
+        padding: 20px 16px 40px;
+    }
 
-  .order-col:last-child {
-    border-bottom: none;
-  }
+    .order-board {
+        grid-template-columns: 1fr;
+    }
+
+    .order-col {
+        border-right: none;
+        border-bottom: 1px solid var(--color-dark-gray);
+    }
+
+    .order-col:last-child {
+        border-bottom: none;
+    }
 }
