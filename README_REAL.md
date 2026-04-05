@@ -18,16 +18,19 @@ A full-stack sushi restaurant application featuring a custom combo builder, cart
 - [ ] Support for dietary information (vegan, gluten-free, lactose-free)
 
 ### User functionality:
+
 - [ ] Registration and login
 - [ ] Shopping cart
 - [ ] Order placement
 
 ### Admin panel:
+
 - [ ] Admin authentication
 - [ ] Menu management (create / update / delete)
 - [ ] Order management and status updates
 
 ### Additional features:
+
 - [ ] Custom combo builder
 - [ ] Real-time order tracking
 - [ ] User profile and reward system
@@ -48,6 +51,7 @@ A full-stack sushi restaurant application featuring a custom combo builder, cart
 - [ ] Code documentation (JSDoc / ApiDoc)
 
 ## Testing:
+
 - [ ] At least 5 integration tests
 - [ ] At least 5 end-to-end tests
 
@@ -58,18 +62,19 @@ A full-stack sushi restaurant application featuring a custom combo builder, cart
 ## Getting Started
 
 - Install dependencies:
-``` npm install ```
+  `npm install`
 
 - Start react vite dev server with hot reload:
-``` npm run dev ```
+  `npm run dev`
 
 - Building for Production:
-``` npm run build ```
+  `npm run build`
 
 - Deploy using Docker or any Node.js hosting platform::
-``` 
-docker build -t mursu-sushi-restaurant . 
-docker run -p 3000:3000 mursu-sushi-restaurant 
+
+```
+docker build -t mursu-sushi-restaurant .
+docker run -p 3000:3000 mursu-sushi-restaurant
 ```
 
 ## Core Project Structure
@@ -84,4 +89,4 @@ src/
  ├─ app.css           # For global styles (Tailwind or CSS).
  ├─ root.tsx          # App root layout component with React Router v7 setup.
  └─ routes.tsx        # Route configuration.
- ```
+```
