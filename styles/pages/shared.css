@@ -75,15 +75,20 @@
   display: inline-grid;
   place-items: center;
   transform-style: preserve-3d;
-  animation: nav-logo-flip 5s ease-in-out infinite;
+  transform: rotateX(0deg);
+  transition: transform 0.7s ease-in-out;
+}
+
+.nav__logo:hover .nav__logo-letter {
+  transform: rotateX(180deg);
 }
 
 .nav__logo-letter--2 {
-  animation-delay: 0.18s;
+  transition-delay: 0.18s;
 }
 
 .nav__logo-letter--3 {
-  animation-delay: 0.36s;
+  transition-delay: 0.36s;
 }
 
 .nav__logo-face {
