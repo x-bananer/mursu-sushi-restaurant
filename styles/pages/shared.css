@@ -75,15 +75,6 @@
   display: inline-grid;
   place-items: center;
   transform-style: preserve-3d;
-  animation: nav-logo-flip 5s ease-in-out infinite;
-}
-
-.nav__logo-letter--2 {
-  animation-delay: 0.18s;
-}
-
-.nav__logo-letter--3 {
-  animation-delay: 0.36s;
   transform: rotateX(0deg);
   transition: transform 0.7s ease-in-out;
 }
@@ -151,23 +142,6 @@
   .nav__center {
     flex: 1;
     justify-content: flex-start;
-  }
-}
-
-@keyframes nav-logo-flip {
-  0%,
-  18% {
-    transform: rotateX(0deg);
-  }
-
-  24%,
-  76% {
-    transform: rotateX(180deg);
-  }
-
-  82%,
-  100% {
-    transform: rotateX(360deg);
   }
 }
 
