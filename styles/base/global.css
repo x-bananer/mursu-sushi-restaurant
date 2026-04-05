@@ -1,27 +1,33 @@
 .layout {
-	--layout-padding: 40px;
-	--layout-width: 1280px;
+  --layout-padding: 40px;
+  --layout-width: 1280px;
 
-	width: 100%;
+  width: 100%;
 
-	padding-left: max(var(--layout-padding), calc(50vw - var(--layout-width) / 2));
-	padding-right: max(var(--layout-padding), calc(50vw - var(--layout-width) / 2));
+  padding-left: max(
+    var(--layout-padding),
+    calc(50vw - var(--layout-width) / 2)
+  );
+  padding-right: max(
+    var(--layout-padding),
+    calc(50vw - var(--layout-width) / 2)
+  );
 }
 
 @media (max-width: 1080px) {
-	.layout {
-		--layout-padding: 20px;
-	}
+  .layout {
+    --layout-padding: 20px;
+  }
 }
 
 .page {
-    padding-top: 60px;
-    padding-bottom: 40px;
+  padding-top: 60px;
+  padding-bottom: 40px;
 }
 
 @media (max-width: 768px) {
-    .page {
-        padding-top: 32px;
-        padding-bottom: 20px;
-    }
+  .page {
+    padding-top: 32px;
+    padding-bottom: 20px;
+  }
 }
