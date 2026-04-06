@@ -8,7 +8,7 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import "./app.css";
+//import "./styles/index.css";
 
 import Navbar from "./components/shared/nav/Navbar";
 import BottomNav from "./components/shared/nav/BottomNav";
