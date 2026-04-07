@@ -16,7 +16,7 @@
         │
         ├── model/  
         ├── engine/                          Domain Model sushi domain logic — knows nothing about HTTP or SQL - Model in MVC - engine defines the rules used in the controllers.
-        │   ├── SushiEngine.js                 facade — sole public interface to the engine layer  [Facade pattern for ComboEngine/ MenuEngine + PricingEngine + DietaryEngine and validates order transitions and rewardawads.]
+        │   ├── SushiEngine.js                 facade — sole public interface to the engine layer  [Facade pattern for ComboEngine + PricingEngine + DietaryEngine and OrderEngine.]
         │   ├── ComboEngine.js                 validates combo selections — base required, 1-3 proteins, max 4 toppings, hot+salad rule
         │   ├── PricingEngine.js               calculates set price — base price + protein extras + day-of-week discounts
         │   ├── DietaryEngine.js               cross-checks selections against allergen and dietary restriction rules
@@ -29,13 +29,13 @@
         │       └── userQueries.js             SELECT INSERT UPDATE DELETE for users table including its rewards
         │
         ├── services-controller/                        Application Service layer orchestrates engine and database — no SQL, no HTTP - services drive the flow, most symilar layer in MVC would be the controllers.
-        │   ├── orderService.js                validate combo via SushiEngine → save via queries → emit order.placed via EventBus, tell if reward shall be given or not (DB query).
+        │   ├── orderService.js                validate combo via SushiEngine → save via queries - emit order.placed via EventBus, tell if reward shall be given or not (DB query).
         │   ├── menuService.js                 orchestrates menu CRUD operations using menuQueries
         │   ├── authService.js                 login flow, register flow, JWT generation and refresh
         │   └── trackingService.js             manages live order state, calculates distances, pushes via WebSocket
 triggers rewards
         │
-        ├── restaurantMechanics.js           runtime mechanics: queue + state machine + events - Keeps runtime workflow separate from pure business rules.
+        ├── restaurantMechanics.js           orchastrate runtime mechanics: queue + state machine + events - Keeps runtime workflow separate from pure business rules.
         └── server.js                        entry point — registers all routes, middleware, WebSocket, starts Express on port 5000
 
 ├── tests/                                 (cross-layer automated tests)
