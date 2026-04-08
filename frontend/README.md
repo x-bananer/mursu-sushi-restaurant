@@ -1,20 +1,84 @@
-# Currently it is just passing the README.md data from the Vite startup. In future will be specific to the app architecture!
+# 🍣 Mursu Sushi Restaurant
 
-# Welcome to React Router!
+A modern sushi restaurant web app built with React Router, featuring separate customer and admin experiences.
 
-A modern, production-ready template for building full-stack React applications using React Router.
+---
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## 🚀 Features
 
-## Features
+### Customer
+- Browse menu
+- Build custom combos
+- Cart & checkout
+- Order live tracker
+- Optional user account for rewards and saving favorits.
+- Responsive navigation (top + bottom nav)
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+### Admin
+- Dashboard
+- Live orders
+- Menu editor
+- Customer management
+- Sidebar navigation + mobile bottom nav
+
+---
+
+## 🧱 Project Structure
+```
+app/
+├── components/
+│ ├── shared/
+│ │ └── nav/
+│ │     ├── NavBase.tsx
+│ │     ├── BottomNavBase.tsx
+│ │     ├── icons.tsx
+│ │     └── nav.css
+│ │ └── loading.tsx
+│ │ └── modal.tsx
+│ │ └── any other component used in multiple pages.
+│ │ 
+│ ├── customer/
+│ │ └── nav/
+│ │     └── BottomNav.tsx
+│ │     └── NavBar.tsx
+│ │ └── order-tracker/
+│ │ └── Most likely each page will have its own folder with its unique componentes and styles.
+│ │
+│ └── adm/
+│ │ └── nav/
+│ │     └── AdmBottomNav.tsx
+│       ├── AdmNavbar.tsx
+│       └── AdmSideNav.tsx
+|
+│ │ └── live-orders/
+│ │ └── menu-editor/
+│ │ └── customers/
+│ │ └── settings/
+│ │ └── reviews/
+│ │ └── form/
+│
+├── routes/
+│ ├── customer/
+│ └── adm/
+│
+├── routes.ts
+└── root.tsx 
+public/
+```
+
+## 📦 Tech Stack
+
+- React
+- React Router
+- TypeScript
+- CSS (custom, no framework)
+
+## Design Decisions
+
+- Split layouts instead of role-checking (isAdmin)
+- Reusable nav components instead of duplicated HTML
+- Centralized icons for consistency
+- Responsive-first navigation (bottom nav on mobile)
 
 ## Getting Started
 
@@ -80,10 +144,4 @@ Make sure to deploy the output of `npm run build`
 │   └── server/    # Server-side code
 ```
 
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
 ---
-
-Built with ❤️ using React Router.
