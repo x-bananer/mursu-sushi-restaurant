@@ -1,4 +1,4 @@
-import type { Route } from "./+types/AdmPanel";
+import type { Route } from "../adm/+types/AdmPanel";
 
 export function meta({}: Route.MetaArgs) {
   return [

@@ -1,4 +1,4 @@
-import type { Route } from "./+types/ComboBuilder";
+import type { Route } from "../customer/+types/ComboBuilder";
 
 export function meta({}: Route.MetaArgs) {
   return [

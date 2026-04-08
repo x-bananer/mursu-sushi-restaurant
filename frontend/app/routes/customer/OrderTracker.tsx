@@ -1,4 +1,4 @@
-import type { Route } from "./+types/OrderTracker";
+import type { Route } from "../customer/+types/OrderTracker";
 
 export function meta({}: Route.MetaArgs) {
   return [

@@ -10,9 +10,6 @@ import {
 import type { Route } from "./+types/root";
 //import "./styles/index.css";
 
-import Navbar from "./components/shared/nav/Navbar";
-import BottomNav from "./components/shared/nav/BottomNav";
-
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -23,9 +20,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <Navbar />
-        {children}
-        <BottomNav />
+		    {children}
         <ScrollRestoration />
         <Scripts />
       </body>
