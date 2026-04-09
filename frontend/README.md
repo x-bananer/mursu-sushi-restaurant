@@ -1,10 +1,9 @@
-# 🍣 Mursu Sushi Restaurant
+# 🍣 Mursu Sushi Restaurant - Frontend
 
-A modern sushi restaurant web app built with React Router, featuring separate customer and admin experiences.
-
+A modern, responsive sushi restaurant web application built with React Router. Designed to simulate a real-world restaurant system with a modular, scalable component architecture.
 ---
 
-## 🚀 Features
+## Features
 
 ### Customer
 - Browse menu
@@ -27,42 +26,43 @@ A modern sushi restaurant web app built with React Router, featuring separate cu
 ```
 app/
 ├── components/
-│ ├── shared/
-│ │ └── nav/
-│ │     ├── NavBase.tsx
-│ │     ├── BottomNavBase.tsx
-│ │     ├── icons.tsx
-│ │     └── nav.css
-│ │ └── loading.tsx
-│ │ └── modal.tsx
-│ │ └── any other component used in multiple pages.
-│ │ 
-│ ├── customer/
-│ │ └── nav/
-│ │     └── BottomNav.tsx
-│ │     └── NavBar.tsx
-│ │ └── order-tracker/
-│ │ └── Most likely each page will have its own folder with its unique componentes and styles.
-│ │
-│ └── adm/
-│ │ └── nav/
-│ │     └── AdmBottomNav.tsx
-│       ├── AdmNavbar.tsx
-│       └── AdmSideNav.tsx
-|
-│ │ └── live-orders/
-│ │ └── menu-editor/
-│ │ └── customers/
-│ │ └── settings/
-│ │ └── reviews/
-│ │ └── form/
 │
-├── routes/
-│ ├── customer/
-│ └── adm/
+│   ├── shared/                # Reusable across entire app
+│   │   ├── nav/               # Base navigation system
+│   │   │   ├── NavBase.tsx
+│   │   │   ├── BottomNavBase.tsx
+│   │   │   ├── icons.tsx
+│   │   │   └── nav.css
+│   │   ├── loading.tsx
+│   │   ├── modal.tsx
+│   │   └── ...other shared UI
 │
-├── routes.ts
-└── root.tsx 
+│   ├── customer/             # Customer-specific UI
+│   │   ├── nav/
+│   │   │   ├── NavBar.tsx
+│   │   │   └── BottomNav.tsx
+│   │   ├── order-tracker/
+│   │   └── ... the remaining pages
+│
+│   └── adm/                  # Admin-specific UI
+│       ├── nav/
+│       │   ├── AdmNavbar.tsx
+│       │   ├── AdmBottomNav.tsx
+│       │   └── AdmSideNav.tsx
+│       ├── live-orders/
+│       ├── menu-editor/
+│       ├── customers/
+│       ├── reviews/
+│       ├── settings/
+│       └── form/
+│
+├── routes/                   # Route definitions split by role
+│   ├── customer/
+│   └── adm/
+│
+├── routes.ts                 # Central route configuration
+└── root.tsx                  # App root (layout + providers)
+
 public/
 ```
 
@@ -144,4 +144,12 @@ Make sure to deploy the output of `npm run build`
 │   └── server/    # Server-side code
 ```
 
+📌 Future Implementations
+- Authentication & authorization context layer
+- HTML pages refactor into modularized react components
+- Backend API integration
+- Real-time updates via WebSockets
+- Testing (unit + integration)
 ---
+
+Building with ❤️ for clean code and great sushi.
