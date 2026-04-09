@@ -75,7 +75,7 @@ Admin Dashboard — Mursu
 
 .sidebar-toggle-btn:hover {
     color: var(--color-white);
-    background: rgba(255,255,255,0.06);
+    background: var(--color-light-gray);
 }
 
 .sidebar-toggle-btn__icon {
@@ -111,12 +111,12 @@ Admin Dashboard — Mursu
 
 .admin-nav__item:hover {
     color: var(--color-light-gray);
-    background: rgba(255,255,255,0.03);
+    background: var(--color-gray);
 }
 
 .admin-nav__item--active {
     color: var(--color-white);
-    background: rgba(255,255,255,0.06);
+    background: var(--color-black);
     border-left-color: var(--color-white);
 }
 
@@ -193,7 +193,7 @@ Admin Dashboard — Mursu
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    padding: 5px 10px;
+    padding: 6px 10px;
     white-space: nowrap;
     pointer-events: none;
     opacity: 0;
@@ -298,7 +298,7 @@ Admin Dashboard — Mursu
 
 .order-col__label {
     font-family: var(--font-button);
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -308,7 +308,7 @@ Admin Dashboard — Mursu
 
 .order-col__count {
     font-family: var(--font-button);
-    font-size: 9px;
+    font-size: 10px;
     color: var(--color-gray);
 }
 
@@ -327,7 +327,7 @@ Admin Dashboard — Mursu
     display: flex;
     flex-direction: column;
     gap: 8px;
-    background: rgba(255,255,255,0.02);
+    background: var(--color-black);
 }
 
 .order-card__top {
@@ -369,13 +369,13 @@ Admin Dashboard — Mursu
 
 .order-card__item span:first-child {
     font-family: var(--font-text);
-    font-size: 11px;
+    font-size: 12px;
     color: var(--color-light-gray);
 }
 
 .order-card__qty {
     font-family: var(--font-button);
-    font-size: 9px;
+    font-size: 10px;
     color: var(--color-gray);
     white-space: nowrap;
 }
@@ -428,7 +428,7 @@ Admin Dashboard — Mursu
 
     .admin-nav__item {
         justify-content: center;
-        padding: 11px 0;
+        padding: 12px 0;
         gap: 0;
     }
 
@@ -464,7 +464,7 @@ Admin Dashboard — Mursu
 
     #sidebar-toggle:not(:checked) ~ .admin-shell .admin-nav__item {
         justify-content: flex-start;
-        padding: 11px 14px;
+        padding: 12px 14px;
         gap: 10px;
     }
 
@@ -560,16 +560,11 @@ Admin Dashboard — Mursu
 
     .admin-bottom-nav__item:hover {
         color: var(--color-white);
-        background: rgba(255,255,255,0.04);
+        background: var(--color-gray);
     }
 
     .admin-bottom-nav__item--active {
         color: var(--color-white);
-    }
-
-    /* stack order board on mobile */
-    .order-board {
-        grid-template-columns: 1fr;
     }
 
     .order-col {
