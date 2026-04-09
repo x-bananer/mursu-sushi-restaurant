@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Menu</title>
+		<link rel="stylesheet" href="../../styles/index.css" />
+		<link rel="stylesheet" href="./menu.css" />
+	</head>
+	<body>
+		<header class="header">
+			<!-- user nav -->
+			<nav class="nav layout">
+				<div class="nav__left">
+					<a href="./menu.html" class="nav__link nav__link--active"
+						>MENU</a
+					>
+					<a href="../combo/combo.html" class="nav__link"
+						>BUILD A SET</a
+					>
+				</div>
+
+				<div class="nav__center">
+					<a href="../../index.html" class="nav__logo">
+						<span class="nav__logo-letter nav__logo-letter--1">
+							<span class="nav__logo-face">Mu</span>
+							<span class="nav__logo-back">ム</span>
+						</span>
+						<span class="nav__logo-letter nav__logo-letter--2">
+							<span class="nav__logo-face">r</span>
+							<span class="nav__logo-back">ル</span>
+						</span>
+						<span class="nav__logo-letter nav__logo-letter--3">
+							<span class="nav__logo-face">su</span>
+							<span class="nav__logo-back">ス</span>
+						</span>
+					</a>
+				</div>
+
+				<div class="nav__right">
+					<button class="nav__link" type="button">🇫🇮 FI</button>
+					<a
+						href="../user-profile/user-profile.html"
+						class="nav__link nav__icon-link"
+					>
+						<svg
+							viewBox="0 0 48 48"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<circle
+								cx="24"
+								cy="24"
+								r="18"
+								stroke="currentColor"
+								stroke-width="2"
+							/>
+							<circle
+								cx="24"
+								cy="18"
+								r="5"
+								stroke="currentColor"
+								stroke-width="2"
+							/>
+							<path
+								d="M14 34C14 29 18 26 24 26C30 26 34 29 34 34"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+							/>
+						</svg>
+					</a>
+
+					<a
+						href="../cart/cart.html"
+						class="nav__link nav__icon-link"
+					>
+						<svg
+							viewBox="0 0 48 48"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								d="M8 12H12L16 28H34L38 16H14"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+							<circle
+								cx="18"
+								cy="34"
+								r="2"
+								stroke="currentColor"
+								stroke-width="2"
+							/>
+							<circle
+								cx="32"
+								cy="34"
+								r="2"
+								stroke="currentColor"
+								stroke-width="2"
+							/>
+						</svg>
+					</a>
+				</div>
+			</nav>
+		</header>
+
+		<main class="page">
+			<div class="menu-page layout">
+				<section class="menu-page__hero">
+					<div class="menu-page__hero-main">
+						<h1 class="menu-page__title">Today&apos;s Special</h1>
+					</div>
+				</section>
+
+				<section class="menu-tabs">
+					<div class="menu-tabs__list">
+						<button
+							class="menu-tabs__button menu-tabs__button--active"
+							type="button"
+						>
+							Sashimi
+						</button>
+						<button class="menu-tabs__button" type="button">
+							Nigiri
+						</button>
+						<button class="menu-tabs__button" type="button">
+							Maki
+						</button>
+						<button class="menu-tabs__button" type="button">
+							Temaki
+						</button>
+						<button class="menu-tabs__button" type="button">
+							Small Plates
+						</button>
+						<button class="menu-tabs__button" type="button">
+							Sake
+						</button>
+					</div>
+				</section>
+
+				<section class="menu-grid">
+					<article class="menu-card menu-card--light">
+						<div class="menu-card__head">
+							<h2 class="menu-card__title">Sake Sashimi</h2>
+							<p class="menu-card__price">24.00</p>
+						</div>
+						<div class="menu-card__badges">
+							<span class="badge badge--dark">GF</span>
+							<span class="badge badge--dark">Lactose Free</span>
+						</div>
+						<p class="menu-card__description">
+							Atlantic salmon, precision sliced. High fat content,
+							buttery texture, served with fresh wasabi.
+						</p>
+						<div class="menu-card__footer">
+							<div class="btn-counter btn-counter--light">
+								<button class="btn-counter__btn" type="button">
+									−
+								</button>
+								<span class="btn-counter__value">1</span>
+								<button class="btn-counter__btn" type="button">
+									+
+								</button>
+							</div>
+							<button
+								class="btn btn--small btn--dark"
+								type="button"
+							>
+								Added
+							</button>
+						</div>
+					</article>
+
+					<article class="menu-card">
+						<div class="menu-card__head">
+							<h2 class="menu-card__title">Moguro</h2>
+							<p class="menu-card__price">24.00</p>
+						</div>
+						<div class="menu-card__badges">
+							<span class="badge">GF</span>
+							<span class="badge">Lactose Free</span>
+						</div>
+						<p class="menu-card__description">
+							Atlantic salmon, precision sliced. High fat content,
+							buttery texture, served with fresh wasabi.
+						</p>
+						<div class="menu-card__footer">
+							<div class="btn-counter">
+								<button class="btn-counter__btn" type="button">
+									−
+								</button>
+								<span class="btn-counter__value">1</span>
+								<button class="btn-counter__btn" type="button">
+									+
+								</button>
+							</div>
+							<button
+								class="btn btn--light btn--small"
+								type="button"
+							>
+								Added
+							</button>
+						</div>
+					</article>
+
+					<article class="menu-card menu-card--light">
+						<div class="menu-card__head">
+							<h2 class="menu-card__title">Hamachi</h2>
+							<p class="menu-card__price">26.00</p>
+						</div>
+						<div class="menu-card__badges">
+							<span class="badge badge--dark">GF</span>
+							<span class="badge badge--dark">Dairy Free</span>
+						</div>
+						<p class="menu-card__description">
+							Yellowtail sashimi. Delicate and sweet with a creamy
+							mouthfeel, accented by sliced serrano.
+						</p>
+						<div class="menu-card__footer menu-card__footer--end">
+							<button
+								class="btn btn--small btn--dark"
+								type="button"
+							>
+								+ Add
+							</button>
+						</div>
+					</article>
+
+					<article class="menu-card">
+						<div class="menu-card__head">
+							<h2 class="menu-card__title">Hotate</h2>
+							<p class="menu-card__price">22.00</p>
+						</div>
+						<div class="menu-card__badges">
+							<span class="badge">GF</span>
+							<span class="badge">Lactose Free</span>
+						</div>
+						<p class="menu-card__description">
+							Hokkaido scallop. Velvety, sweet, and plump.
+							Finished with a touch of yuzu zest and sea salt.
+						</p>
+						<div class="menu-card__footer menu-card__footer--end">
+							<button class="btn btn--small" type="button">
+								+ Add
+							</button>
+						</div>
+					</article>
+
+					<article class="menu-card menu-card--light">
+						<div class="menu-card__head">
+							<h2 class="menu-card__title">Yasai Mori</h2>
+							<p class="menu-card__price">18.00</p>
+						</div>
+						<div class="menu-card__badges">
+							<span class="badge badge--dark">Vegan</span>
+							<span class="badge badge--dark">Lactose Free</span>
+						</div>
+						<p class="menu-card__description">
+							Chef&apos;s vegetable selection. Seasonal pickled
+							and fresh mountain vegetables.
+						</p>
+						<div class="menu-card__footer menu-card__footer--end">
+							<button
+								class="btn btn--small btn--dark"
+								type="button"
+							>
+								+ Add
+							</button>
+						</div>
+					</article>
+
+					<article class="menu-card">
+						<div class="menu-card__head">
+							<h2 class="menu-card__title">Tako</h2>
+							<p class="menu-card__price">20.00</p>
+						</div>
+						<div class="menu-card__badges">
+							<span class="badge">GF</span>
+							<span class="badge">Dairy Free</span>
+						</div>
+						<p class="menu-card__description">
+							Poached octopus. Tender with a slight snap, served
+							with pickled cucumber and house ponzu.
+						</p>
+						<div class="menu-card__footer menu-card__footer--end">
+							<button class="btn btn--small" type="button">
+								+ Add
+							</button>
+						</div>
+					</article>
+				</section>
+			</div>
+		</main>
+
+		<nav class="bottom-nav">
+			<div class="bottom-nav__container layout">
+				<a href="./menu.html" class="bottom-nav__link">
+					<svg
+						viewBox="0 0 48 48"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							d="M10 38L30 10"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+						/>
+						<path
+							d="M18 38L38 10"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+						/>
+					</svg>
+				</a>
+				<a href="../combo/combo.html" class="bottom-nav__link">
+					<svg
+						viewBox="0 0 48 48"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<rect
+							x="6"
+							y="22"
+							width="36"
+							height="12"
+							rx="2"
+							stroke="currentColor"
+							stroke-width="2"
+						/>
+						<rect
+							x="10"
+							y="18"
+							width="6"
+							height="4"
+							rx="1"
+							stroke="currentColor"
+							stroke-width="2"
+						/>
+						<rect
+							x="20"
+							y="18"
+							width="6"
+							height="4"
+							rx="1"
+							stroke="currentColor"
+							stroke-width="2"
+						/>
+						<rect
+							x="30"
+							y="18"
+							width="6"
+							height="4"
+							rx="1"
+							stroke="currentColor"
+							stroke-width="2"
+						/>
+						<path
+							d="M32 10L42 20"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+						/>
+						<path
+							d="M28 10L38 20"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+						/>
+					</svg>
+				</a>
+				<a href="../../index.html" class="bottom-nav__link">
+					<svg
+						viewBox="0 0 48 48"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							d="M6 20L24 6L42 20"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						/>
+						<path
+							d="M10 20V38H20V28H28V38H38V20"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						/>
+					</svg>
+				</a>
+				<a
+					href="../user-profile/user-profile.html"
+					class="bottom-nav__link"
+				>
+					<svg
+						viewBox="0 0 48 48"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<circle
+							cx="24"
+							cy="24"
+							r="18"
+							stroke="currentColor"
+							stroke-width="2"
+						/>
+						<circle
+							cx="24"
+							cy="18"
+							r="5"
+							stroke="currentColor"
+							stroke-width="2"
+						/>
+						<path
+							d="M14 34C14 29 18 26 24 26C30 26 34 29 34 34"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+						/>
+					</svg>
+				</a>
+				<a href="../cart/cart.html" class="bottom-nav__link">
+					<svg
+						viewBox="0 0 48 48"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							d="M8 12H12L16 28H34L38 16H14"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						/>
+						<circle
+							cx="18"
+							cy="34"
+							r="2"
+							stroke="currentColor"
+							stroke-width="2"
+						/>
+						<circle
+							cx="32"
+							cy="34"
+							r="2"
+							stroke="currentColor"
+							stroke-width="2"
+						/>
+					</svg>
+				</a>
+			</div>
+		</nav>
+
+		<footer class="footer">
+			<div class="footer__content layout">
+				© 2026 MURSU. Sushi restaurant.
+			</div>
+		</footer>
+	</body>
+</html>
