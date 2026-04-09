@@ -280,9 +280,7 @@
 			<div class="order__hero">
 				<h1 class="order__title">Track Order</h1>
 				<div class="order__hero-right">
-					<button class="btn btn--light" type="button">
-						⏱ Preparing Now
-					</button>
+					<div class="status-badge"> ⏱ Preparing Now </div>
 				</div>
 			</div>
 
@@ -353,65 +351,28 @@
 					</details>
 
 					<!-- Plan Journey expandable/collapsible  -->
-					<details class="accordion">
-						<summary class="accordion__header">
-							<span class="accordion__title">Plan Journey</span>
-							<span class="accordion__icon">
-								<svg
-									viewBox="0 0 24 24"
-									fill="none"
-									width="14"
-									height="14"
-								>
-									<path
-										d="M6 9L12 15L18 9"
-										stroke="currentColor"
-										stroke-width="1.5"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-									/>
-								</svg>
-							</span>
-						</summary>
-						<div class="accordion__body accordion__body--journey">
-							<!-- MODE TABS -->
-							<div class="journey__modes" role="tablist">
-								<button
-									class="journey__mode-btn journey__mode-btn--active"
-									type="button"
-									aria-label="Walk"
-								>
-									<svg
-										class="journey__mode-icon"
-										viewBox="0 0 24 24"
-										fill="none"
-										xmlns="http://www.w3.org/2000/svg"
-									>
-										<circle
-											cx="12"
-											cy="4.5"
-											r="1.5"
-											fill="currentColor"
-										/>
-										<path
-											d="M9 9.5L7 17M9 9.5L12 12L15 10M9 9.5H15L14 7H10L9 9.5Z"
-											stroke="currentColor"
-											stroke-width="1.5"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-										/>
-										<path
-											d="M12 12L11 17M15 10L16.5 13L14.5 17"
-											stroke="currentColor"
-											stroke-width="1.5"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-										/>
-									</svg>
-									<span class="journey__mode-label"
-										>Walk</span
-									>
-								</button>
+                    <details class="accordion">
+                        <summary class="accordion__header">
+                            <span class="accordion__title">Plan Journey</span>
+                            <span class="accordion__icon">
+                                <svg viewBox="0 0 24 24" fill="none" width="14" height="14">
+                                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </summary>
+                        <div class="accordion__body accordion__body--journey journey">
+
+                            <!-- MODE TABS -->
+                            <div class="journey__modes" role="tablist">
+
+                                <button class="journey__mode-btn journey__mode-btn--active" type="button" aria-label="Walk">
+                                    <svg class="journey__mode-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="12" cy="4.5" r="1.5" fill="currentColor"/>
+                                        <path d="M9 9.5L7 17M9 9.5L12 12L15 10M9 9.5H15L14 7H10L9 9.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M12 12L11 17M15 10L16.5 13L14.5 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    <span class="journey__mode-label">Walk</span>
+                                </button>
 
 								<button
 									class="journey__mode-btn"
