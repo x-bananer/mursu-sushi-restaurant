@@ -111,6 +111,7 @@
 }
 
 .menu-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: 32px;
@@ -123,6 +124,23 @@
 .menu-card--light {
   background: var(--color-white);
   color: var(--color-black);
+}
+
+.menu-card:not(.menu-card--light) .btn--accent:hover {
+  border-color: var(--color-accent);
+}
+
+.menu-card__special-tag {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 4px 6px;
+  border-radius: 100px;
+  background: var(--color-accent);
+  color: var(--color-black);
+  font-family: var(--font-button);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 .menu-card__head {
@@ -142,7 +160,6 @@
 }
 
 .menu-card__price {
-  flex: 0 0 auto;
   font-family: var(--font-title);
   font-size: 26px;
   letter-spacing: 1px;
@@ -150,6 +167,7 @@
 
 .menu-card__badges {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 14px;
@@ -235,7 +253,7 @@
 
   .menu-grid {
     margin-top: 32px;
-     grid-template-columns: 1fr;
+    grid-template-columns: 1fr;
   }
 }
 
