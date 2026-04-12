@@ -212,7 +212,7 @@
   display: inline-flex;
   align-items: center;
   gap: 16px;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
 }
 
@@ -248,6 +248,9 @@
 
 /* badge.css */
 .badge {
+  display: flex;
+  align-items: center;
+  height: fit-content;
   padding: 2px 8px;
   border: 1px solid var(--color-dark-gray);
   font-size: 12px;
@@ -296,7 +299,7 @@
 .btn--small {
   min-height: 32px;
   padding: 8px 18px;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 2px;
 }
 
@@ -350,6 +353,18 @@
   border-color: var(--color-gray);
   background: var(--color-white);
   color: var(--color-black);
+}
+
+.btn--accent {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-black);
+}
+
+.btn--accent:hover {
+  border-color: var(--color-black);
+  background: var(--color-black);
+  color: var(--color-accent);
 }
 
 .btn--link {
