@@ -13,10 +13,21 @@
 
 .menu-page__title {
   font-family: var(--font-title);
-  font-size: 128px;
+  font-size: 96px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: 8px;
+  text-transform: uppercase;
+}
+
+.menu-page__subtitle {
+  max-width: 420px;
+  padding-top: 16px;
+  color: var(--color-gray);
+  font-family: var(--font-button);
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 
@@ -223,6 +234,10 @@
   .menu-page__title {
     font-size: 62px;
     padding-bottom: 0;
+  }
+
+  .menu-page__subtitle {
+    max-width: 100%;
   }
 
   .sticker {
