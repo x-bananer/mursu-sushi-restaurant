@@ -1,92 +1,49 @@
-# Mursu
+# Converting HTML Pages to React Components
 
-A full-stack sushi restaurant application featuring a custom combo builder, cart and payment flow, real-time order tracking, and an admin panel for live order management, menu editing, and daily specials configuration.
+### Use existing pages
 
-## Core requirements
-
-- [ ] Restaurant web application with an order / pickup system
-- [ ] Frontend implemented using JavaScript or React (ES6+)
-- [ ] Backend implemented using Node.js and Express
-- [ ] SQL database (no hardcoded data)
-- [ ] RESTful API with clear endpoint structure
-
-## Main functionality
-
-- [ ] Menu page with items loaded from a custom API (JSON)
-- [ ] Highlighting of today’s special or daily menu
-- [ ] Price display for all items
-- [ ] Support for dietary information (vegan, gluten-free, lactose-free)
-
-### User functionality:
-
-- [ ] Registration and login
-- [ ] Shopping cart
-- [ ] Order placement
-
-### Admin panel:
-
-- [ ] Admin authentication
-- [ ] Menu management (create / update / delete)
-- [ ] Order management and status updates
-
-### Additional features:
-
-- [ ] Custom combo builder
-- [ ] Real-time order tracking
-- [ ] User profile and reward system
-
-## Additional requirements
-
-- [ ] Responsive design (mobile and desktop)
-- [ ] Clean and structured UI/UX
-- [ ] Multilingual support (Finnish / English)
-- [ ] Integration with external API (e.g. HSL)
-- [ ] Subtle animations and polished interface
-
-## Quality requirements
-
-- [ ] Clear project structure (frontend / backend / database separation)
-- [ ] Proper API handling (loading / error states)
-- [ ] Valid HTML and CSS
-- [ ] Code documentation (JSDoc / ApiDoc)
-
-## Testing:
-
-- [ ] At least 5 integration tests
-- [ ] At least 5 end-to-end tests
-
-## Deployment
-
-- [ ] The application must be deployed online (e.g. Vercel, Azure, eCloud)
-
-## Getting Started
-
-- Install dependencies:
-  `npm install`
-
-- Start react vite dev server with hot reload:
-  `npm run dev`
-
-- Building for Production:
-  `npm run build`
-
-- Deploy using Docker or any Node.js hosting platform::
+Go to the project folder:
 
 ```
-docker build -t mursu-sushi-restaurant .
-docker run -p 3000:3000 mursu-sushi-restaurant
+frontend/src/customer
 ```
 
-## Core Project Structure
+Pre-created pages are already available there. Use them as a base.
+
+Example structure:
+```
+login/
+  Login.jsx
+  login.css
+```
+
+### Convert your HTML to JSX
+
+- take your html page
+- delete header, footer, bottom nav, meta, head, body (everything besides actual inner content you were writing there)
+- convert it to react code using an HTML → JSX converter https://transform.tools/html-to-jsx
+- paste the result into your .jsx file
 
 ```
-src/
- ├─ routes/           # All page route modules.
- ├─ components/       # Shared & page-specific UI components with it's css files.
- ├─ hooks/            # Custom hooks for local API/data state management - works as local controllers.
- ├─ context/          # Global state (Auth, Cart, Language...) - works as global controllers.
- ├─ services/         # API services (menu, orders, auth...).
- ├─ app.css           # For global styles (Tailwind or CSS).
- ├─ root.tsx          # App root layout component with React Router v7 setup.
- └─ routes.tsx        # Route configuration.
+export default function Login() {
+  return (
+    <>
+        // paste converted JSX here
+    </>
+  );
+};
 ```
+
+### Add your styles
+
+Use the .css file located next to your .jsx file. Add your styles directly into this file, it is already imported in the page component.
+
+---
+
+**Nota bene**
+
+Page components are already connected in the router. Do not rename files arbitrarily. If you rename a file, make sure to update all related imports accordingly.
+
+**Post scriptum**
+
+After doing this, you can start breaking your page into smaller reusable components. (If you’ve completed the React homework and understand what I mean :D)
