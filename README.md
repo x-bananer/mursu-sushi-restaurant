@@ -39,7 +39,6 @@ export default function Login() {
 Use the .css file located next to your .jsx file. Add your styles directly into this file, it is already imported in the page component.
 Remove `page` and `layout` classes from your pages wrappers. These wrappers are no longer needed because layout classes are now applied in the main layout component by default.
 
-You don’t need to wrap each page manually anymore — the layout is handled globally.
 ---
 
 **Nota bene**
