@@ -1,50 +1,92 @@
-# HTML Page Branch
+# Mursu
 
-[Mursu Sushi]([url](https://veiston.github.io/mursu-sushi.github.io/)) on GitHub Pages! 🍣
+A full-stack sushi restaurant application featuring a custom combo builder, cart and payment flow, real-time order tracking, and an admin panel for live order management, menu editing, and daily specials configuration.
 
-Please review this before you start:
-[https://docs.google.com/presentation/d/1c-o8IS2arje1uz3si3oiPXBjGbXN3iA02ymb2bt0fVI/edit?slide=id.p#slide=id.p](https://docs.google.com/presentation/d/1c-o8IS2arje1uz3si3oiPXBjGbXN3iA02ymb2bt0fVI/edit?slide=id.p#slide=id.p)
+## Core requirements
 
-The main idea is not perfect reuse, but splitting the page into independent components.
+- [ ] Restaurant web application with an order / pickup system
+- [ ] Frontend implemented using JavaScript or React (ES6+)
+- [ ] Backend implemented using Node.js and Express
+- [ ] SQL database (no hardcoded data)
+- [ ] RESTful API with clear endpoint structure
 
-The goal is to avoid one large, messy layout that will be hard to break into components later.
+## Main functionality
 
-### Project structure
+- [ ] Menu page with items loaded from a custom API (JSON)
+- [ ] Highlighting of today’s special or daily menu
+- [ ] Price display for all items
+- [ ] Support for dietary information (vegan, gluten-free, lactose-free)
 
-```text
-/styles
-  index.css                // all styles entry file
-  /base
-    base.css              // reset and base styles
-    fonts.css             // font imports
-    global.css            // layout helpers
-    variables.css         // colors, fonts, theme variables
-  /pages
-    shared.css            // shared reusable components styles
+### User functionality:
 
-/pages
-  shared.html             // reference page with reusable global components
+- [ ] Registration and login
+- [ ] Shopping cart
+- [ ] Order placement
+
+### Admin panel:
+
+- [ ] Admin authentication
+- [ ] Menu management (create / update / delete)
+- [ ] Order management and status updates
+
+### Additional features:
+
+- [ ] Custom combo builder
+- [ ] Real-time order tracking
+- [ ] User profile and reward system
+
+## Additional requirements
+
+- [ ] Responsive design (mobile and desktop)
+- [ ] Clean and structured UI/UX
+- [ ] Multilingual support (Finnish / English)
+- [ ] Integration with external API (e.g. HSL)
+- [ ] Subtle animations and polished interface
+
+## Quality requirements
+
+- [ ] Clear project structure (frontend / backend / database separation)
+- [ ] Proper API handling (loading / error states)
+- [ ] Valid HTML and CSS
+- [ ] Code documentation (JSDoc / ApiDoc)
+
+## Testing:
+
+- [ ] At least 5 integration tests
+- [ ] At least 5 end-to-end tests
+
+## Deployment
+
+- [ ] The application must be deployed online (e.g. Vercel, Azure, eCloud)
+
+## Getting Started
+
+- Install dependencies:
+  `npm install`
+
+- Start react vite dev server with hot reload:
+  `npm run dev`
+
+- Building for Production:
+  `npm run build`
+
+- Deploy using Docker or any Node.js hosting platform::
+
 ```
-### How to work
-
-- Each person builds their own page
-- Use shared components from `shared.html`
-- Structure your page with components, not as one large block
-- Connect shared styles through `styles/index.css`
-
-### Important
-
-- **Use variables from the variables file** instead of hardcoding colors and fonts, this will make it easier to add a light theme later
-- Reuse shared components such as header, button and footer
-- Keep class names consistent and follow BEM
-- Each component should be independent
-- Use `layout` and `page` classes where needed
-- Follow the spacing, sizes and styles from the design as closely as possible
-- But some Figma screens may look slightly inconsistent or use different colors. Keep things simple and avoid creating unnecessary variations
-
-### CSS Breakpoints
+docker build -t mursu-sushi-restaurant .
+docker run -p 3000:3000 mursu-sushi-restaurant
 ```
-@media (max-width: 480px) {}   /* mobile */
-@media (max-width: 768px) {}   /* tablet */
-@media (max-width: 1024px) {}  /* desktop (default styles) */
+
+## Core Project Structure
+
+```
+src/
+ ├─ routes/           # All page route modules.
+ ├─ components/       # Shared & page-specific UI components with it's css files.
+ ├─ hooks/            # Custom hooks for local API/data state management - works as local controllers.
+ ├─ context/          # Global state (Auth, Cart, Language...) - works as global controllers.
+ ├─ services/         # API services (menu, orders, auth...).
+ ├─ app.css           # For global styles (Tailwind or CSS).
+ ├─ root.tsx          # App root layout component with React Router v7 setup.
+ └─ routes.tsx        # Route configuration.
 ```

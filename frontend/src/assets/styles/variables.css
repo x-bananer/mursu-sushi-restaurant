@@ -1,0 +1,26 @@
+:root {
+  --font-title: "Amatic SC", cursive;
+  --font-text: "Space Grotesk", sans-serif;
+  --font-button: "Inter", sans-serif;
+  --color-black: #131313;
+  --color-white: #ffffff;
+  --color-accent: #fedee3;
+
+  /* use #131313  instead of #1b1b1b*/
+  --background-color: #131313;
+
+  --text-color: #ffffff;
+
+  --color-dark-gray: #474747;
+  --color-gray: #808080;
+  --color-light-gray: #c6c6c6;
+}
+
+.light-theme {
+  --background-color: #ffffff;
+  --text-color: #131313;
+
+  --color-dark-gray: #c6c6c6;
+  --color-gray: #808080;
+  --color-light-gray: #474747;
+}

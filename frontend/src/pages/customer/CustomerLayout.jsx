@@ -9,7 +9,7 @@ export default function CustomerLayout() {
         <Navbar />
       </header>
 
-      <main>
+      <main className="layout page">
         <Outlet />
       </main>
 

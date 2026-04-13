@@ -1,17 +1,19 @@
 import { BrowserRouter, Routes, Route } from "react-router";
 
-import CustomerLayout from "./pages/customer/layout";
-import AdminLayout from "./pages/adm/layout";
+// Layouts
+import CustomerLayout from "./pages/customer/CustomerLayout";
+import AdminLayout from "./pages/adm/AdminLayout";
 
-import Home from "./pages/customer/Home";
-import Menu from "./pages/customer/Menu";
-import ComboBuilder from "./pages/customer/ComboBuilder";
-import Cart from "./pages/customer/Cart";
-import OrderTracker from "./pages/customer/OrderTracker";
-import UserProfile from "./pages/customer/UserProfile";
+// Customer pages
+import Home from "./pages/customer/home/Home";
+import Menu from "./pages/customer/menu/Menu";
+import ComboBuilder from "./pages/customer/combo/ComboBuilder";
+import Cart from "./pages/customer/cart/Cart";
+import OrderTracker from "./pages/customer/order-tracker/OrderTracker";
+import UserProfile from "./pages/customer/user-profile/UserProfile";
+import Login from "./pages/customer/login/Login";
 
-import Login from "./pages/Login";
-
+// Admin pages
 import Admin from "./pages/adm/AdmPanel";
 
 function App() {
