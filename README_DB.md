@@ -1,5 +1,5 @@
 # SYSTEM OVERVIEW: DATABASE STRUCTURE AND RELATIONSHIPS
-![Database ERD](./MURSU ERD.png)
+![Database ERD](./MURSU%20ERD.png)
 
 This system represents a food ordering application where users can select dishes from a menu or create custom dishes using ingredients.
 
