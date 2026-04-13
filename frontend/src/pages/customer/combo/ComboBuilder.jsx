@@ -320,7 +320,7 @@ export default function ComboBuilder() {
             <span className="combo-summary__total-label">Total</span>
             <span className="combo-summary__total-value">50.00</span>
           </div>
-          <button className="btn btn--light combo-summary__button" type="button">
+          <button className="btn combo-summary__button" type="button">
             Add to cart
           </button>
         </div>
