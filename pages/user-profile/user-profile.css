@@ -19,8 +19,10 @@
 }
 
 .profile__avatar {
-  width: 64px;
-  height: 64px;
+  width: 80px;
+  height: 80px;
+  min-width: 80px;
+  min-height: 80px;
   display: grid;
   place-items: center;
 }
@@ -33,20 +35,22 @@
 
 .profile__name {
   font-family: var(--font-title);
-  font-size: 48px;
+  font-size: 96px;
   line-height: 1;
-  letter-spacing: 2px;
+  letter-spacing: 8px;
   text-transform: uppercase;
 }
 
 .profile__meta {
-  font-size: 12px;
-  letter-spacing: 2px;
+  padding-top: 16px;
+  color: var(--color-gray);
+  font-family: var(--font-button);
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--color-dark-gray);
 }
 
-/* STATS */
 .profile__stats {
   display: flex;
   align-items: flex-start;
@@ -54,98 +58,175 @@
   gap: 48px;
 }
 
-.profile__block {
+.profile__stats-side {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  align-items: stretch;
+  justify-content: flex-end;
+  gap: 24px;
+  flex: 1 1 auto;
 }
 
-/* LABEL */
 .profile__label {
   font-size: 14px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--color-dark-gray);
-}
-
-/* LOYALTY */
-.profile__stamps {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.profile__stamp {
-  width: 32px;
-  height: 32px;
-  border: 1px solid var(--color-dark-gray);
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-}
-
-.profile__stamp--active {
-  border-color: var(--text-color);
-}
-
-.profile__hint {
-  font-size: 12px;
-  color: var(--color-dark-gray);
-}
-
-/* REWARDS */
-.profile__rewards {
-  padding: 16px 24px;
-  background-color: var(--color-white);
-  min-width: 200px;
-}
-
-.profile__rewards-value {
-  font-family: var(--font-title);
-  font-size: 40px;
-  line-height: 1;
   color: var(--color-black);
 }
 
-/* MILESTONE */
-.profile__milestone {
-  padding-top: 24px;
-  border-top: 1px solid var(--color-dark-gray);
-}
-
-.profile__milestone-text {
-  font-family: var(--font-title);
-  font-size: 24px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--color-dark-gray);
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-  .profile__container {
-    gap: 32px;
-  }
-
+@media (max-width: 1024px) {
   .profile__header {
     align-items: flex-start;
     flex-direction: column;
-  }
-
-  .profile__name {
-    font-size: 32px;
   }
 
   .profile__stats {
     flex-direction: column;
     gap: 24px;
   }
+}
 
-  .profile__rewards {
+@media (max-width: 768px) {
+  .profile__container {
+    gap: 32px;
+  }
+
+  .profile__header {
+    align-items: stretch;
+  }
+
+  .profile__user {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .profile__avatar {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    min-height: 50px;
+  }
+
+  .profile__identity {
+    align-items: center;
+    text-align: center;
+  }
+
+  .profile__name {
+    font-size: 62px;
+  }
+
+  .profile__actions {
     width: 100%;
   }
 
-  .profile__milestone-text {
-    font-size: 18px;
+  .profile__actions .btn {
+    width: 100%;
+  }
+
+  .profile__stats-side {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+}
+
+/* profile-loyalty */
+.profile-loyalty {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 0 0 auto;
+}
+
+.profile-loyalty__label {
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-gray);
+}
+
+.profile-loyalty__stamps {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-loyalty__stamp {
+  width: 60px;
+  height: 60px;
+  border: 1px solid var(--color-gray);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 40px;
+  color: var(--color-light-gray);
+}
+
+.profile-loyalty__stamp--active {
+  border-color: var(--text-color);
+  background: var(--color-white);
+  color: var(--color-black);
+}
+
+.profile-loyalty__hint {
+  font-size: 18px;
+  color: var(--color-light-gray);
+}
+
+@media (max-width: 768px) {
+  .profile-loyalty__stamp {
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+  }
+
+  .profile-loyalty__hint {
+    font-size: 16px;
+  }
+}
+
+/* profile-stat-card */
+.profile-stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 24px;
+  max-width: 220px;
+  background: var(--color-black);
+  border: 1px solid var(--color-white);
+}
+
+.profile-stat-card--light {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-white);
+}
+
+.profile-stat-card__label {
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-gray);
+}
+
+.profile-stat-card__value {
+  font-family: var(--font-title);
+  font-size: 40px;
+  line-height: 1;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.profile-stat-card .profile-stat-card__value {
+  color: var(--color-white);
+}
+
+.profile-stat-card--light .profile-stat-card__value {
+  color: var(--color-black);
+}
+
+@media (max-width: 768px) {
+  .profile-stat-card {
+    width: 100%;
   }
 }
