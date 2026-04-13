@@ -101,7 +101,27 @@ Represents predefined menu items.
 
 ---
 
-## 5. CUSTOM ORDER ITEMS
+## 5. BADGES
+**Tables:** badges, dish_badges
+
+Represents labels assigned to dishes, such as vegan or gluten-free.
+
+**Example:**
+```json
+{
+  "id": 1,
+  "name": "vegan"
+}
+```
+
+**Relationship:**
+- One badge can be assigned to many dishes
+- One dish can have many badges
+- This is a many-to-many relationship implemented through the `dish_badges` table
+
+---
+
+## 6. CUSTOM ORDER ITEMS
 **Not a table** (stored in `order_items`)
 
 If a user creates their own custom order item:
@@ -126,7 +146,7 @@ If a user creates their own custom order item:
 
 ---
 
-## 6. INGREDIENTS
+## 7. INGREDIENTS
 **Table:** ingredients
 
 Represents basic food components for combos.
@@ -142,7 +162,7 @@ Represents basic food components for combos.
 
 ---
 
-## 7. ORDER ITEM INGREDIENTS
+## 8. ORDER ITEM INGREDIENTS
 **Table:** order_item_ingredients
 
 Connects custom order items with ingredients.
@@ -167,7 +187,7 @@ Connects custom order items with ingredients.
 
 ---
 
-## 8. FAVORITES
+## 9. FAVORITES
 **Table:** user_favorite_dishes
 
 Represents user's favorite dishes.
@@ -189,8 +209,8 @@ Represents user's favorite dishes.
 
 ---
 
-## 9. LOOKUP TABLES
-**Tables:** user_roles, order_statuses, delivery_types, order_item_types, badges
+## 10. LOOKUP TABLES
+**Tables:** user_roles, order_statuses, delivery_types, order_item_types
 
 Used to keep data consistent and controlled.
 
@@ -215,6 +235,26 @@ Order Item Type:
 ```json
 { "id": 1, "name": "dish" }
 ```
+
+Available values:
+
+Order Status:
+- pending
+- preparing
+- ready
+
+Delivery Type:
+- pickup
+- restaurant
+- delivery
+
+User Role:
+- user
+- admin
+
+Order Item Type:
+- dish
+- custom
 
 **Purpose:**
 - Avoid hardcoded strings
