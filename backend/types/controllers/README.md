@@ -12,8 +12,10 @@ Files in this folder:
 
 - `auth.type.js` — login, register, logout
 - `user.type.js` — get and update user
-- `menu.type.js` — menu and daily special
+- `dish.type.js` — dish list and daily special
 - `order.type.js` — create order and get order
+- `admin.type.js` — TODO
+- `cart.type.js` — TODO
 
 Simple rule:
 if a type belongs to a specific endpoint, it belongs here.
