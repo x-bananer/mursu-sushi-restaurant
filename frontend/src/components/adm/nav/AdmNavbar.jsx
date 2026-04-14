@@ -1,8 +1,9 @@
+import { Link } from "react-router";
 import NavBase from "../../shared/nav/NavBase";
 import { UserIcon } from "../..//shared/nav/icons";
 
 const Logo = () => (
-  <a href="/adm" className="nav__logo">
+  <Link to="/adm" className="nav__logo">
     <span className="nav__logo-letter nav__logo-letter--1">
       <span className="nav__logo-face">Mu</span>
       <span className="nav__logo-back">ム</span>
@@ -15,7 +16,7 @@ const Logo = () => (
       <span className="nav__logo-face">su</span>
       <span className="nav__logo-back">ス</span>
     </span>
-  </a>
+  </Link>
 );
 
 export default function AdminNavbar() {
