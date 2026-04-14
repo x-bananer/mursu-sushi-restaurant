@@ -40,7 +40,7 @@ Import the type with a `@typedef` import at the top of the repository file, then
 ```js
 // repositories/order/order.repository.js
 
-/** @typedef {import('../../types/db/order.db.js').Orders} Orders */
+/** @typedef {import('../../types/db/order.type.js').Orders} Orders */
 
 /**
  * @param {number} id
@@ -72,9 +72,9 @@ Services receive DB types from repositories and transform them before passing to
 ```js
 // services/order.service.js
 
-/** @typedef {import('../types/db/order.db.js').Orders}      Orders      */
-/** @typedef {import('../types/db/order.db.js').OrderItems}  OrderItems  */
-/** @typedef {import('../types/contracts/order.contract.js').OrderResponse} OrderResponse */
+/** @typedef {import('../types/db/order.type.js').Orders}      Orders      */
+/** @typedef {import('../types/db/order.type.js').OrderItems}  OrderItems  */
+/** @typedef {import('../types/controllers/order.type.js').OrderResponse} OrderResponse */
 
 /**
  * Transforms a raw Orders row into the response DTO.
@@ -89,7 +89,7 @@ function toOrderResponse(order, items) {
     is_paid:       order.is_paid,
     address:       order.address,
     notes:         order.notes,
-    created_at:    order.created_at.toISOString(),
+    created_at:    order.created_at.Date(),
     items:         items.map(toOrderItemResponse),
   };
 }
