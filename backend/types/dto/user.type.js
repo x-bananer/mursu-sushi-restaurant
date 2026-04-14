@@ -1,9 +1,8 @@
 /**
  * @typedef {Object} UserDTO
- * @property {number} id
+ * @property {number} id // from Users table
  * @property {string} name
  * @property {string} email
- * @property {number} role_id
  * @property {import('../common.type.js').UserRole} role
  * @property {string | null} avatar_url
  */

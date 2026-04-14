@@ -1,5 +1,6 @@
 /**
  * POST /auth/register
+ * Register a new user
  * Content-Type: multipart/form-data
  */
 
@@ -20,6 +21,7 @@
 
 /**
  * POST /auth/login
+ * Log in user and return tokens
  */
 
 /**
@@ -37,6 +39,7 @@
 
 /**
  * POST /auth/logout
+ * Log out user by refresh token
  */
 
 /**

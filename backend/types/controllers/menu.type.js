@@ -1,5 +1,6 @@
 /**
  * GET /menu
+ * Get menu dishes list
  */
 
 /**
@@ -13,6 +14,7 @@
 
 /**
  * GET /menu/daily-special
+ * Get current daily special dish
  */
 
 /**
