@@ -1,0 +1,22 @@
+{
+	"printWidth": 80,
+	"endOfLine": "lf",
+	"useTabs": true,
+	"tabWidth": 4,
+	"overrides": [
+		{
+			"files": "*.css",
+			"options": {
+				"useTabs": false,
+				"tabWidth": 2
+			}
+		},
+		{
+			"files": "*.html",
+			"options": {
+				"useTabs": true,
+				"tabWidth": 4
+			}
+		}
+	]
+}

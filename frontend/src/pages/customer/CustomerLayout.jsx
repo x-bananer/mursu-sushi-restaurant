@@ -4,18 +4,18 @@ import BottomNav from "../../components/customer/nav/BottomNav";
 import Footer from "../../components/shared/footer/Footer";
 
 export default function CustomerLayout() {
-  return (
-    <>
-      <header className="header">
-        <Navbar />
-      </header>
+	return (
+		<>
+			<header className="header">
+				<Navbar />
+			</header>
 
-      <main className="layout page">
-        <Outlet />
-      </main>
+			<main className="layout page">
+				<Outlet />
+			</main>
 
-      <Footer />
-      <BottomNav />
-    </>
-  );
+			<Footer />
+			<BottomNav />
+		</>
+	);
 }

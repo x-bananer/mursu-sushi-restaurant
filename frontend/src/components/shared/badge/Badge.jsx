@@ -4,19 +4,19 @@ import "./badge.css";
 // default: light badge
 // variant: "dark"
 export default function Badge({ variant, className = "", children, ...props }) {
-  let classes = "badge";
+	let classes = "badge";
 
-  if (variant) {
-    classes += ` badge--${variant}`;
-  }
+	if (variant) {
+		classes += ` badge--${variant}`;
+	}
 
-  if (className) {
-    classes += ` ${className}`;
-  }
+	if (className) {
+		classes += ` ${className}`;
+	}
 
-  return (
-    <span className={classes} {...props}>
-      {children}
-    </span>
-  );
+	return (
+		<span className={classes} {...props}>
+			{children}
+		</span>
+	);
 }
