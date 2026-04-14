@@ -4,6 +4,7 @@
  * @typedef {Object} Dishes
  * @property {number}  id
  * @property {string}  name
+ * @property {string}  description
  * @property {number}  price
  * @property {boolean} is_available
  * @property {Date}    created_at
