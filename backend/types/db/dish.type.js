@@ -11,12 +11,6 @@
  */
 
 /**
- * @typedef {Object} Badges
- * @property {number} id
- * @property {string} name
- */
-
-/**
  * @typedef {Object} DishBadges
  * @property {number} dish_id
  * @property {number} badge_id
@@ -33,7 +27,7 @@
  * @typedef {Object} DailySpecials
  * @property {number} id
  * @property {number} dish_id
- * @property {string} date        — 'YYYY-MM-DD'
+ * @property {string} valid_on        — 'YYYY-MM-DD'
  */
 
 /**

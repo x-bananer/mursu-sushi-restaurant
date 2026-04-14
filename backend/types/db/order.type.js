@@ -21,11 +21,11 @@
  * @property {string}      name
  * @property {number}      quantity
  * @property {number}      price
- * @property {number}      type_id
+ * @property {number}      item_type_id // 1 = regular dish, 2 = custom item
  */
 
 /**
- * @typedef {Object} OrderItemIngredients
+ * @typedef {Object} CustomOrderItemIngredients
  * @property {number} id
  * @property {number} order_item_id
  * @property {number} ingredient_id
@@ -46,7 +46,7 @@
  * @property {number} id
  * @property {number} order_id
  * @property {number} amount
- * @property {string} status
+ * @property {number} status_id
  * @property {string} provider
  * @property {string|null} provider_ref   ← MobilePay transaction reference
  * @property {Date}   created_at
