@@ -43,7 +43,7 @@
 
 /**
  * @typedef {Object} CustomOrderIngredientDTO
- * @property {number} id // from OrderItemIngredients table
+ * @property {number} id // from CustomOrderItemIngredients table
  * @property {import('./ingredient.type.js').IngredientDTO} ingredient
  * @property {number} quantity
  * @property {number} position
