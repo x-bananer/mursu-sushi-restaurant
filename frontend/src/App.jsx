@@ -17,29 +17,27 @@ import Login from "./pages/customer/login/Login";
 import Admin from "./pages/adm/AdmPanel";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
+	return (
+		<BrowserRouter>
+			<Routes>
+				{/* CUSTOMER ROUTES */}
+				<Route element={<CustomerLayout />}>
+					<Route path="/" element={<Home />} />
+					<Route path="/menu" element={<Menu />} />
+					<Route path="/combo-builder" element={<ComboBuilder />} />
+					<Route path="/cart" element={<Cart />} />
+					<Route path="/login" element={<Login />} />
+					<Route path="/order-tracker" element={<OrderTracker />} />
+					<Route path="/user-profile" element={<UserProfile />} />
+				</Route>
 
-        {/* CUSTOMER ROUTES */}
-        <Route element={<CustomerLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/menu" element={<Menu />} />
-          <Route path="/combo-builder" element={<ComboBuilder />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/order-tracker" element={<OrderTracker />} />
-          <Route path="/user-profile" element={<UserProfile />} />
-        </Route>
-
-        {/* ADMIN ROUTES */}
-        <Route element={<AdminLayout />}>
-          <Route path="/adm" element={<Admin />} />
-        </Route>
-
-      </Routes>
-    </BrowserRouter>
-  );
+				{/* ADMIN ROUTES */}
+				<Route element={<AdminLayout />}>
+					<Route path="/adm" element={<Admin />} />
+				</Route>
+			</Routes>
+		</BrowserRouter>
+	);
 }
 
 export default App;

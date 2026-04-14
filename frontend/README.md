@@ -1,11 +1,11 @@
 # 🍣 Mursu Sushi Restaurant - Frontend
 
-<p> A modern, responsive sushi restaurant web application built with Vite React + React Router in js mode. Designed to simulate a real-world restaurant system with a modular, scalable component architecture.<p>
----
+## <p> A modern, responsive sushi restaurant web application built with Vite React + React Router in js mode. Designed to simulate a real-world restaurant system with a modular, scalable component architecture.<p>
 
 ## Features
 
 ### Customer
+
 - Browse menu
 - Build custom combos
 - Cart & checkout
@@ -14,6 +14,7 @@
 - Responsive navigation (top + bottom nav)
 
 ### Admin
+
 - Dashboard
 - Live orders
 - Menu editor
@@ -23,6 +24,7 @@
 ---
 
 ## 🧱 Project Structure
+
 ```
 app/
 ├── styles/
@@ -114,11 +116,13 @@ npm run build
 ```
 
 📌 Future Implementations
+
 - Authentication & authorization context layer
 - HTML pages refactor into modularized react components
 - Backend API integration
 - Real-time updates via WebSockets
 - Testing (unit + integration)
+
 ---
 
 Building with ❤️ for clean code and great sushi.
