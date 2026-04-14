@@ -25,7 +25,7 @@
  * @property {string} [name]
  * @property {string} [email]
  * @property {string} [password]
- * @property {File | null} [file]
+ * @property {File | null} [photo]
  */
 
 /**

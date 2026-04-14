@@ -9,7 +9,7 @@
  * @property {string} name
  * @property {string} email
  * @property {string} password
- * @property {File | null} avatar
+ * @property {File | null} photo
  */
 
 /**
