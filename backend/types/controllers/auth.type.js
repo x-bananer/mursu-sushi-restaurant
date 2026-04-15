@@ -51,3 +51,36 @@
  * @typedef {Object} LogoutResponse
  * @property {boolean} success
  */
+
+/**
+ * GET /auth/user
+ * Get current authorized user by token
+ */
+
+/**
+ * @typedef {Object} AuthUserRequest
+ */
+
+/**
+ * @typedef {Object} AuthUserResponse
+ * @property {import('../dto/user.type.js').UserDTO} user
+ */
+
+/**
+ * PATCH /auth/user
+ * Update current authorized user by token
+ * Content-Type: multipart/form-data
+ */
+
+/**
+ * @typedef {Object} UpdateAuthUserRequest
+ * @property {string} [name]
+ * @property {string} [email]
+ * @property {string} [password]
+ * @property {File | null} [photo]
+ */
+
+/**
+ * @typedef {Object} UpdateAuthUserResponse
+ * @property {import('../dto/user.type.js').UserDTO} user
+ */
