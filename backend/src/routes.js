@@ -22,14 +22,14 @@ router.post('/auth/refresh',  authController.refresh);
 // DISHES (Menu) - Uses DishDTO (public)
 // ─────────────────────────────────────────────────────────────────────────────
 
-router.get('/dishes',          dishController.list);        // returns DishDTO[]
-router.get('/dishes/:id',      dishController.get);         // returns DishDTO
-router.get('/dishes/specials', dishController.specials);    // returns DishDTO[]
+router.get('/menu',          dishController.list);        // returns DishDTO[]
+router.get('/menu/:id',      dishController.get);         // returns DishDTO
+router.get('/menu/daily-special', dishController.specials);    // returns DishDTO[]
 
 /* FAVORITES (based on DishDTO.is_favorite) - here user must be authenticated*/
-router.post  ('/dishes/:id/favorite',   dishController.addFavorite);     // add authenticate later when implemented
-router.delete ('/dishes/:id/favorite',  dishController.removeFavorite);  // add authenticate later when implemented
-router.get    ('/dishes/favorites',     dishController.listFavorites);   // add authenticate later when implemented
+router.post  ('/menu/:id/favorite',   dishController.addFavorite);     // add authenticate later when implemented
+router.delete ('/menu/:id/favorite',  dishController.removeFavorite);  // add authenticate later when implemented
+router.get    ('/menu/favorites',     dishController.listFavorites);   // add authenticate later when implemented
 
 // ─────────────────────────────────────────────────────────────────────────────
 // COMBO BUILDER  (used by custom orders)
@@ -85,13 +85,13 @@ router.put('/admin/orders/:id/status', adminController.updateOrderStatus); // ad
 router.get('/admin/customers', adminController.listCustomers); // add authenticate and adminOnly later when implemented
 
 /* Dishes CRUD */
-router.post  ('/admin/dishes',     adminController.createDish); // add authenticate and adminOnly later when implemented
-router.put   ('/admin/dishes/:id', adminController.updateDish); // add authenticate and adminOnly later when implemented
-router.delete('/admin/dishes/:id', adminController.deleteDish); // add authenticate and adminOnly later when implemented
+router.post  ('/admin/menu',     adminController.createDish); // add authenticate and adminOnly later when implemented
+router.put   ('/admin/menu/:id', adminController.updateDish); // add authenticate and adminOnly later when implemented
+router.delete('/admin/menu/:id', adminController.deleteDish); // add authenticate and adminOnly later when implemented
 
 /* Specials */
-router.put   ('/admin/dishes/:id/special',   adminController.setDailySpecial); // add authenticate and adminOnly later when implemented
-router.delete('/admin/dishes/:id/special',   adminController.removeDailySpecial); // add authenticate and adminOnly later when implemented
+router.put   ('/admin/menu/:id/special',   adminController.setDailySpecial); // add authenticate and adminOnly later when implemented
+router.delete('/admin/menu/:id/special',   adminController.removeDailySpecial); // add authenticate and adminOnly later when implemented
 
 router.post  ('/admin/ingredients',     adminController.createIngredient); // add authenticate and adminOnly later when implemented
 router.put   ('/admin/ingredients/:id', adminController.updateIngredient); // add authenticate and adminOnly later when implemented
