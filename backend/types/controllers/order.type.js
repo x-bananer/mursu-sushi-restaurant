@@ -30,8 +30,22 @@
  */
 
 /**
+ * GET /orders
+ * Get current user's orders list
+ */
+
+/**
+ * @typedef {Object} OrdersRequest
+ */
+
+/**
+ * @typedef {Object} OrdersResponse
+ * @property {Array<import('../dto/order.type.js').OrderDTO>} orders
+ */
+
+/**
  * GET /orders/:id
- * Get one order by id
+ * Get one order by order id
  */
 
 /**
@@ -42,4 +56,35 @@
 /**
  * @typedef {Object} OrderResponse
  * @property {import('../dto/order.type.js').OrderDTO} order
+ */
+
+/**
+ * DELETE /orders/:id
+ * Delete one order by id
+ */
+
+/**
+ * @typedef {Object} DeleteOrderRequest
+ * @property {number} id
+ */
+
+/**
+ * @typedef {Object} DeleteOrderResponse
+ * @property {boolean} success
+ */
+
+/**
+ * GET /orders/:id/tracking
+ * Get order tracking data by id
+ */
+
+/**
+ * @typedef {Object} OrderTrackingRequest
+ * @property {number} id
+ */
+
+/**
+ * @typedef {Object} OrderTrackingResponse
+ * @property {import('../dto/order.type.js').OrderDTO} order
+ * @property {Array<import('../dto/order.type.js').OrderStatusHistoryDTO>} history
  */

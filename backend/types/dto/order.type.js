@@ -48,3 +48,11 @@
  * @property {number} quantity
  * @property {number} position
  */
+
+/**
+ * @typedef {Object} OrderStatusHistoryDTO
+ * @property {number} id // from OrderStatusHistory table
+ * @property {number} order_id
+ * @property {import('../common.type.js').OrderStatus} status
+ * @property {Date} changed_at
+ */
