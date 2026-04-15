@@ -5,7 +5,7 @@ import * as dishController  from './controllers/dish.controller.js';
 import * as orderController from './controllers/order.controller.js';
 import * as userController  from './controllers/user.controller.js';
 import * as adminController from './controllers/admin.controller.js';
-import * as cartController from './controllers/cart.controller.js';
+import * as cartController  from './controllers/cart.controller.js';
 
 const router = Router();
 
@@ -16,22 +16,26 @@ const router = Router();
 router.post('/auth/register', authController.register);
 router.post('/auth/login',    authController.login);
 router.post('/auth/logout',   authController.logout); // add authenticate later when implemented
-router.get ('/auth/user',       authController.me);     // add authenticate later when implemented
 router.post('/auth/refresh',  authController.refresh);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DISHES (Menu) - Uses DishDTO (public)
 // ─────────────────────────────────────────────────────────────────────────────
 
-router.get('/dishes',          dishController.list);        // returns DishDTO[]
-router.get('/dishes/:id',      dishController.get);         // returns DishDTO
+router.get('/dishes',               dishController.list);        // returns DishDTO[]
+router.get('/dishes/:id',           dishController.get);         // returns DishDTO
 router.get('/dishes/daily-special', dishController.specials);    // returns DishDTO
+
+/* FAVORITES (based on DishDTO.is_favorite) - here user must be authenticated*/
+router.post  ('/dishes/:dish_id/favorite',   dishController.addFavorite);     // add authenticate later when implemented
+router.delete ('/dishes/:dish_id/favorite',  dishController.removeFavorite);  // add authenticate later when implemented
+router.get    ('/dishes/favorites',          dishController.listFavorites);   // add authenticate later when implemented
 
 // ─────────────────────────────────────────────────────────────────────────────
 // COMBO BUILDER  (used by custom orders)
 // ─────────────────────────────────────────────────────────────────────────────
 
-router.get('/dishes/ingredients', dishController.listIngredients);          // returns IngredientDTO[]
+router.get('/dishes/ingredients',     dishController.listIngredients);          // returns IngredientDTO[]
 router.post('/dishes/combo/validate', dishController.validateCombo); // From engie
 router.post('/dishes/combo/price',    dishController.priceCombo);    // From engie
 
@@ -69,11 +73,6 @@ router.get ('/orders/:id/payments/status',            orderController.paymentSta
 
 router.get('/users/me', userController.getProfile);        // UserDTO // add authenticate later when implemented
 router.put('/users/me', userController.updateProfile);     // UserDTO // add authenticate later when implemented
-
-/* FAVORITES (based on DishDTO.is_favorite) - here user must be authenticated*/
-router.post  ('/users/favorites/:dish_id',   dishController.addFavorite);     // add authenticate later when implemented
-router.delete ('/users/favorites/:dish_id',  dishController.removeFavorite);  // add authenticate later when implemented
-router.get    ('/users/favorites',           dishController.listFavorites);   // add authenticate later when implemented
 
 // ─────────────────────────────────────────────────────────────
 // ADMIN (uses DTOs internally) (authenticated + admin role)
