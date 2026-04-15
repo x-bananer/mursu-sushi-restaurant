@@ -15,6 +15,7 @@ Files in this folder:
 - `dish.type.js` — menu dish list and daily special
 - `order.type.js` — create, list, get, delete, and track orders
 - `cart.type.js` — get cart, create cart, update cart
+- `payment.type.js` — create, confirm, and check payment status
 - `admin.type.js` — TODO
 
 Simple rule:

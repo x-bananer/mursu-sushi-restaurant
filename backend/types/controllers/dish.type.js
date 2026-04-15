@@ -1,19 +1,19 @@
 /**
- * GET /menu
+ * GET /dishes
  * Get menu dishes list
  */
 
 /**
- * @typedef {Object} MenuRequest
+ * @typedef {Object} DishesRequest
  */
 
 /**
- * @typedef {Object} MenuResponse
+ * @typedef {Object} DishesResponse
  * @property {Array<import('../dto/dish.type.js').DishDTO>} dishes
  */
 
 /**
- * GET /menu/daily-special
+ * GET /dishes/daily-special
  * Get current daily special dish
  */
 
@@ -24,4 +24,48 @@
 /**
  * @typedef {Object} DailySpecialResponse
  * @property {import('../dto/dish.type.js').DishDTO | null} dish
+ */
+
+/**
+ * POST /dishes/combo/validate
+ * Validate custom combo ingredients against combo builder rules
+ */
+
+/**
+ * @typedef {Object} ValidateComboRequest
+ * @property {Array<ComboIngredientData>} ingredients
+ */
+
+/**
+ * @typedef {Object} ValidateComboIngredientData
+ * @property {number} ingredient_id
+ * @property {number} quantity
+ * @property {number} position
+ */
+
+/**
+ * @typedef {Object} ValidateComboResponse
+ * @property {boolean} success
+ */
+
+/**
+ * POST /dishes/combo/price
+ * Calculate price for custom combo ingredients
+ */
+
+/**
+ * @typedef {Object} ComboPriceRequest
+ * @property {Array<ComboIngredientData>} ingredients
+ */
+
+/**
+ * @typedef {Object} ComboPriceIngredientData
+ * @property {number} ingredient_id
+ * @property {number} quantity
+ * @property {number} position
+ */
+
+/**
+ * @typedef {Object} ComboPriceResponse
+ * @property {number} price
  */
