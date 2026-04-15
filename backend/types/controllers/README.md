@@ -11,8 +11,8 @@ This is where we describe what an endpoint accepts and what it returns:
 Files in this folder:
 
 - `auth.type.js` — register, login, logout, get current user, update current user
-- `user.type.js` — manage favorite dishes for current user
-- `dish.type.js` — menu dish list and daily special
+- `user.type.js` — TODO
+- `dish.type.js` — menu dish list, daily special, combo actions, favorite dish actions
 - `order.type.js` — create, list, get, delete, and track orders + TODO payments
 - `cart.type.js` — get cart, create cart, update cart
 - `admin.type.js` — TODO

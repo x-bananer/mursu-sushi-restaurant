@@ -33,7 +33,7 @@
 
 /**
  * @typedef {Object} ValidateComboRequest
- * @property {Array<ComboIngredientData>} ingredients
+ * @property {Array<ValidateComboIngredientData>} ingredients
  */
 
 /**
@@ -55,7 +55,7 @@
 
 /**
  * @typedef {Object} ComboPriceRequest
- * @property {Array<ComboIngredientData>} ingredients
+ * @property {Array<ComboPriceIngredientData>} ingredients
  */
 
 /**
@@ -68,4 +68,34 @@
 /**
  * @typedef {Object} ComboPriceResponse
  * @property {number} price
+ */
+
+/**
+ * POST /dishes/:dish_id/favorite
+ * Add dish to current user favorites
+ */
+
+/**
+ * @typedef {Object} AddFavoriteDishRequest
+ * @property {number} dish_id
+ */
+
+/**
+ * @typedef {Object} AddFavoriteDishResponse
+ * @property {boolean} success
+ */
+
+/**
+ * DELETE /dishes/:dish_id/favorite
+ * Remove dish from current user favorites
+ */
+
+/**
+ * @typedef {Object} RemoveFavoriteDishRequest
+ * @property {number} dish_id
+ */
+
+/**
+ * @typedef {Object} RemoveFavoriteDishResponse
+ * @property {boolean} success
  */
