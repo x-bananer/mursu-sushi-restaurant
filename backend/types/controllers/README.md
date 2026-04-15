@@ -10,12 +10,12 @@ This is where we describe what an endpoint accepts and what it returns:
 
 Files in this folder:
 
-- `auth.type.js` — login, register, logout, get current user, update current user
-- `user.type.js` — manage favorite dishes
-- `dish.type.js` — dish list and daily special
+- `auth.type.js` — register, login, logout, get current user, update current user
+- `user.type.js` — manage favorite dishes for current user
+- `dish.type.js` — menu dish list and daily special
 - `order.type.js` — create order and get order
+- `cart.type.js` — get cart, create cart, update cart
 - `admin.type.js` — TODO
-- `cart.type.js` — TODO
 
 Simple rule:
 if a type belongs to a specific endpoint, it belongs here.

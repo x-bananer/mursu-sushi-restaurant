@@ -14,8 +14,8 @@ Files in this folder:
 - `ingredient.type.js` — ingredient data for custom items
 - `payment.type.js` — payment data for orders
 - `order.type.js` — full order data, including items and payment
+- `cart.type.js` — full cart data, including items and total price
 - `admin.type.js` — TODO
-- `cart.type.js` — TODO
 
 Simple rule:
 if a type describes data returned to the client, it belongs here.
