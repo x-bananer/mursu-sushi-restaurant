@@ -66,36 +66,3 @@
  * @typedef {Object} RefreshResponse
  * @property {string} access_token
  */
-
-/**
- * GET /auth/me
- * Get current authorized user by token
- */
-
-/**
- * @typedef {Object} AuthUserRequest
- */
-
-/**
- * @typedef {Object} AuthUserResponse
- * @property {import('../dto/user.type.js').UserDTO} user
- */
-
-/**
- * PATCH /auth/me
- * Update current authorized user by token
- * Content-Type: multipart/form-data
- */
-
-/**
- * @typedef {Object} UpdateAuthUserRequest
- * @property {string} [name]
- * @property {string} [email]
- * @property {string} [password]
- * @property {File | null} [photo]
- */
-
-/**
- * @typedef {Object} UpdateAuthUserResponse
- * @property {import('../dto/user.type.js').UserDTO} user
- */
