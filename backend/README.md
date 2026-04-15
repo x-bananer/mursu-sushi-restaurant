@@ -44,7 +44,7 @@ src/
  ├─ controllers/                        # Calls services, returns DTOs
  │   ├── dish.controller.js
  │   ├── order.controller.js
- │   ├── cart.controller.js        -> Waiting for decision about this one.
+ │   ├── cart.controller.js
  │   ├── user.controller.js
  │   ├── auth.controller.js
  │   └── admin.controller.js
