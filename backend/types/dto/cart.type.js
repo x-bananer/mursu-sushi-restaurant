@@ -35,7 +35,7 @@
 /**
  * @typedef {Object} CustomCartIngredientDTO
  * @property {number} id // from CartItemIngredients table
- * @property {import('./ingredient.type.js').IngredientDTO} ingredient
+ * @property {import('./dish.type.js').IngredientDTO} ingredient
  * @property {number} quantity
  * @property {number} position
  */

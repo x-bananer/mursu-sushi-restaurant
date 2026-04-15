@@ -10,9 +10,7 @@ It is not a copy of database tables. One DTO can combine data from multiple tabl
 Files in this folder:
 
 - `user.type.js` — user data for the client
-- `dish.type.js` — dish data for menu and related responses
-- `ingredient.type.js` — ingredient data for custom items
-- `payment.type.js` — payment data for orders
+- `dish.type.js` — dish and ingredient data for menu and combo-related responses
 - `order.type.js` — full order data, including items and payment
 - `cart.type.js` — full cart data, including items and total price
 - `admin.type.js` — TODO

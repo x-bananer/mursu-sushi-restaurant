@@ -9,3 +9,10 @@
  * @property {Array<import('../common.type.js').Badge>} badges // built from DishBadges table with Badge objects from Badges table
  * @property {boolean} is_favorite // based on UserFavoriteDishes table
  */
+
+/**
+ * @typedef {Object} IngredientDTO
+ * @property {number} id // from Ingredients table
+ * @property {string} name
+ * @property {number} price
+ */

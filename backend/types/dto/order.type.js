@@ -16,7 +16,7 @@
  * @property {Date} created_at
  * @property {Date} updated_at
  * @property {Array<DishOrderItemDTO | CustomOrderItemDTO>} order_items // from OrderItems table
- * @property {import('./payment.type.js').PaymentDTO | null} payment // from Payments table
+ * @property {OrderPaymentDTO | null} payment
  */
 
 /**
@@ -44,7 +44,7 @@
 /**
  * @typedef {Object} CustomOrderIngredientDTO
  * @property {number} id // from CustomOrderItemIngredients table
- * @property {import('./ingredient.type.js').IngredientDTO} ingredient
+ * @property {import('./dish.type.js').IngredientDTO} ingredient
  * @property {number} quantity
  * @property {number} position
  */
@@ -55,4 +55,15 @@
  * @property {number} order_id
  * @property {import('../common.type.js').OrderStatus} status
  * @property {Date} changed_at
+ */
+
+/**
+ * @typedef {Object} OrderPaymentDTO
+ * @property {number} id // from Payments table
+ * @property {number} order_id
+ * @property {number} amount
+ * @property {import('../common.type.js').PaymentStatus} status
+ * @property {string} provider
+ * @property {string | null} provider_ref
+ * @property {Date} created_at
  */

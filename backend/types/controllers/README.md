@@ -13,9 +13,8 @@ Files in this folder:
 - `auth.type.js` — register, login, logout, get current user, update current user
 - `user.type.js` — manage favorite dishes for current user
 - `dish.type.js` — menu dish list and daily special
-- `order.type.js` — create, list, get, delete, and track orders
+- `order.type.js` — create, list, get, delete, and track orders + TODO payments
 - `cart.type.js` — get cart, create cart, update cart
-- `payment.type.js` — create, confirm, and check payment status
 - `admin.type.js` — TODO
 
 Simple rule:
