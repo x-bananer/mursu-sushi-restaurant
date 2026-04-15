@@ -23,7 +23,7 @@ router.post('/auth/refresh',  authController.refresh);
 // ─────────────────────────────────────────────────────────────────────────────
 
 router.get('/dishes',               dishController.list);        // returns DishDTO[]
-router.get('/dishes/:id',           dishController.get);         // returns DishDTO
+router.get('/dishes/:dish_id',           dishController.get);         // returns DishDTO
 router.get('/dishes/daily-special', dishController.specials);    // returns DishDTO
 
 /* FAVORITES (based on DishDTO.is_favorite) - here user must be authenticated*/
