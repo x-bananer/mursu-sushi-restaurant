@@ -44,12 +44,12 @@ src/
  ├─ controllers/                        # Calls services, returns DTOs
  │   ├── dish.controller.js
  │   ├── order.controller.js
- │   ├── cart.controller.js        -> Waiting for decision about this one.
+ │   ├── cart.controller.js
  │   ├── user.controller.js
  │   ├── auth.controller.js
  │   └── admin.controller.js
  │
- ├─ model/
+ ├─ models/
  │   ├─ engine/                         # Pure domain/business rules (no DB)
  │   │   ├── ComboEngine.js             # Combo builder rules
  │   │   ├── PricingEngine.js           # Pricing, discounts, totals
@@ -121,13 +121,12 @@ HTTP Request
    ↓
 Middleware (Auth, Validation, Errors)
    ↓
-routes to Controllers (API Layer)
-   ↓
+routes.js to Controllers/ (API Layer - resquest/ response handlers)
+                 ↓
 Service Layer (Application Orchestration Logic)
    ↓                                  ↓
 Engine Layer (Domain Logic)   Repository Layer (Database)
-                                      ↓
-                                   Database
+
 ```
 
 ---
