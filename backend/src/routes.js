@@ -31,7 +31,7 @@ router.get('/dishes/daily-special', dishController.specials);    // returns Dish
 // COMBO BUILDER  (used by custom orders)
 // ─────────────────────────────────────────────────────────────────────────────
 
-router.get('/ingredients', dishController.listIngredients);          // returns IngredientDTO[]
+router.get('/dishes/ingredients', dishController.listIngredients);          // returns IngredientDTO[]
 router.post('/dishes/combo/validate', dishController.validateCombo); // From engie
 router.post('/dishes/combo/price',    dishController.priceCombo);    // From engie
 
@@ -69,10 +69,6 @@ router.get ('/orders/:id/payments/status',            orderController.paymentSta
 
 router.get('/users/me', userController.getProfile);        // UserDTO // add authenticate later when implemented
 router.put('/users/me', userController.updateProfile);     // UserDTO // add authenticate later when implemented
-
-/* Rewards system (based on DTO fields) */
-router.get('/users/me/rewards', userController.getRewards);   // add authenticate later when implemented
-router.get('/users/me/stamps',  userController.getStamps);    // add authenticate later when implemented
 
 /* FAVORITES (based on DishDTO.is_favorite) - here user must be authenticated*/
 router.post  ('/users/favorites/:dish_id',   dishController.addFavorite);     // add authenticate later when implemented
