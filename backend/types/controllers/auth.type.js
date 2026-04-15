@@ -53,6 +53,21 @@
  */
 
 /**
+ * POST /auth/refresh
+ * Refresh access token
+ */
+
+/**
+ * @typedef {Object} RefreshRequest
+ * @property {string} refresh_token
+ */
+
+/**
+ * @typedef {Object} RefreshResponse
+ * @property {string} access_token
+ */
+
+/**
  * GET /auth/me
  * Get current authorized user by token
  */
