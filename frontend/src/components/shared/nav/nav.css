@@ -234,7 +234,9 @@
   text-decoration: none;
   white-space: nowrap;
   border-left: 2px solid transparent;
-  transition: color 0.15s ease, background 0.15s ease;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
 }
 
 .admin-nav__item:hover {
@@ -265,7 +267,9 @@
   opacity: 1;
   max-width: 140px;
   overflow: hidden;
-  transition: opacity 0.2s ease, max-width 0.25s ease;
+  transition:
+    opacity 0.2s ease,
+    max-width 0.25s ease;
 }
 
 /* ── Collapsed state ─────────────────────────── */
@@ -328,7 +332,10 @@
   cursor: pointer;
   color: var(--color-gray);
   user-select: none;
-  transition: left 0.25s ease, color 0.15s ease, background 0.15s ease;
+  transition:
+    left 0.25s ease,
+    color 0.15s ease,
+    background 0.15s ease;
 }
 
 .sidebar-toggle-btn:hover {
@@ -376,7 +383,9 @@
     align-items: center;
     justify-content: center;
     color: var(--color-gray);
-    transition: color 0.15s ease, background 0.15s ease;
+    transition:
+      color 0.15s ease,
+      background 0.15s ease;
   }
 
   .admin-bottom-nav__item:hover {
