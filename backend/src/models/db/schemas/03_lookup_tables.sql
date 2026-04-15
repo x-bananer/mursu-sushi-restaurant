@@ -1,0 +1,52 @@
+-- ── USER ROLE ─────────────────────────────────────────────
+
+INSERT INTO user_role (id, type, name) VALUES
+(1, 'user',  'User'),
+(2, 'admin', 'Admin');
+
+
+-- ── ORDER STATUS ───────────────────────────────────────────
+
+INSERT INTO order_status (id, type, name) VALUES
+(1, 'pending',   'Pending'),
+(2, 'confirmed', 'Confirmed'),
+(3, 'preparing', 'Preparing'),
+(4, 'ready',     'Ready'),
+(5, 'delivered', 'Delivered'),
+(6, 'cancelled', 'Cancelled');
+
+
+-- ── DELIVERY TYPE ─────────────────────────────────────────
+
+INSERT INTO delivery_type (id, type, name) VALUES
+(1, 'pickup',     'Pickup'),
+(2, 'restaurant', 'Eat-in'),
+(3, 'delivery',   'Delivery');
+
+
+-- ── ORDER ITEM TYPE ───────────────────────────────────────
+
+INSERT INTO order_item_type (id, type, name) VALUES
+(1, 'dish',   'Menu Dish'),
+(2, 'custom', 'Custom Combo');
+
+
+-- ── PAYMENT STATUS ─────────────────────────────────────────
+
+INSERT INTO payment_status (id, type, name) VALUES
+(1, 'pending',   'Pending'),
+(2, 'completed', 'Completed'),
+(3, 'failed',    'Failed');
+
+
+-- ── BADGE (for dishes) ────────────────────────────────────
+
+INSERT INTO badge (id, name) VALUES
+(1, 'Vegan'),
+(2, 'Vegetarian'),
+(3, 'Gluten-Free'),
+(4, 'Dairy-Free'),
+(5, 'Spicy'),
+(6, 'Popular'),
+(7, 'New'),
+(8, 'Chef Special');
