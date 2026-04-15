@@ -53,7 +53,7 @@
  */
 
 /**
- * GET /auth/user
+ * GET /auth/me
  * Get current authorized user by token
  */
 
@@ -67,7 +67,7 @@
  */
 
 /**
- * PATCH /auth/user
+ * PATCH /auth/me
  * Update current authorized user by token
  * Content-Type: multipart/form-data
  */
