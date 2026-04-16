@@ -2,6 +2,7 @@ import { select } from '../../db.js';
 
 /**
  * @typedef {import("../../../../../types/db/order.type.js").Orders} Orders
+ * @typedef {import("../../../../../types/db/order.type.js").OrderItems} OrderItems
  */
 
 /**
@@ -22,3 +23,20 @@ export async function getOrderRow(orderId) {
   return /** @type {Orders | null} */ (rows[0] || null);
 }
 
+/**
+ * ORDER ITEMS ONLY
+ * @param {number} orderId
+ * @returns {Promise<OrderItems[]>}
+ */
+export async function getOrderItems(orderId) {
+  const rows = await select(
+    `
+    SELECT *
+    FROM order_items
+    WHERE order_id = ?
+    `,
+    [orderId]
+  );
+
+  return /** @type {OrderItems[]} */ (rows);
+}
