@@ -128,3 +128,16 @@ export function toOrderDTO(order, items, ingredients) {
 
   return dto;
 }
+
+/**
+ * @param {import('../../../types/db/order.type.js').Orders[]} rows
+ * @returns {{id:number,status_id:number,total_price:number,created_at:Date}[]}
+ */
+export function toOrderListDTO(rows) {
+  return rows.map((r) => ({
+    id: r.id,
+    status_id: r.status_id,
+    total_price: r.total_price,
+    created_at: r.created_at,
+  }));
+}
