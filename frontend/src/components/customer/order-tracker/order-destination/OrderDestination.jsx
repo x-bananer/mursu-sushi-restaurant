@@ -1,3 +1,5 @@
+import "./order-destination.css";
+
 export default function OrderDestination() {
     return (
         <div className="order__location">

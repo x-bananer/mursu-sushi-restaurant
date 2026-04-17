@@ -1,3 +1,5 @@
+import "./order-steps.css";
+
 export default function OrderSteps() {
 	return (
 		<details className="accordion" open>

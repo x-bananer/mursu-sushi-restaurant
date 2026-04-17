@@ -1,3 +1,5 @@
+import "./order-summary.css";
+
 export default function OrderSummary() {
 	return (
 		<div className="order__bottom">

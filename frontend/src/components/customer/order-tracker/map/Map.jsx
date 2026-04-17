@@ -1,3 +1,5 @@
+import "./map.css";
+
 export default function Map() {
     return (
         <div className="order__map">

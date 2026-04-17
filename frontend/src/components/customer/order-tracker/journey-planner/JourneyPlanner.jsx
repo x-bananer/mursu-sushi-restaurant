@@ -1,3 +1,5 @@
+import "./journey-planner.css";
+
 export default function JourneyPlanner() {
 	return (
 		<details className="accordion">
