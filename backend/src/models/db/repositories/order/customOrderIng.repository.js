@@ -13,12 +13,22 @@ export async function getOrderIngredients(orderId) {
   const rows = await select(
     `
     SELECT
-      custom_order_item_ingredients.*
+      custom_order_item_ingredients.id,
+      custom_order_item_ingredients.order_item_id,
+      custom_order_item_ingredients.quantity,
+      custom_order_item_ingredients.position,
+
+      ingredients.id    AS ingredient_id,
+      ingredients.name  AS ingredient_name,
+      ingredients.price AS ingredient_price
 
     FROM custom_order_item_ingredients
 
     JOIN order_items
       ON order_items.id = custom_order_item_ingredients.order_item_id
+
+    JOIN ingredients
+      ON ingredients.id = custom_order_item_ingredients.ingredient_id
 
     WHERE order_items.order_id = ?
     `,
@@ -36,12 +46,22 @@ export async function listIngredientsByOrderIds(orderIds) {
   const rows = await select(
     `
     SELECT
-      custom_order_item_ingredients.*
+      custom_order_item_ingredients.id,
+      custom_order_item_ingredients.order_item_id,
+      custom_order_item_ingredients.quantity,
+      custom_order_item_ingredients.position,
+
+      ingredients.id    AS ingredient_id,
+      ingredients.name  AS ingredient_name,
+      ingredients.price AS ingredient_price
 
     FROM custom_order_item_ingredients
 
     JOIN order_items
       ON order_items.id = custom_order_item_ingredients.order_item_id
+
+    JOIN ingredients
+      ON ingredients.id = custom_order_item_ingredients.ingredient_id
 
     WHERE order_items.order_id IN (${placeholders})
     `,
