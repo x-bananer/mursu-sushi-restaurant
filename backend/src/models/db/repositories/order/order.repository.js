@@ -5,16 +5,34 @@ import { select, execute } from '../../db.js';
  */
 
 /**
- * ORDERS TABLE ONLY
+ * ORDERS TABLE WITH JOINS FOR STATUS AND DELIVERY TYPE
  * @param {number} orderId
  * @returns {Promise<Orders|null>}
  */
 export async function getOrderRow(orderId) {
   const rows = await select(
     `
-    SELECT *
+    SELECT
+      orders.*,
+
+      -- status
+      order_statuses.id   AS status_id,
+      order_statuses.type AS status_type,
+      order_statuses.name AS status_name,
+
+      -- delivery type
+      delivery_types.id   AS delivery_type_id,
+      delivery_types.type AS delivery_type_type,
+      delivery_types.name AS delivery_type_name
+
     FROM orders
-    WHERE id = ?
+    JOIN order_statuses
+      ON order_statuses.id = orders.status_id
+
+    JOIN delivery_types
+      ON delivery_types.id = orders.delivery_type_id
+
+    WHERE orders.id = ?
     `,
     [orderId]
   );
@@ -23,15 +41,38 @@ export async function getOrderRow(orderId) {
 }
 
 /**
- * LIST ORDERS (RAW)
+ * LIST ORDERS WITH JOINS FOR STATUS AND DELIVERY TYPE
  * @returns {Promise<Orders[]>}
  */
 export async function listOrders() {
-  const rows = await select(`SELECT * FROM orders`);
+  const rows = await select(
+    `
+    SELECT
+      orders.*,
+
+      -- status
+      order_statuses.id   AS status_id,
+      order_statuses.type AS status_type,
+      order_statuses.name AS status_name,
+
+      -- delivery type
+      delivery_types.id   AS delivery_type_id,
+      delivery_types.type AS delivery_type_type,
+      delivery_types.name AS delivery_type_name
+
+    FROM orders
+    JOIN order_statuses
+      ON order_statuses.id = orders.status_id
+
+    JOIN delivery_types
+      ON delivery_types.id = orders.delivery_type_id
+
+    ORDER BY orders.id ASC
+    `
+  );
+
   return /** @type {Orders[]} */ (rows);
 }
-
-
 
 /**
  * CREATE ORDER
