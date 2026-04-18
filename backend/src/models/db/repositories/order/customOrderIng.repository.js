@@ -5,18 +5,22 @@ import { select } from '../../db.js';
  */
 
 /**
- * ORDER INGREDIENTS ONLY
+ * ORDER INGREDIENTS WITH ORDER ITEM FILTER
  * @param {number} orderId
  * @returns {Promise<CustomOrderItemIngredients[]>}
  */
 export async function getOrderIngredients(orderId) {
   const rows = await select(
     `
-    SELECT *
+    SELECT
+      custom_order_item_ingredients.*
+
     FROM custom_order_item_ingredients
-    WHERE order_item_id IN (
-      SELECT id FROM order_items WHERE order_id = ?
-    )
+
+    JOIN order_items
+      ON order_items.id = custom_order_item_ingredients.order_item_id
+
+    WHERE order_items.order_id = ?
     `,
     [orderId]
   );
@@ -24,11 +28,6 @@ export async function getOrderIngredients(orderId) {
   return /** @type {CustomOrderItemIngredients[]} */ (rows);
 }
 
-/**
- * LIST INGREDIENTS BY ORDER IDS
- * @param {number[]} orderIds
- * @returns {Promise<CustomOrderItemIngredients[]>}
- */
 export async function listIngredientsByOrderIds(orderIds) {
   if (!orderIds.length) return [];
 
@@ -36,11 +35,15 @@ export async function listIngredientsByOrderIds(orderIds) {
 
   const rows = await select(
     `
-    SELECT *
+    SELECT
+      custom_order_item_ingredients.*
+
     FROM custom_order_item_ingredients
-    WHERE order_item_id IN (
-      SELECT id FROM order_items WHERE order_id IN (${placeholders})
-    )
+
+    JOIN order_items
+      ON order_items.id = custom_order_item_ingredients.order_item_id
+
+    WHERE order_items.order_id IN (${placeholders})
     `,
     orderIds
   );
