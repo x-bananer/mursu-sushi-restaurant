@@ -180,18 +180,6 @@ Admin Dashboard — Mursu
     transition: left 0.25s ease;
 }
 
-.admin-sidebar--collapsed .admin-nav__item:hover::after {
-  opacity: 1;
-}
-
-
-@media (max-width: 768px) {
-  .header {
-    height: 48px;
-  }
-}
-*/
-
 /* ── main ────────────────────────────────────── */
 
 .admin-main {
