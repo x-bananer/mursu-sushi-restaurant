@@ -37,11 +37,6 @@ const bottomItems = [
 		icon: <CustomersIcon className="admin-nav__icon" />,
 	},
 	{
-		to: "/adm/reviews",
-		label: "Reviews",
-		icon: <ReviewsIcon className="admin-nav__icon" />,
-	},
-	{
 		to: "/adm/settings",
 		label: "Settings",
 		icon: <SettingsIcon className="admin-nav__icon" />,

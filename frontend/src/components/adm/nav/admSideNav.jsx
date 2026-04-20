@@ -7,64 +7,35 @@ import {
 	MenuEditorIcon,
 	DailySpecialIcon,
 	CustomersIcon,
-	ReviewsIcon,
 	SettingsIcon,
 } from "../../shared/nav/icons";
 
 const sidebarItems = [
-	{
-		to: "/adm",
-		label: "Dashboard",
-		icon: <DashboardIcon className="admin-nav__icon" />,
-	},
-	{
-		to: "/adm/orders",
-		label: "Live Orders",
-		icon: <LiveOrdersIcon className="admin-nav__icon" />,
-	},
-	{
-		to: "/adm/menu",
-		label: "Menu Editor",
-		icon: <MenuEditorIcon className="admin-nav__icon" />,
-	},
-	{
-		to: "/adm/special",
-		label: "Daily Special",
-		icon: <DailySpecialIcon className="admin-nav__icon" />,
-	},
-	{
-		to: "/adm/customers",
-		label: "Customers",
-		icon: <CustomersIcon className="admin-nav__icon" />,
-	},
-	{
-		to: "/adm/reviews",
-		label: "Reviews",
-		icon: <ReviewsIcon className="admin-nav__icon" />,
-	},
-	{
-		to: "/adm/settings",
-		label: "Settings",
-		icon: <SettingsIcon className="admin-nav__icon" />,
-	},
+	{ to: "/adm", label: "Dashboard", icon: <DashboardIcon className="admin-nav__icon" /> },
+	{ to: "/adm/orders", label: "Live Orders", icon: <LiveOrdersIcon className="admin-nav__icon" /> },
+	{ to: "/adm/menu", label: "Menu Editor", icon: <MenuEditorIcon className="admin-nav__icon" /> },
+	{ to: "/adm/special", label: "Daily Special", icon: <DailySpecialIcon className="admin-nav__icon" /> },
+	{ to: "/adm/customers", label: "Customers", icon: <CustomersIcon className="admin-nav__icon" /> },
+	{ to: "/adm/settings", label: "Settings", icon: <SettingsIcon className="admin-nav__icon" /> },
 ];
 
-export default function AdminSideNav() {
+export default function AdminSideNav({ collapsed, setCollapsed }) {
 	const location = useLocation();
-	const [collapsed, setCollapsed] = React.useState(false);
 
 	return (
 		<>
-			<aside
-				className={`admin-sidebar${collapsed ? " admin-sidebar--collapsed" : ""}`}
-			>
+			<aside className="admin-sidebar">
 				<nav className="admin-nav">
 					{sidebarItems.map((item) => (
 						<Link
 							key={item.to}
 							to={item.to}
 							data-tooltip={item.label}
-							className={`admin-nav__item${location.pathname === item.to ? " admin-nav__item--active" : ""}`}
+							className={`admin-nav__item${
+								location.pathname.startsWith(item.to)
+									? " admin-nav__item--active"
+									: ""
+							}`}
 						>
 							{item.icon}
 							<span className="admin-nav__label">
@@ -82,7 +53,9 @@ export default function AdminSideNav() {
 				style={{ left: collapsed ? "48px" : "180px" }}
 			>
 				<svg
-					className={`sidebar-toggle-btn__icon${collapsed ? " sidebar-toggle-btn__icon--flipped" : ""}`}
+					className={`sidebar-toggle-btn__icon${
+						collapsed ? " sidebar-toggle-btn__icon--flipped" : ""
+					}`}
 					viewBox="0 0 24 24"
 					fill="none"
 					width="12"
