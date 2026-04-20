@@ -15,6 +15,12 @@ import Login from "./pages/customer/login/Login";
 
 // Admin pages
 import Admin from "./pages/adm/AdmPanel";
+// Admin components navigation
+import Customers from "./components/adm/customers/Customers";
+import DailySpecial from "./components/adm/daily-special/DailySpecial";
+import LiveOrders from "./components/adm/live-orders/LiveOrders";
+import MenuEdit from "./components/adm/menu-edit/MenuEdit";
+import Settings from "./components/adm/settings/Settings";
 
 function App() {
 	return (
@@ -34,6 +40,11 @@ function App() {
 				{/* ADMIN ROUTES */}
 				<Route element={<AdminLayout />}>
 					<Route path="/adm" element={<Admin />} />
+					<Route path="/adm/customers" element={<Customers />} />
+					<Route path="/adm/special" element={<DailySpecial />} />
+					<Route path="/adm/orders" element={<LiveOrders />} />
+					<Route path="/adm/menu" element={<MenuEdit />} />
+					<Route path="/adm/settings" element={<Settings />} />
 				</Route>
 			</Routes>
 		</BrowserRouter>
