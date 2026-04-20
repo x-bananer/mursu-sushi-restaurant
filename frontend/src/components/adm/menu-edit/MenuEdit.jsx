@@ -1,3 +1,4 @@
+import './menu-edit.css';
 export default function MenuEdit() {
 	return (
         <section class="admin-main" id="page-menu-editor">

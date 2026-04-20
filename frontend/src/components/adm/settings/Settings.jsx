@@ -1,3 +1,5 @@
+import './settings.css';
+
 export default function Settings() {
 	return (
 		<section class="admin-main" id="page-settings">

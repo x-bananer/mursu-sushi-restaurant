@@ -1,4 +1,5 @@
 import LiveOrdersColumn from "./LiveOrdersColumn";
+import "./live-orders.css";
 
 export default function LiveOrders() {
 	const pendingOrders = [

@@ -1,3 +1,4 @@
+import './customers.css';
 export default function Customers() {
 	return (
                 <section class="admin-main" id="page-customers">

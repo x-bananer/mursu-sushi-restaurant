@@ -1,3 +1,5 @@
+import './daily-special.css';
+
 export default function DailySpecial() {
 	return (
 		<section class="admin-main" id="page-daily-special">

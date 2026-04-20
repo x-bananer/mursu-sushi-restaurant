@@ -1,3 +1,4 @@
+import './adm-status.css';
 export default function AdmStatus() {
 	return (
 		<div className="admin-stats">
