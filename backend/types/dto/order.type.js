@@ -8,8 +8,8 @@
  * @typedef {Object} OrderDTO
  * @property {number} id // from Orders table
  * @property {import('./user.type.js').UserDTO | null} user
- * @property {import('../common.type.js').OrderStatus} status
- * @property {import('../common.type.js').DeliveryType} delivery_type
+ * @property {import('../db/common.type.js').OrderStatus} status
+ * @property {import('../db/common.type.js').DeliveryType} delivery_type
  * @property {boolean} is_paid
  * @property {string} address
  * @property {number} total_price
@@ -26,7 +26,7 @@
  * @property {import('./dish.type.js').DishDTO} dish
  * @property {number} quantity
  * @property {number} price
- * @property {import('../common.type.js').OrderItemType} type
+ * @property {import('../db/common.type.js').OrderItemType} type
  * @property {null} ingredients
  */
 
@@ -37,7 +37,7 @@
  * @property {null} dish
  * @property {number} quantity
  * @property {number} price
- * @property {import('../common.type.js').OrderItemType} type
+ * @property {import('../db/common.type.js').OrderItemType} type
  * @property {Array<CustomOrderIngredientDTO>} ingredients
  */
 
@@ -53,7 +53,7 @@
  * @typedef {Object} OrderStatusHistoryDTO
  * @property {number} id // from OrderStatusHistory table
  * @property {number} order_id
- * @property {import('../common.type.js').OrderStatus} status
+ * @property {import('../db/common.type.js').OrderStatus} status
  * @property {Date} changed_at
  */
 
@@ -62,7 +62,7 @@
  * @property {number} id // from Payments table
  * @property {number} order_id
  * @property {number} amount
- * @property {import('../common.type.js').PaymentStatus} status
+ * @property {import('../db/common.type.js').PaymentStatus} status
  * @property {string} provider
  * @property {string | null} provider_ref
  * @property {Date} created_at

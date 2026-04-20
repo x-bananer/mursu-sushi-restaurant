@@ -2,21 +2,37 @@ import { select, execute } from '../../db.js';
 
 /**
  * @typedef {import("../../../../../types/db/order.type.js").Orders} Orders
- * @typedef {import("../../../../../types/db/order.type.js").OrderItems} OrderItems
- * @typedef {import("../../../../../types/db/order.type.js").CustomOrderItemIngredients} CustomOrderItemIngredients
  */
 
 /**
- * ORDERS TABLE ONLY
+ * ORDERS TABLE WITH JOINS FOR STATUS AND DELIVERY TYPE
  * @param {number} orderId
  * @returns {Promise<Orders|null>}
  */
 export async function getOrderRow(orderId) {
   const rows = await select(
     `
-    SELECT *
+    SELECT
+      orders.*,
+
+      -- status
+      order_status.id   AS status_id,
+      order_status.type AS status_type,
+      order_status.name AS status_name,
+
+      -- delivery type
+      delivery_type.id   AS delivery_type_id,
+      delivery_type.type AS delivery_type_type,
+      delivery_type.name AS delivery_type_name
+
     FROM orders
-    WHERE id = ?
+    JOIN order_status
+      ON order_status.id = orders.status_id
+
+    JOIN delivery_type
+      ON delivery_type.id = orders.delivery_type_id
+
+    WHERE orders.id = ?
     `,
     [orderId]
   );
@@ -25,49 +41,36 @@ export async function getOrderRow(orderId) {
 }
 
 /**
- * ORDER ITEMS ONLY
- * @param {number} orderId
- * @returns {Promise<OrderItems[]>}
- */
-export async function getOrderItems(orderId) {
-  const rows = await select(
-    `
-    SELECT *
-    FROM order_items
-    WHERE order_id = ?
-    `,
-    [orderId]
-  );
-
-  return /** @type {OrderItems[]} */ (rows);
-}
-
-/**
- * ORDER INGREDIENTS ONLY
- * @param {number} orderId
- * @returns {Promise<CustomOrderItemIngredients[]>}
- */
-export async function getOrderIngredients(orderId) {
-  const rows = await select(
-    `
-    SELECT *
-    FROM custom_order_item_ingredients
-    WHERE order_item_id IN (
-      SELECT id FROM order_items WHERE order_id = ?
-    )
-    `,
-    [orderId]
-  );
-
-  return /** @type {CustomOrderItemIngredients[]} */ (rows);
-}
-
-/**
- * LIST ORDERS (RAW)
+ * LIST ORDERS WITH JOINS FOR STATUS AND DELIVERY TYPE
  * @returns {Promise<Orders[]>}
  */
 export async function listOrders() {
-  const rows = await select(`SELECT * FROM orders`);
+  const rows = await select(
+    `
+    SELECT
+      orders.*,
+
+      -- status
+      order_status.id   AS status_id,
+      order_status.type AS status_type,
+      order_status.name AS status_name,
+
+      -- delivery type
+      delivery_type.id   AS delivery_type_id,
+      delivery_type.type AS delivery_type_type,
+      delivery_type.name AS delivery_type_name
+
+    FROM orders
+    JOIN order_status
+      ON order_status.id = orders.status_id
+
+    JOIN delivery_type
+      ON delivery_type.id = orders.delivery_type_id
+
+    ORDER BY orders.id ASC
+    `
+  );
+
   return /** @type {Orders[]} */ (rows);
 }
 

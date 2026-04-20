@@ -17,7 +17,9 @@ import * as orderService from '../services/order/order.service.js';
 
 /**
  * GET /orders
- * TODO: Verify if we need a new type for this endpoint, or if we can reuse OrderDTO with some fields omitted
+ * @param {import('express').Request<OrdersRequest>} req
+ * @param {import('express').Response<OrdersResponse>} res
+ * @param {import('express').NextFunction} next
  */
 export async function list(req, res, next) {
   try {
@@ -40,8 +42,6 @@ export async function get(req, res, next) {
 
     if (!order) {
 	  next(new Error('Order not found'));
-	  // TODO: Add error response for OrderResponse type
-	  // return res.status(404).json({ error: 'Order not found' });
 	  return res.status(404);
     }
 
@@ -97,8 +97,6 @@ export async function tracking(req, res, next) {
 
     if (!order) {
       next(new Error('Order not found'));
-	  // TODO: Add error response for OrderTrackingResponse type
-	  // return res.status(404).json({ error: 'Order not found' });
 	  return res.status(404);
     }
 
