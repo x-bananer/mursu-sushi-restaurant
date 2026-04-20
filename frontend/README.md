@@ -115,6 +115,59 @@ Create a production build:
 npm run build
 ```
 
+## Division of tasks
+Database is priority. Let's start with our repositories first.
+
+- Veikka
+Login page + Register page (auth + user endpoints + middleware)
+auth.service.js - service
+auth.controller.js - controller
+user.repository.js - repository
+auth.js - middleware
+adminOnly.js - middleware
+errorHandler.js - middleware
+user.service.js - service
+user.controller.js - controller
+
+- Unna
+Menu page + User profile page
+dish.service.js - service
+dish.controller.js - controller
+dish.repository.js - repository
+badge.repository.js - repository
+dishBadge.repository.js - repository
+dailySpecial.repository.js - repository
+favorite.repository.js - repository
+reward.repository.js - repository
+DietaryEngine.js - engine
+
+- Ksenia
+Cart + Combo builder
+cart.service.js - service
+payment.service.js - service
+cart.controller.js - controller
+cart.repository.js - repository
+cartItem.repository.js - repository
+orderItemIngredient.repository.js - repository
+ingredient.repository.js - repository
+payment.repository.js - repository
+ComboEngine.js - engine
+PricingEngine.js - engine
+
+- Luara
+Admin dashboard + Order tracker
+order.service.js - service
+tracking.service.js - service
+order.controller.js - controller
+admin.controller.js - controller
+order.repository.js - repository
+orderItem.repository.js - repository
+orderStatusHistory.repository.js - repository
+OrderEngine.js - engine
+hsl.service.js - integration
+
+This is a initial proposal if you think should be different please say it, we could also add more controllers to promote more division
+
 📌 Future Implementations
 
 - Authentication & authorization context layer
