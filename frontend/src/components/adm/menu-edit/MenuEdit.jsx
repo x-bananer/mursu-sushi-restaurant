@@ -1,6 +1,6 @@
 export default function MenuEdit() {
 	return (
-        <section class="admin-page" id="page-menu-editor">
+        <section class="admin-main" id="page-menu-editor">
                     <h2 class="admin-section-title">Menu Editor</h2>
                     <p class="admin-placeholder-text">Edit menu items, prices, and availability.</p>
                     <div class="admin-table">

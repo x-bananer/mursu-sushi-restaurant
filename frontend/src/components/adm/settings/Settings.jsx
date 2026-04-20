@@ -1,6 +1,6 @@
 export default function Settings() {
 	return (
-		<section class="admin-page" id="page-settings">
+		<section class="admin-main" id="page-settings">
                     <h2 class="admin-section-title">Settings</h2>
                     <p class="admin-placeholder-text">Restaurant configuration and preferences.</p>
                     <div class="admin-form-group">

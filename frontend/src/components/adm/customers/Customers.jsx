@@ -1,6 +1,6 @@
 export default function Customers() {
 	return (
-                <section class="admin-page" id="page-customers">
+                <section class="admin-main" id="page-customers">
                     <h2 class="admin-section-title">Customers</h2>
                     <p class="admin-placeholder-text">Registered customer accounts and order history.</p>
                     <div class="admin-table">

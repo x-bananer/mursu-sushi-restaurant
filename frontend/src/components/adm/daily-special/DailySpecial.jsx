@@ -1,6 +1,6 @@
 export default function DailySpecial() {
 	return (
-		<section class="admin-page" id="page-daily-special">
+		<section class="admin-main" id="page-daily-special">
                     <h2 class="admin-section-title">Daily Special</h2>
                     <p class="admin-placeholder-text">Set today's featured dish and promotional pricing.</p>
                     <div class="admin-form-group">
