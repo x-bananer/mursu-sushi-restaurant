@@ -21,7 +21,6 @@
  * @property {number}      id
  * @property {number}      cart_id
  * @property {number|null} dish_id       — null for custom combo items
- * @property {string}      name          — dish name or custom combo label
  * @property {number}      quantity
  * @property {number}      price         — unit price at time of adding to cart
  * @property {number}      item_type_id  — references order_item_types: 1=dish, 2=custom

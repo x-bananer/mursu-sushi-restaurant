@@ -106,7 +106,6 @@ CREATE TABLE cart_item (
   id INT AUTO_INCREMENT PRIMARY KEY,
   cart_id INT NOT NULL,
   dish_id INT NULL,
-  name VARCHAR(100) NOT NULL,
   quantity INT NOT NULL,
   price DECIMAL(10,2) NOT NULL,
   item_type_id INT NOT NULL,
