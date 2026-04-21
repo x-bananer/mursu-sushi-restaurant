@@ -62,10 +62,21 @@
  * @property {number} id
  */
 
+//Sucess and err msgs
 /**
- * @typedef {Object} OrderResponse
+ * @typedef {Object} ErrorResponse
+ * @property {string} message
+ */
+
+/**
+ * @typedef {Object} OrderSuccessResponse
  * @property {import('../dto/order.type.js').OrderDTO} order
  */
+
+/**
+ * @typedef {OrderSuccessResponse | ErrorResponse} OrderResponse
+ */
+
 
 /**
  * DELETE /orders/:id
@@ -97,3 +108,4 @@
  * @property {import('../dto/order.type.js').OrderDTO} order
  * @property {Array<import('../dto/order.type.js').OrderStatusHistoryDTO>} history
  */
+
