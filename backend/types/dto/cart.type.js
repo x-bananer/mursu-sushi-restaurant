@@ -25,7 +25,6 @@
  * @property {number} id // from CartItems table
  * @property {number} cart_id
  * @property {null} dish
- * @property {string} name
  * @property {number} quantity
  * @property {number} price
  * @property {import('../common.type.js').OrderItemType} type
