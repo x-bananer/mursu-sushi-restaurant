@@ -1,4 +1,4 @@
-import { select } from '../../db.js';
+import { select, execute } from '../../db.js';
 
 /**
  * @typedef {import("../../../../../types/db/order.type.js").OrderItems} OrderItems
@@ -84,4 +84,26 @@ export async function listItemsByOrderIds(orderIds) {
   );
 
   return /** @type {OrderItems[]} */ (rows);
+}
+
+/**
+ * Create a single order item (snapshot of cart item)
+ */
+export async function createOrderItem(data) {
+  const result = await execute(
+    `
+    INSERT INTO order_items
+      (order_id, dish_id, item_type_id, quantity, price)
+    VALUES (?, ?, ?, ?, ?)
+    `,
+    [
+      data.order_id,
+      data.dish_id,
+      data.item_type_id,
+      data.quantity,
+      data.price
+    ]
+  );
+
+  return result.insertId;
 }
