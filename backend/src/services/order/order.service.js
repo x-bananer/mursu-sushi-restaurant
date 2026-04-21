@@ -155,6 +155,15 @@ export async function getActiveOrderByUser(userId) {
 export async function createOrder(data) {
   const orderId = await orderRepo.createOrder(data);
 
+  for (const item of data.order_items) {
+  await orderItemsRepo.createOrderItem({
+    order_id: orderId,
+    dish_id: item.dish_id,
+    quantity: item.quantity,
+    price: item.price
+  });
+}
+
   await statusHistoryRepo.insertStatusChange(orderId, 1);
 
   const orderDTO = await getOrder(orderId);
