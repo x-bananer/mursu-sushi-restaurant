@@ -1,64 +1,65 @@
 import * as orderRepo from '../../models/db/repositories/order/order.repository.js';
 import * as orderIngRepo from '../../models/db/repositories/order/customOrderIng.repository.js';
 import * as orderItemsRepo from '../../models/db/repositories/order/orderItems.repository.js';
-import * as mapper from './order.mapper.js';
-import { OrderEngine } from '../../models/engine/order.engine.js';
 import * as statusHistoryRepo from '../../models/db/repositories/order/orderStatusHistory.repository.js';
 
+import * as mapper from './order.mapper.js';
+import * as tracker from './order.tracker.js';
+import { OrderEngine } from '../../models/engine/order.engine.js';
+
 /**
- * @typedef {import('../../../types/dto/order.type.js').OrderDTO} OrderDTO
- * @param {number} id
- * @returns {Promise<OrderDTO|null>}
-*/
-export async function getOrder(id) {
-  const order = await orderRepo.getOrderRow(id);
+ * =========================================================
+ * FULL ORDER (DTO)
+ * =========================================================
+ */
+
+/**
+ * PURPOSE:
+ * Build full OrderDTO for API
+ *
+ * USED BY:
+ * - GET /orders/:id
+ * - GET /orders/:id/tracking
+ */
+
+export async function getOrder(orderId) {
+  const order = await orderRepo.getOrderById(orderId);
   if (!order) return null;
 
-  const items = await orderItemsRepo.getOrderItems(id);
-  const ingredients = await orderIngRepo.getOrderIngredients(id);
-  let orderDTO = mapper.toOrderDTO(order, items, ingredients);
+  const items = await orderItemsRepo.getOrderItems(orderId);
+  const ingredients = await orderIngRepo.getOrderIngredients(orderId);
 
-  // TODO: Fetch user details once user repo is implemented
-  // orderDTO.user = await userRepo.getUser(order.user_id);
-
-  // TODO: Fetch payment details once payment repo is implemented
-  // orderDTO.payment = await paymentRepo.getByOrderId(order.id);
-
-  return orderDTO;
+  return mapper.toOrderDTO(order, items, ingredients);
 }
 
 /**
- * @typedef {import('../../../types/db/order.type.js').Orders[]} orders
- * @returns {Promise<OrderDTO[]|null>}
+ * =========================================================
+ * ADMIN / KITCHEN
+ * =========================================================
  */
-export async function listOrders() {
-  const orders = await orderRepo.listOrders();
-  const items = await orderItemsRepo.listItemsByOrderIds(orders.map(o => o.id));
-  const ingredients = await orderIngRepo.listIngredientsByOrderIds(orders.map(o => o.id));
+
+/**
+ * PURPOSE:
+ * Active orders for dashboard
+ *
+ * RETURNS: Full OrderDTO[] in a list fomat
+ */
+
+export async function getActiveOrders() {
+  const orders = await orderRepo.getActiveOrders();
+
+  const orderIds = orders.map(o => o.id);
+
+  const items = await orderItemsRepo.listItemsByOrderIds(orderIds);
+  const ingredients = await orderIngRepo.listIngredientsByOrderIds(orderIds);
 
   return mapper.toOrderListDTO(orders, items, ingredients);
 }
 
-// TODO: Input validation for createOrder data
-// TODO: More detailed error messages
-export async function createOrder(data) {
-  const id = await orderRepo.createOrder(data);
-
-  const order = await orderRepo.getOrderRow(id);
-  const items = await orderItemsRepo.getOrderItems(id);
-  const ingredients = await orderIngRepo.getOrderIngredients(id);
-
-  let orderDTO = mapper.toOrderDTO(order, items, ingredients);
-
-  // TODO: Fetch user details once user repo is implemented
-  // orderDTO.user = await userRepo.getUser(order.user_id);
-
-  // TODO: Fetch payment details once payment repo is implemented
-  // orderDTO.payment = await paymentRepo.getByOrderId(order.id);
-
-  return orderDTO;
-}
-
+/**
+ * PURPOSE:
+ * Update status + track history + emit event
+ */
 // Helper to convert status string - id for DB
 function mapStatusToId(status) {
   return {
@@ -72,49 +73,139 @@ function mapStatusToId(status) {
 }
 
 export async function updateOrderStatus(orderId, nextStatus) {
-  const order = await orderRepo.getOrderRow(orderId);
+  // 1. Get current order (DB layer)
+  const order = await orderRepo.getOrderById(orderId);
   if (!order) throw new Error('Order not found');
 
-  const items = await orderItemsRepo.getOrderItems(orderId);
-  const ingredients = await orderIngRepo.getOrderIngredients(orderId);
-
-  const dto = mapper.toOrderDTO(order, items, ingredients);
-
-  // 1. validate with engine
-  const validation = OrderEngine.validateTransition(dto, nextStatus);
+  // 2. Validate transition (DOMAIN layer)
+  const validation = OrderEngine.validateTransition(
+    {
+      status: order.status_type, // from JOIN
+      is_paid: order.is_paid
+    },
+    nextStatus
+  );
 
   if (!validation.valid) {
     throw new Error(validation.errors.join(', '));
   }
 
-  // 2. convert status string - id (DB requirement)
+  // 3. Convert to DB format
   const statusId = mapStatusToId(nextStatus);
 
-  // 3. update order
+  // 4. Persist
   await orderRepo.updateOrderStatus(orderId, statusId);
-
-  // 4. insert history (IMPORTANT)
   await statusHistoryRepo.insertStatusChange(orderId, statusId);
 
-  // 5. return updated order
-  const updatedOrder = await orderRepo.getOrderRow(orderId);
-  const updatedItems = await orderItemsRepo.getOrderItems(orderId);
-  const updatedIngredients = await orderIngRepo.getOrderIngredients(orderId);
+  // 5. Build DTO (API layer)
+  const updatedDTO = await getOrder(orderId);
 
-  let updatedDTO = mapper.toOrderDTO(updatedOrder, updatedItems, updatedIngredients);
+  // 6. Emit events
+  tracker.emit({
+    scope: 'admin',
+    type: 'order_status_updated',
+    payload: updatedDTO
+  });
 
-  // TODO: Fetch user details once user repo is implemented
-  // updatedDTO.user = await userRepo.getUser(updatedOrder.user_id);
-
-  // TODO: Fetch payment details once payment repo is implemented
-  // updatedDTO.payment = await paymentRepo.getByOrderId(updatedOrder.id);
+  tracker.emit({
+    scope: 'user',
+    orderId: updatedDTO.id,
+    userId: updatedDTO.user?.id || null,
+    type: 'order_status_updated',
+    payload: {
+      orderId: updatedDTO.id,
+      status: updatedDTO.status,
+      updatedAt: new Date()
+    }
+  });
 
   return updatedDTO;
 }
 
 /**
- * Payment logic to be added here for controlers to call
- * - initiatePayment(orderId, paymentDetails)
- * - confirmPayment(orderId, paymentConfirmation)
- * - paymentStatus(orderId)
+ * =========================================================
+ * USER
+ * =========================================================
  */
+
+/**
+ * PURPOSE:
+ * Get user's active order (DTO)
+ */
+export async function getActiveOrderByUser(userId) {
+  const order = await orderRepo.getActiveOrderByUser(userId);
+  if (!order) return null;
+
+  const items = await orderItemsRepo.getOrderItems(order.id);
+  const ingredients = await orderIngRepo.getOrderIngredients(order.id);
+
+  return mapper.toOrderDTO(order, items, ingredients);
+}
+
+/**
+ * =========================================================
+ * CREATION
+ * =========================================================
+ */
+
+/**
+ * PURPOSE:
+ * Create order + init history + emit event
+ */
+export async function createOrder(data) {
+  const orderId = await orderRepo.createOrder(data);
+
+  await statusHistoryRepo.insertStatusChange(orderId, 1);
+
+  const orderDTO = await getOrder(orderId);
+
+  // ADMIN EVENT (full)
+  tracker.emit({
+    scope: 'admin',
+    type: 'order_created',
+    payload: orderDTO
+  });
+
+  // USER EVENT (minimal)
+  tracker.emit({
+    scope: 'user',
+    userId: orderDTO.user?.id || orderDTO.user_id || null,
+  	orderId: orderDTO.id,
+    type: 'order_created',
+    payload: {
+      orderId: orderDTO.id,
+      status: orderDTO.status,
+      createdAt: orderDTO.created_at
+    }
+  });
+
+  return orderDTO;
+}
+
+/**
+ * =========================================================
+ * TRACKING
+ * =========================================================
+ */
+
+/**
+ * PURPOSE:
+ * Timeline data
+ */
+export async function getOrderHistory(orderId) {
+  return await statusHistoryRepo.getHistoryByOrderId(orderId);
+}
+
+/**
+ * =========================================================
+ * STATS
+ * =========================================================
+ */
+
+/**
+ * PURPOSE:
+ * Dashboard counts
+ */
+export async function getOrderCountsByStatus() {
+  return await orderRepo.getOrderCountsByStatus();
+}
