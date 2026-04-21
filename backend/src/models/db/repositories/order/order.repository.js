@@ -37,8 +37,14 @@ const ORDER_SELECT = `
 
 /**
  * Get single order by ID
+ * @typedef {Orders & {
+ *   status_type: string,
+ *   status_name: string,
+ *   delivery_type_type: string,
+ *   delivery_type_name: string
+ * }} OrderRow
  * @param {number} orderId
- * @returns {Promise<Orders|null>}
+ * @returns {Promise<OrderRow|null>}
  */
 export async function getOrderById(orderId) {
   const rows = await select(
@@ -50,7 +56,7 @@ export async function getOrderById(orderId) {
     [orderId]
   );
 
-  return /** @type {Orders | null} */ (rows[0] || null);
+  return /** @type {OrderRow | null} */ (rows[0] || null);
 }
 
 /**
