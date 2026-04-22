@@ -2,7 +2,6 @@ import { select, execute } from '../../db.js';
 
 /**
  * @typedef {import("../../../../../types/db/order.type.js").OrderStatusHistory} OrderStatusHistory
- * @typedef {import("mysql2").ResultSetHeader} ResultSetHeader
  */
 
 /**
@@ -28,7 +27,6 @@ export async function getHistoryByOrderId(orderId) {
  * Insert status change
  * @param {number} orderId
  * @param {number} statusId
- * @returns {Promise<ResultSetHeader>}
  */
 export async function insertStatusChange(orderId, statusId) {
   return await execute(

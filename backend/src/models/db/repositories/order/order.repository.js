@@ -5,77 +5,86 @@ import { select, execute } from '../../db.js';
  */
 
 /**
- * ORDERS TABLE WITH JOINS FOR STATUS AND DELIVERY TYPE
- * @param {number} orderId
- * @returns {Promise<Orders|null>}
+ * Base JOIN block for status and delivery type
  */
-export async function getOrderRow(orderId) {
+const ORDER_BASE = `
+  FROM orders
+
+  JOIN order_status
+    ON order_status.id = orders.status_id
+
+  JOIN delivery_type
+    ON delivery_type.id = orders.delivery_type_id
+`;
+
+/**
+ * Standard select (full order view)
+ */
+const ORDER_SELECT = `
+  SELECT
+    orders.*,
+
+    order_status.type AS status_type,
+    order_status.name AS status_name,
+
+    delivery_type.type AS delivery_type_type,
+    delivery_type.name AS delivery_type_name
+`;
+
+/**
+ * CORE
+ */
+
+/**
+ * Get single order by ID
+ * @typedef {Orders & {
+ *   status_type: string,
+ *   status_name: string,
+ *   delivery_type_type: string,
+ *   delivery_type_name: string
+ * }} OrderRow
+ * @param {number} orderId
+ * @returns {Promise<OrderRow|null>}
+ */
+export async function getOrderById(orderId) {
   const rows = await select(
     `
-    SELECT
-      orders.*,
-
-      -- status
-      order_status.id   AS status_id,
-      order_status.type AS status_type,
-      order_status.name AS status_name,
-
-      -- delivery type
-      delivery_type.id   AS delivery_type_id,
-      delivery_type.type AS delivery_type_type,
-      delivery_type.name AS delivery_type_name
-
-    FROM orders
-    JOIN order_status
-      ON order_status.id = orders.status_id
-
-    JOIN delivery_type
-      ON delivery_type.id = orders.delivery_type_id
-
+    ${ORDER_SELECT}
+    ${ORDER_BASE}
     WHERE orders.id = ?
     `,
     [orderId]
   );
 
-  return /** @type {Orders | null} */ (rows[0] || null);
+  return /** @type {OrderRow | null} */ (rows[0] || null);
 }
 
 /**
- * LIST ORDERS WITH JOINS FOR STATUS AND DELIVERY TYPE
+ * Get active orders (dashboard)
+ * pending, confirmed, preparing, ready
+ *
  * @returns {Promise<Orders[]>}
  */
-export async function listOrders() {
+
+export async function getActiveOrders() {
   const rows = await select(
     `
-    SELECT
-      orders.*,
-
-      -- status
-      order_status.id   AS status_id,
-      order_status.type AS status_type,
-      order_status.name AS status_name,
-
-      -- delivery type
-      delivery_type.id   AS delivery_type_id,
-      delivery_type.type AS delivery_type_type,
-      delivery_type.name AS delivery_type_name
-
-    FROM orders
-    JOIN order_status
-      ON order_status.id = orders.status_id
-
-    JOIN delivery_type
-      ON delivery_type.id = orders.delivery_type_id
-
-    ORDER BY orders.id ASC
+    ${ORDER_SELECT}
+    ${ORDER_BASE}
+    WHERE order_status.type IN ('pending', 'confirmed', 'preparing', 'ready')
+    ORDER BY orders.created_at ASC
     `
   );
 
-  return /** @type {Orders[]} */ (rows);
+  return /** @type {Orders[] | null} */ (rows);
 }
 
 /**
- * CREATE ORDER
+ * ADMIN / KITCHEN
+ */
+
+/**
+ * Create order (called by cart after payment)
  * @param {Object} data
  * @param {number} data.user_id
  * @param {number} data.delivery_type_id
@@ -88,7 +97,7 @@ export async function createOrder(data) {
     `
     INSERT INTO orders
     (user_id, status_id, delivery_type_id, is_paid, address, total_price)
-    VALUES (?, 1, ?, 0, ?, ?)
+    VALUES (?, 1, ?, 1, ?, ?)
     `,
     [data.user_id, data.delivery_type_id, data.address, data.total_price]
   );
@@ -97,7 +106,7 @@ export async function createOrder(data) {
 }
 
 /**
- * UPDATE ORDER STATUS
+ * Update order status
  * @param {number} orderId
  * @param {number} statusId
  * @returns {Promise<void>}
@@ -111,4 +120,48 @@ export async function updateOrderStatus(orderId, statusId) {
     `,
     [statusId, orderId]
   );
+}
+
+/**
+ * Order counts by status (dashboard stats)
+ */
+export async function getOrderCountsByStatus() {
+  return await select(
+    `
+    SELECT
+      order_status.type AS status,
+      COUNT(*) AS count
+
+    FROM orders
+
+    JOIN order_status
+      ON order_status.id = orders.status_id
+
+    GROUP BY order_status.type
+    `
+  );
+}
+
+/**
+ * USER LOOGED
+ */
+
+/**
+ * Get current active order for a user
+ * (latest active order)
+ */
+export async function getActiveOrderByUser(userId) {
+  const rows = await select(
+    `
+    ${ORDER_SELECT}
+    ${ORDER_BASE}
+    WHERE orders.user_id = ?
+      AND order_status.type IN ('pending', 'confirmed', 'preparing', 'ready')
+    ORDER BY orders.created_at DESC
+    LIMIT 1
+    `,
+    [userId]
+  );
+
+  return rows[0] || null;
 }

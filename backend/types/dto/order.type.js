@@ -16,7 +16,6 @@
  * @property {Date} created_at
  * @property {Date} updated_at
  * @property {Array<DishOrderItemDTO | CustomOrderItemDTO>} order_items // from OrderItems table
- * @property {OrderPaymentDTO | null} payment
  */
 
 /**

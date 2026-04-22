@@ -43,13 +43,19 @@ router.post('/dishes/combo/price',    dishController.priceCombo);    // From eng
 // ORDERS - Uses OrderDTO
 // ─────────────────────────────────────────────────────────────────────────────
 
+// SPECIFIC FIRST
+router.get('/orders/active', orderController.getActive);
+router.get('/orders/stats', orderController.stats);
+
+router.get('/orders/:id/tracking', orderController.tracking);
+router.patch('/orders/:id/status', orderController.updateStatus);
+router.get('/orders/:id/stream', orderController.streamOrders);
+// Then more general
 router.get   ('/orders',              orderController.list);      // OrderDTO[]
 router.get   ('/orders/:id',          orderController.get);       // OrderDTO
+router.get  ('/orders/active',        orderController.getActive);
+// remove create from front end access once car is implemented:
 router.post  ('/orders',              orderController.create);    // OrderDTO
-
-router.delete('/orders/:id',          orderController.cancelOrder);
-
-router.get   ('/orders/:id/tracking', orderController.tracking);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CART - Uses CartDTO

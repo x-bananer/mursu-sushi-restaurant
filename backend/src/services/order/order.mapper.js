@@ -82,7 +82,7 @@ export function toOrderDTO(order, items, ingredients) {
   return {
     id: order.id,
 
-    user: null, // TODO: user repo
+    user: order.user_id || null,
 
     status: {
       id: order.status_id,
@@ -105,8 +105,6 @@ export function toOrderDTO(order, items, ingredients) {
     order_items: items.map(item =>
       mapOrderItem(item, ingredientMap)
     ),
-
-    payment: null, // TODO: payment repo
   };
 }
 
@@ -133,5 +131,3 @@ export function toOrderListDTO(orders, items, ingredients) {
     return toOrderDTO(order, orderItems, ingredients);
   });
 }
-
-//Update to return full DTO instead of just patial. Let front end decide on what will take.
