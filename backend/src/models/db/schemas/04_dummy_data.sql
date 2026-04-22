@@ -109,14 +109,14 @@ VALUES
 -- ─────────────────────────────────────────────
 
 -- regular dish
-INSERT INTO cart_item (id, cart_id, dish_id, name, quantity, price, item_type_id)
+INSERT INTO cart_item (id, cart_id, dish_id, quantity, price, item_type_id)
 VALUES
-(1, 1, 1, 'Sake Sashimi', 2, 24.00, 1);
+(1, 1, 1, 2, 24.00, 1);
 
 -- custom combo
-INSERT INTO cart_item (id, cart_id, dish_id, name, quantity, price, item_type_id)
+INSERT INTO cart_item (id, cart_id, dish_id, quantity, price, item_type_id)
 VALUES
-(2, 1, NULL, 'Custom Vegan Bowl', 1, 50.00, 2);
+(2, 1, NULL, 1, 50.00, 2);
 
 
 -- ─────────────────────────────────────────────
