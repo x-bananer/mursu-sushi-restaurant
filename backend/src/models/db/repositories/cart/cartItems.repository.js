@@ -10,16 +10,16 @@ import { select, execute } from '../../db.js';
  * @returns {Promise<number>}
  */
 export const createCartItem = async ({ cart_id, dish_id, quantity, price, item_type_id }) => {
-  const result = await execute(
-    `
+	const result = await execute(
+		`
     INSERT INTO cart_item
     (cart_id, dish_id, quantity, price, item_type_id)
     VALUES (?, ?, ?, ?, ?)
     `,
-    [cart_id, dish_id, quantity, price, item_type_id]
-  );
+		[cart_id, dish_id, quantity, price, item_type_id]
+	);
 
-  return result.insertId;
+	return result.insertId;
 }
 
 /**
@@ -27,9 +27,9 @@ export const createCartItem = async ({ cart_id, dish_id, quantity, price, item_t
  * @param {number} cartId
  * @returns {Promise<CartItem[]>}
  */
-export const getCartItemRowsByCartId = async (cartId) => {
-  const rows = await select(
-    `
+export const getCartItemsByCartId = async (cartId) => {
+	const rows = await select(
+		`
     SELECT
       cart_item.*,
       dishes.name AS dish_name,
@@ -43,10 +43,29 @@ export const getCartItemRowsByCartId = async (cartId) => {
     WHERE cart_id = ?
     ORDER BY id ASC
     `,
-    [cartId]
-  );
+		[cartId]
+	);
 
-  return /** @type {CartItem[]} */ (rows);
+	return /** @type {CartItem[]} */ (rows);
+}
+
+/**
+ * GET DISH BY ID
+ * @param {number} dishId
+ * @returns {Promise<any|null>}
+ */
+export const getDishById = async (dishId) => {
+	const rows = await select(
+		`
+    SELECT *
+    FROM dishes
+    WHERE id = ?
+    LIMIT 1
+    `,
+		[dishId]
+	);
+
+	return rows[0] ?? null;
 }
 
 /**
@@ -55,14 +74,14 @@ export const getCartItemRowsByCartId = async (cartId) => {
  * @returns {Promise<void>}
  */
 export const updateCartItem = async ({ id, dish_id, quantity, price, item_type_id }) => {
-  await execute(
-    `
+	await execute(
+		`
     UPDATE cart_item
     SET dish_id = ?, quantity = ?, price = ?, item_type_id = ?
     WHERE id = ?
     `,
-    [dish_id, quantity, price, item_type_id, id]
-  );
+		[dish_id, quantity, price, item_type_id, id]
+	);
 }
 
 /**
@@ -71,11 +90,26 @@ export const updateCartItem = async ({ id, dish_id, quantity, price, item_type_i
  * @returns {Promise<void>}
  */
 export const deleteCartItem = async (cartItemId) => {
-  await execute(
-    `
+	await execute(
+		`
     DELETE FROM cart_item
     WHERE id = ?
     `,
-    [cartItemId]
-  );
+		[cartItemId]
+	);
+}
+
+/**
+ * DELETE CART ITEMS BY CART ID
+ * @param {number} cartId
+ * @returns {Promise<void>}
+ */
+export const deleteCartItemsByCartId = async (cartId) => {
+	await execute(
+		`
+    DELETE FROM cart_item
+    WHERE cart_id = ?
+    `,
+		[cartId]
+	);
 }
