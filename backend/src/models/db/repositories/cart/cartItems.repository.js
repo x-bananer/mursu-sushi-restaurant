@@ -30,8 +30,16 @@ export const createCartItem = async ({ cart_id, dish_id, quantity, price, item_t
 export const getCartItemRowsByCartId = async (cartId) => {
   const rows = await select(
     `
-    SELECT *
+    SELECT
+      cart_item.*,
+      dishes.name AS dish_name,
+      dishes.description AS dish_description,
+      dishes.price AS dish_price,
+      dishes.is_available AS dish_is_available,
+      dishes.created_at AS dish_created_at
     FROM cart_item
+    LEFT JOIN dishes
+      ON dishes.id = cart_item.dish_id
     WHERE cart_id = ?
     ORDER BY id ASC
     `,

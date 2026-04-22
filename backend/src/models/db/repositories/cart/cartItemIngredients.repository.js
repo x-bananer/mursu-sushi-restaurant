@@ -30,8 +30,13 @@ export const createCartItemIngredient = async ({ cart_item_id, ingredient_id, qu
 export const getCartItemIngredientRowsByCartItemId = async (cartItemId) => {
   const rows = await select(
     `
-    SELECT *
+    SELECT
+      cart_item_ingredient.*,
+      ingredients.name AS ingredient_name,
+      ingredients.price AS ingredient_price
     FROM cart_item_ingredient
+    LEFT JOIN ingredients
+      ON ingredients.id = cart_item_ingredient.ingredient_id
     WHERE cart_item_id = ?
     ORDER BY position ASC
     `,
