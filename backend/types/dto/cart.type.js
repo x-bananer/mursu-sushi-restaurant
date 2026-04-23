@@ -1,7 +1,7 @@
 /**
  * @typedef {Object} CartDTO
  * @property {number} id // from Carts table
- * @property {import('./user.type.js').UserDTO | null} user
+ * @property {number | null} user_id
  * @property {string | null} session_id
  * @property {number} total_price
  * @property {Date} created_at
@@ -16,7 +16,7 @@
  * @property {import('./dish.type.js').DishDTO} dish
  * @property {number} quantity
  * @property {number} price
- * @property {import('../common.type.js').OrderItemType} type
+ * @property {import('../db/common.type.js').OrderItemType} type
  * @property {null} ingredients
  */
 
@@ -25,10 +25,9 @@
  * @property {number} id // from CartItems table
  * @property {number} cart_id
  * @property {null} dish
- * @property {string} name
  * @property {number} quantity
  * @property {number} price
- * @property {import('../common.type.js').OrderItemType} type
+ * @property {import('../db/common.type.js').OrderItemType} type
  * @property {Array<CustomCartIngredientDTO>} ingredients
  */
 
