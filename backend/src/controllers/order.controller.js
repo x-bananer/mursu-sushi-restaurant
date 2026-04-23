@@ -92,30 +92,58 @@ export async function get(req, res, next) {
  * PATCH /orders/:id/status
  *
  * PURPOSE:
- * Update order status (kitchen workflow)
+ * Update the status of an order as it moves through the lifecycle
+ * (e.g. pending → preparing → ready → delivered).
  *
- * WHY:
- * Moves order through lifecycle:
- * pending -> preparing -> ready -> etc.
+ * WHO USES THIS:
+ * - Kitchen dashboard
+ * - Admin panel
+ * - Order tracking system
  *
- * DATA IN:
- * - statusId (new status)
+ * WHY THIS EXISTS:
+ * Orders are state machines. Status changes must be controlled,
+ * validated, and persisted in a consistent way.
  *
- * SIDE EFFECT:
- * - updates order.status_id
- * - inserts status history (timeline)
+ * INPUT:
+ * - params:
+ *   - id: number (order ID)
+ *
+ * - body:
+ *   - status: string
+ *     (e.g. "pending", "preparing", "ready", "delivered", "cancelled")
+ *
+ * VALIDATION:
+ * - orderId must be a valid number
+ * - status must be a valid transition defined in OrderEngine
+ *
+ * SIDE EFFECTS (handled in service):
+ * - Updates orders.status_id
+ * - Inserts entry into order_status_history
+ * - Emits real-time events (admin + user scopes)
+ *
+ * RESPONSE:
+ * - success: boolean
+ * - order: updated OrderDTO (current state of the order)
  */
 export async function updateStatus(req, res, next) {
   try {
     const orderId = Number(req.params.id);
-    const { statusId } = req.body;
-	if (Number.isNaN(orderId)) {
+    const { status } = req.body;
+
+    if (Number.isNaN(orderId)) {
       return res.status(400).json({ message: 'Invalid order id' });
     }
 
-    await orderService.updateOrderStatus(orderId, statusId);
+    if (!status) {
+      return res.status(400).json({ message: 'Missing status' });
+    }
 
-    res.json({ success: true });
+    const updatedOrder = await orderService.updateOrderStatus(orderId, status);
+
+    res.json({
+      success: true,
+      order: updatedOrder
+    });
   } catch (err) {
     next(err);
   }
@@ -221,6 +249,12 @@ export async function tracking(req, res, next) {
  */
 
 export function streamOrders(req, res) {
+  const orderId = Number(req.params.id);
+
+  if (Number.isNaN(orderId)) {
+    return res.status(400).json({ message: 'Invalid order id' });
+  }
+
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
@@ -228,12 +262,6 @@ export function streamOrders(req, res) {
   });
 
   res.write('\n');
-
-  const orderId = Number(req.params.id);
-
-  if (Number.isNaN(orderId)) {
-    return res.status(400).json({ message: 'Invalid order id' });
-  }
 
   tracker.subscribe(res, {
     scope: 'user',
@@ -281,6 +309,10 @@ export async function stats(req, res, next) {
  */
 export async function create(req, res, next) {
   try {
+	if (!req.body?.order_items) {
+      return res.status(400).json({ message: 'Missing order items' });
+    }
+
     const order = await orderService.createOrder(req.body);
     res.status(201).json({ order });
   } catch (err) {
