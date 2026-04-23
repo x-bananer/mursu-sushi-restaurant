@@ -92,14 +92,15 @@ export async function getActiveOrders() {
  * @param {number} data.total_price
  * @returns {Promise<number>}
  */
-export async function createOrder(data) {
+export async function createOrder(data, conn) {
   const result = await execute(
     `
     INSERT INTO orders
     (user_id, status_id, delivery_type_id, is_paid, address, total_price)
     VALUES (?, 1, ?, 1, ?, ?)
     `,
-    [data.user_id, data.delivery_type_id, data.address, data.total_price]
+    [data.user_id, data.delivery_type_id, data.address, data.total_price],
+    conn
   );
 
   return result.insertId;
