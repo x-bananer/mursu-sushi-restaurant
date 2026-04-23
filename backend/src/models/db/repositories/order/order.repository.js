@@ -112,14 +112,15 @@ export async function createOrder(data, conn) {
  * @param {number} statusId
  * @returns {Promise<void>}
  */
-export async function updateOrderStatus(orderId, statusId) {
+export async function updateOrderStatus(orderId, statusId, conn) {
   await execute(
     `
     UPDATE orders
     SET status_id = ?, updated_at = NOW()
     WHERE id = ?
     `,
-    [statusId, orderId]
+    [statusId, orderId],
+    conn
   );
 }
 
