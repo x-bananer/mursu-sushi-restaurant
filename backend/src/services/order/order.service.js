@@ -6,6 +6,7 @@ import * as statusHistoryRepo from '../../models/db/repositories/order/orderStat
 import * as mapper from './order.mapper.js';
 import * as tracker from './order.tracker.js';
 import { OrderEngine } from '../../models/engine/order.engine.js';
+import { withTransaction } from '../../models/db/connection.js';
 
 /**
  * =========================================================
@@ -153,42 +154,86 @@ export async function getActiveOrderByUser(userId) {
  * Create order + init history + emit event
  */
 export async function createOrder(data) {
-  const orderId = await orderRepo.createOrder(data);
+	const orderId = await withTransaction(async (conn) => {
+	// 1. Create order
+    const orderId = await orderRepo.createOrder(data, conn);
 
-  for (const item of data.order_items) {
-  await orderItemsRepo.createOrderItem({
-    order_id: orderId,
-    dish_id: item.dish_id,
-    quantity: item.quantity,
-    price: item.price
-  });
-}
+    const items = data.order_items || [];
 
-  await statusHistoryRepo.insertStatusChange(orderId, 1);
+    // 2. Prepare bulk item rows
+    const itemRows = items.map(item => ([
+      orderId,
+      item.dish_id || null,
+      item.name,
+      item.quantity,
+      item.price,
+      item.item_type_id
+    ]));
 
-  const orderDTO = await getOrder(orderId);
+    // 3. Bulk insert items
+    let orderItemIds = [];
 
-  // ADMIN EVENT (full)
-  tracker.emit({
-    scope: 'admin',
-    type: 'order_created',
-    payload: orderDTO
-  });
+    if (itemRows.length) {
+      const result = await orderItemsRepo.createOrderItem(itemRows, conn);
 
-  // USER EVENT (minimal)
-  tracker.emit({
-    scope: 'user',
-    userId: orderDTO.user?.id || orderDTO.user_id || null,
-  	orderId: orderDTO.id,
-    type: 'order_created',
-    payload: {
-      orderId: orderDTO.id,
-      status: orderDTO.status,
-      createdAt: orderDTO.created_at
+      // MySQL: reconstruct inserted IDs
+      const firstId = result.insertId;
+      orderItemIds = itemRows.map((_, i) => firstId + i);
     }
+
+    // 4. Prepare ingredient rows (in memory only)
+    const ingredientRows = [];
+
+    items.forEach((item, index) => {
+      if (item.item_type_id === 2 && item.ingredients?.length) {
+        const orderItemId = orderItemIds[index];
+
+        item.ingredients.forEach(ing => {
+          ingredientRows.push([
+            orderItemId,
+            ing.ingredient_id,
+            ing.quantity,
+            ing.position
+          ]);
+        });
+      }
+    });
+
+    // 5. Bulk insert ingredients
+    if (ingredientRows.length) {
+      await orderIngRepo.createCustomOrderItemIng(ingredientRows, conn);
+    }
+
+    // 6. Status history
+    await statusHistoryRepo.insertStatusChange(orderId, 1, conn);
+
+	return orderId; // RETURN ONLY ID
   });
 
-  return orderDTO;
+	// 7. mapp order into DTO format and emmit event
+	const orderDTO = await getOrder(orderId);
+
+    // ADMIN EVENT (full)
+    tracker.emit({
+      scope: 'admin',
+      type: 'order_created',
+      payload: orderDTO
+    });
+
+    // USER EVENT (minimal)
+    tracker.emit({
+      scope: 'user',
+      userId: orderDTO.user?.id || orderDTO.user_id || null,
+  	  orderId: orderDTO.id,
+      type: 'order_created',
+      payload: {
+        orderId: orderDTO.id,
+        status: orderDTO.status,
+        createdAt: orderDTO.created_at
+      }
+    });
+
+    return orderDTO;
 }
 
 /**
