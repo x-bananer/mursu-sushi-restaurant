@@ -87,23 +87,16 @@ export async function listItemsByOrderIds(orderIds) {
 }
 
 /**
- * Create a single order item (snapshot of cart item)
+ * Create a single order item - bulk version (snapshot of cart item)
  */
-export async function createOrderItem(data) {
-  const result = await execute(
+export async function createOrderItem(rows, conn) {
+  return await execute(
     `
     INSERT INTO order_items
-      (order_id, dish_id, item_type_id, quantity, price)
-    VALUES (?, ?, ?, ?, ?)
+      (order_id, dish_id, name, quantity, price, item_type_id)
+    VALUES ?
     `,
-    [
-      data.order_id,
-      data.dish_id,
-      data.item_type_id,
-      data.quantity,
-      data.price
-    ]
+    [rows],
+    conn
   );
-
-  return result.insertId;
 }

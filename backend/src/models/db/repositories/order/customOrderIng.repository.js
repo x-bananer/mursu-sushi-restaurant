@@ -1,4 +1,4 @@
-import { select } from '../../db.js';
+import { select, execute } from '../../db.js';
 
 /**
  * @typedef {import("../../../../../types/db/order.type.js").CustomOrderItemIngredients} CustomOrderItemIngredients
@@ -69,4 +69,19 @@ export async function listIngredientsByOrderIds(orderIds) {
   );
 
   return /** @type {CustomOrderItemIngredients[]} */ (rows);
+}
+
+/**
+ * Create a single order item ingedient - bulk version (snapshot of cart item)
+ */
+export async function createCustomOrderItemIng(rows, conn) {
+  return await execute(
+    `
+    INSERT INTO custom_order_item_ingredients
+      (order_item_id, ingredient_id, quantity, position)
+    VALUES ?
+    `,
+    [rows],
+    conn
+  );
 }
