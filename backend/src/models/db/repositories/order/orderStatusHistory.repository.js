@@ -28,12 +28,13 @@ export async function getHistoryByOrderId(orderId) {
  * @param {number} orderId
  * @param {number} statusId
  */
-export async function insertStatusChange(orderId, statusId) {
+export async function insertStatusChange(orderId, statusId, conn) {
   return await execute(
     `
     INSERT INTO order_status_history (order_id, status_id, changed_at)
     VALUES (?, ?, NOW())
     `,
-    [orderId, statusId]
+    [orderId, statusId],
+    conn
   );
 }

@@ -3,6 +3,9 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+/**
+ * Simple standalone queries
+ */
 export const pool = mysql.createPool({
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
@@ -14,3 +17,24 @@ export const pool = mysql.createPool({
   queueLimit: 0,
   multipleStatements: true,
 });
+
+/**
+ * Transaction wrapper for multi-step logic
+ */
+export async function withTransaction(callback) {
+  const conn = await pool.getConnection();
+
+  try {
+    await conn.beginTransaction();
+
+    const result = await callback(conn);
+
+    await conn.commit();
+    return result;
+  } catch (err) {
+    await conn.rollback();
+    throw err;
+  } finally {
+    conn.release();
+  }
+}

@@ -6,6 +6,7 @@ import * as statusHistoryRepo from '../../models/db/repositories/order/orderStat
 import * as mapper from './order.mapper.js';
 import * as tracker from './order.tracker.js';
 import { OrderEngine } from '../../models/engine/order.engine.js';
+import { withTransaction } from '../../models/db/connection.js';
 
 /**
  * =========================================================
@@ -34,6 +35,30 @@ export async function getOrder(orderId) {
 
 /**
  * =========================================================
+ * USER
+ * =========================================================
+ */
+
+/**
+ * PURPOSE:
+ * Retrieve the logged user's current active order (if any).
+ *
+ * USED BY:
+ * - GET /orders/active
+ */
+
+export async function getActiveOrderByUser(userId) {
+  const order = await orderRepo.getActiveOrderByUser(userId);
+  if (!order) return null;
+
+  const items = await orderItemsRepo.getOrderItems(order.id);
+  const ingredients = await orderIngRepo.getOrderIngredients(order.id);
+
+  return mapper.toOrderDTO(order, items, ingredients);
+}
+
+/**
+ * =========================================================
  * ADMIN / KITCHEN
  * =========================================================
  */
@@ -47,7 +72,7 @@ export async function getOrder(orderId) {
 
 export async function getActiveOrders() {
   const orders = await orderRepo.getActiveOrders();
-
+  if (!orders.length) return [];
   const orderIds = orders.map(o => o.id);
 
   const items = await orderItemsRepo.listItemsByOrderIds(orderIds);
@@ -73,34 +98,34 @@ function mapStatusToId(status) {
 }
 
 export async function updateOrderStatus(orderId, nextStatus) {
-  // 1. Get current order (DB layer)
-  const order = await orderRepo.getOrderById(orderId);
-  if (!order) throw new Error('Order not found');
+  const updatedOrderId = await withTransaction(async (conn) => {
 
-  // 2. Validate transition (DOMAIN layer)
-  const validation = OrderEngine.validateTransition(
-    {
-      status: order.status_type, // from JOIN
-      is_paid: order.is_paid
-    },
-    nextStatus
-  );
+    const order = await orderRepo.getOrderById(orderId);
+    if (!order) throw new Error('Order not found');
 
-  if (!validation.valid) {
-    throw new Error(validation.errors.join(', '));
-  }
+    const validation = OrderEngine.validateTransition(
+      {
+        status: order.status_type,
+        is_paid: order.is_paid
+      },
+      nextStatus
+    );
 
-  // 3. Convert to DB format
-  const statusId = mapStatusToId(nextStatus);
+    if (!validation.valid) {
+      throw new Error(validation.errors.join(', '));
+    }
 
-  // 4. Persist
-  await orderRepo.updateOrderStatus(orderId, statusId);
-  await statusHistoryRepo.insertStatusChange(orderId, statusId);
+    const statusId = mapStatusToId(nextStatus);
 
-  // 5. Build DTO (API layer)
-  const updatedDTO = await getOrder(orderId);
+    await orderRepo.updateOrderStatus(orderId, statusId, conn);
+    await statusHistoryRepo.insertStatusChange(orderId, statusId, conn);
 
-  // 6. Emit events
+    return orderId;
+  });
+
+  // AFTER COMMIT
+  const updatedDTO = await getOrder(updatedOrderId);
+
   tracker.emit({
     scope: 'admin',
     type: 'order_status_updated',
@@ -124,26 +149,6 @@ export async function updateOrderStatus(orderId, nextStatus) {
 
 /**
  * =========================================================
- * USER
- * =========================================================
- */
-
-/**
- * PURPOSE:
- * Get user's active order (DTO)
- */
-export async function getActiveOrderByUser(userId) {
-  const order = await orderRepo.getActiveOrderByUser(userId);
-  if (!order) return null;
-
-  const items = await orderItemsRepo.getOrderItems(order.id);
-  const ingredients = await orderIngRepo.getOrderIngredients(order.id);
-
-  return mapper.toOrderDTO(order, items, ingredients);
-}
-
-/**
- * =========================================================
  * CREATION
  * =========================================================
  */
@@ -153,42 +158,87 @@ export async function getActiveOrderByUser(userId) {
  * Create order + init history + emit event
  */
 export async function createOrder(data) {
-  const orderId = await orderRepo.createOrder(data);
+	OrderEngine.validateCreateOrder(data);
+	const orderId = await withTransaction(async (conn) => {
+	// 1. Create order
+    const orderId = await orderRepo.createOrder(data, conn);
 
-  for (const item of data.order_items) {
-  await orderItemsRepo.createOrderItem({
-    order_id: orderId,
-    dish_id: item.dish_id,
-    quantity: item.quantity,
-    price: item.price
-  });
-}
+    const items = data.order_items || [];
 
-  await statusHistoryRepo.insertStatusChange(orderId, 1);
+    // 2. Prepare bulk item rows
+    const itemRows = items.map(item => ([
+      orderId,
+      item.dish_id || null,
+      item.name,
+      item.quantity,
+      item.price,
+      item.item_type_id
+    ]));
 
-  const orderDTO = await getOrder(orderId);
+    // 3. Bulk insert items
+    let orderItemIds = [];
 
-  // ADMIN EVENT (full)
-  tracker.emit({
-    scope: 'admin',
-    type: 'order_created',
-    payload: orderDTO
-  });
+    if (itemRows.length) {
+      const result = await orderItemsRepo.createOrderItem(itemRows, conn);
 
-  // USER EVENT (minimal)
-  tracker.emit({
-    scope: 'user',
-    userId: orderDTO.user?.id || orderDTO.user_id || null,
-  	orderId: orderDTO.id,
-    type: 'order_created',
-    payload: {
-      orderId: orderDTO.id,
-      status: orderDTO.status,
-      createdAt: orderDTO.created_at
+      // MySQL: reconstruct inserted IDs
+      const firstId = result.insertId;
+      orderItemIds = itemRows.map((_, i) => firstId + i);
     }
+
+    // 4. Prepare ingredient rows (in memory only)
+    const ingredientRows = [];
+
+    items.forEach((item, index) => {
+      if (item.item_type_id === 2 && item.ingredients?.length) {
+        const orderItemId = orderItemIds[index];
+
+        item.ingredients.forEach(ing => {
+          ingredientRows.push([
+            orderItemId,
+            ing.ingredient_id,
+            ing.quantity,
+            ing.position
+          ]);
+        });
+      }
+    });
+
+    // 5. Bulk insert ingredients
+    if (ingredientRows.length) {
+      await orderIngRepo.createCustomOrderItemIng(ingredientRows, conn);
+    }
+
+    // 6. Status history
+    await statusHistoryRepo.insertStatusChange(orderId, 1, conn);
+
+	return orderId; // RETURN ONLY ID
   });
 
-  return orderDTO;
+	// 7. mapp order into DTO format and emmit event
+	const orderDTO = await getOrder(orderId);
+
+    // ADMIN EVENT (full)
+    tracker.emit({
+      scope: 'admin',
+      type: 'order_created',
+      payload: orderDTO
+    });
+
+    // USER EVENT (minimal)
+    tracker.emit({
+      scope: 'user',
+      userId: orderDTO.user?.id || orderDTO.user_id || null,
+  	  orderId: orderDTO.id,
+      type: 'order_created',
+      payload: {
+        orderId: orderDTO.id,
+        status: orderDTO.status,
+        createdAt: orderDTO.created_at
+      }
+    });
+
+    return orderDTO;
 }
 
 /**
