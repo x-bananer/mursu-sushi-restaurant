@@ -16,51 +16,83 @@ It is structured to simulate a **real-world production system**, including:
 * Modular architecture
 * Real-time order tracking
 * Role-based access control
-* Event-driven workflows
 
 ---
 
 ## 🧱 Core Project Structure
 
 ```
-backend/
-├── unitTests/                             # Mirrors src/ for unit tests
-
-└── src/
-    ├── routes/                            # URL mapping and HTTP request handler
-    │   ├── menuRoutes.js                  # Routes for menu CRUD operations
-    │   ├── orderRoutes.js                 # Routes for order CRUD & status updates
-    │   └── authRoutes.js                  # Routes for login, register, logout
-
-    ├── middleware/                        # Functions that run between HTTP request and route handler
-    │   ├── auth.js                        # JWT validation and user attach
-    │   ├── adminOnly.js                   # Restrict access to admin endpoints
-    │   └── errorHandler.js                # Catch and format errors consistently
-
-    ├── model/
-    │   ├── engine/                        # Pure business/domain logic
-    │   │   ├── SushiEngine.js             # Facade to all domain engines
-    │   │   ├── ComboEngine.js             # Validates combo rules (proteins, toppings)
-    │   │   ├── PricingEngine.js           # Calculates price including discounts
-    │   │   ├── DietaryEngine.js           # Checks allergen/diet restrictions
-    │   │   └── OrderEngine.js             # Handles order state transitions
-
-    │   └── database/                      # Repository layer (pure CRUD)
-    │       ├── connection.js              # Creates and exports MySQL connection pool
-    │       └── queries/
-    │           ├── menuQueries.js         # CRUD for menu_items table
-    │           ├── orderQueries.js        # CRUD for orders table
-    │           └── userQueries.js         # CRUD for users table & rewards
-
-    ├── services-controllers/              # Application service layer
-    │   ├── orderService.js                # Orchestrates order creation & rewards
-    │   ├── menuService.js                 # Handles menu CRUD operations via queries
-    │   ├── authService.js                 # Login, registration, JWT handling
-    │   └── trackingService.js             # Manages live order tracking & events
-    │   └── integrations/                  # HSL and Mobilepay
-
-    ├── restaurantMechanics.js             # Runtime orchestration: queue, events, state machine
-    └── server.js                          # Entry point: register middleware, routes, start server
+src/
+ ├─ utils/                              # Helper utilities
+ │
+ ├── middleware/                        # Express middlewares
+ │   ├── auth.js                        # JWT validation
+ │   ├── adminOnly.js                   # Role-based access control
+ │   └── errorHandler.js                # Global error handling
+ │
+ ├── services/                          # Business logic (application layer)
+ │   ├── dish.service.js
+ │   ├── order.service.js           # order creation and status flow only
+ │   ├── cart.service.js
+ │   ├── user.service.js            # stamp progress and all related to users
+ │   ├── auth.service.js
+ │   ├── tracking.service.js
+ │   └── integrations/
+ │       ├── hsl.service.js
+ │       └── payment.service.js     # MobilePay API Orchestration
+ │
+ ├─ controllers/                        # Calls services, returns DTOs
+ │   ├── dish.controller.js
+ │   ├── order.controller.js
+ │   ├── cart.controller.js
+ │   ├── user.controller.js
+ │   ├── auth.controller.js
+ │   └── admin.controller.js
+ │
+ ├─ models/
+ │   ├─ engine/                         # Pure domain/business rules (no DB)
+ │   │   ├── ComboEngine.js             # Combo builder rules
+ │   │   ├── PricingEngine.js           # Pricing, discounts, totals
+ │   │   ├── DietaryEngine.js           # Dietary restrictions logic
+ │   │   └── OrderEngine.js             # Order state transitions
+ │   │
+ │   └── database/                      # Data access layer (repositories)
+ │       ├── connection.js              # MySQL pool connection
+ │       ├── db.js                      # Query wrapper/helper
+ │       │
+ │       └── repositories/              # Grouped by domain
+ │
+ │           ├── dish/
+ │           │   ├── dish.repository.js             # dishes table CRUD
+ │           │   ├── badge.repository.js            # badges table
+ │           │   ├── dishBadge.repository.js        # dish_badges relation
+ │           │   ├── dailySpecial.repository.js
+ │           │   └── ingredient.repository.js       # ingredients
+ │
+ │           ├── order/
+ │           │   ├── order.repository.js            # orders
+ │           │   ├── orderItem.repository.js        # order_items
+ │           │   ├── orderItemIngredient.repository.js
+ │           │   ├── orderStatusHistory.repository.js
+ │           │   └── payment.repository.js
+ │
+ │           ├── cart/
+ │           │   ├── cart.repository.js             # carts
+ │           │   └── cartItem.repository.js         # cart_items
+ │
+ │           ├── user/
+ │           │   ├── user.repository.js             # users
+ │           │   └── reward.repository.js           # user_rewards
+ │
+ │           └── favorite/
+ │               └── favorite.repository.js        # user_favorite_dishes
+ │
+ ├─ types/
+ │   ├── controllers/                           # Request/Response DTOs
+ │   └─  database/                              # Database row shapes
+ │
+ ├─ routes.js                                  # Defines API endpoints (Express routers)
+ └─ server.js
 
 tests/
 ├── integration/                           # Multi-layer testing (API → Services → DB)
@@ -87,34 +119,19 @@ README.md                                  # Setup instructions & architecture o
 ```
 HTTP Request
    ↓
-Routes (API Layer)
+Middleware (Auth, Validation, Errors)
    ↓
-Service Layer (Application Orchestration Logic) -> Middleware (Auth, Validation, Errors)
+routes.js to Controllers/ (API Layer - resquest/ response handlers)
+                 ↓
+Service Layer (Application Orchestration Logic)
    ↓                                  ↓
 Engine Layer (Domain Logic)   Repository Layer (Database)
-                                      ↓
-                                   Database
+
 ```
 
 ---
 
 ## 🔹 Layer Breakdown
-
-### Routes (API Layer)
-
-**Responsibility:** Handle HTTP requests and responses
-
-* Parse request (`req`)
-* Call service layer
-* Return JSON response
-
-Example endpoints:
-
-```
-GET    /api/menu
-POST   /api/orders
-POST   /api/auth/login
-```
 
 ➡️ Routes are intentionally **thin** and contain no business logic.
 
@@ -138,7 +155,6 @@ POST   /api/auth/login
 
 * Combines domain logic + database
 * Controls application flow
-* Emits events and triggers side effects
 
 Examples:
 
@@ -146,8 +162,7 @@ Examples:
 
   * Validates combo via engine
   * Saves order via repository
-  * Emits `order.placed`
-  * Handles rewards logic
+  * Handles rewards
 
 * `authService`
 
@@ -168,7 +183,6 @@ Examples:
 
 #### Components
 
-* `SushiEngine` → Facade entry point
 * `ComboEngine` → Combo validation rules
 * `PricingEngine` → Pricing logic
 * `DietaryEngine` → Allergen checks
@@ -182,32 +196,11 @@ Examples:
 
 **Responsibility:** Data access only (CRUD)
 
-```
-queries/
-├── menuQueries.js
-├── orderQueries.js
-└── userQueries.js
-```
-
 * No business logic
 * No validation
 * No orchestration
 
 ➡️ Each file maps to a database table.
-
----
-
-### Runtime Mechanics
-
-**File:** `restaurantMechanics.js`
-
-Handles:
-
-* Order queue
-* State machine execution
-* Event-driven workflows
-
-➡️ Separates **runtime behavior** from **business rules**.
 
 ---
 
@@ -253,51 +246,6 @@ Simulates real user flows:
 * Customer ordering sushi
 * Checkout process
 * Admin managing orders
-
----
-
-## Design Principles
-
-### 1. Separation of Concerns
-
-Each layer has a single responsibility:
-
-* Routes → HTTP
-* Services → orchestration
-* Engine → business logic
-* Repository → data
-
----
-
-### 2. Dependency Direction
-
-```
-Routes → Services → Engine → Repository
-```
-
-Never:
-
-* Engine → Database ❌
-* Routes → Database ❌
-
----
-
-### 3. Facade Pattern
-
-`SushiEngine` provides a simplified interface:
-
-```js
-SushiEngine.validateCombo()
-SushiEngine.calculatePrice()
-```
-
----
-
-### 4. Event-Driven Design
-
-* Events like `order.placed`
-* Reward triggers
-* WebSocket-based live updates
 
 ---
 

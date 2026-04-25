@@ -1,4 +1,5 @@
 import * as authService from "../services/auth/auth.service.js";
+import { placeholder } from "../utils/paceholder.js";
 
 export async function register(req, res, next) {
 	try {
@@ -17,3 +18,7 @@ export async function login(req, res, next) {
 		next(error);
 	}
 }
+
+export const logout = placeholder("auth.logout");
+export const refresh = placeholder("auth.refresh");
+export const me = placeholder("auth.me");

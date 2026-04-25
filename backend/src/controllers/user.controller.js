@@ -1,4 +1,5 @@
 import * as userService from "../services/user/user.service.js";
+import { placeholder } from "../utils/paceholder.js";
 
 export async function getMe(req, res, next) {
 	try {
@@ -71,3 +72,9 @@ export async function setStampDiscountActive(req, res, next) {
 		next(error);
 	}
 }
+
+export async function getProfile(req, res, next) {
+	return getMe(req, res, next);
+}
+
+export const updateProfile = placeholder("users.updateProfile");

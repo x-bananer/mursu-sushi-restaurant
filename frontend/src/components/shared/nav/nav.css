@@ -207,9 +207,6 @@
   transition: width 0.25s ease;
 }
 
-.admin-sidebar--collapsed {
-  width: 48px;
-}
 
 /* ── Nav items ───────────────────────────────── */
 
@@ -270,48 +267,6 @@
   transition:
     opacity 0.2s ease,
     max-width 0.25s ease;
-}
-
-/* ── Collapsed state ─────────────────────────── */
-
-.admin-sidebar--collapsed .admin-nav__label {
-  opacity: 0;
-  max-width: 0;
-  pointer-events: none;
-}
-
-.admin-sidebar--collapsed .admin-nav__item {
-  justify-content: center;
-  padding: 12px 0;
-  gap: 0;
-  position: relative;
-}
-
-/* CSS tooltip on hover when collapsed */
-.admin-sidebar--collapsed .admin-nav__item::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  left: calc(100% + 20px);
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--color-dark-gray);
-  border: 1px solid var(--color-dark-gray);
-  color: var(--color-white);
-  font-family: var(--font-button);
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: 5px 10px;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.15s ease;
-  z-index: 300;
-}
-
-.admin-sidebar--collapsed .admin-nav__item:hover::after {
-  opacity: 1;
 }
 
 /* ── Toggle tab ──────────────────────────────── */
