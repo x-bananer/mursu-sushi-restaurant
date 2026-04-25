@@ -63,6 +63,7 @@ router.post  ('/orders',              orderController.create);    // OrderDTO
 
 router.get   ('/cart', cartController.get);     // GetCartResponse
 router.patch ('/cart', cartController.update);  // UpdateCartResponse
+router.post  ('/cart/checkout', cartController.checkout);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PAYMENTS

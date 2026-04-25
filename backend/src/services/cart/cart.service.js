@@ -1,6 +1,7 @@
 import * as cartRepo from '../../models/db/repositories/cart/cart.repository.js';
 import * as cartItemsRepo from '../../models/db/repositories/cart/cartItems.repository.js';
 import * as cartItemIngredientsRepository from '../../models/db/repositories/cart/cartItemIngredients.repository.js';
+import * as orderService from '../order/order.service.js';
 import * as cartMapper from './cart.mapper.js';
 import * as cartEngine from '../../models/engine/cart.engine.js';
 
@@ -298,6 +299,57 @@ export const clearCartBySessionId = async (sessionId) => {
     await cartRepo.updateCartBySessionId(sessionId);
 
     return true;
+}
+
+// Create order from cart and clear cart
+export const checkoutCartByUserId = async (userId, checkoutData) => {
+    const cart = await getCartByUserId(userId);
+
+    if (!cart) {
+        throw new Error('Cart not found');
+    }
+
+    if (!cart.items.length) {
+        throw new Error('Cart is empty');
+    }
+
+    const orderItems = cart.items.map((item) => {
+        if (item.type.type === 'custom') {
+            return {
+                dish_id: null,
+                name: item.type.name || 'Custom Combo',
+                quantity: Number(item.quantity),
+                price: Number(item.price),
+                item_type_id: item.type.id,
+                ingredients: (item.ingredients || []).map((ingredient) => ({
+                    ingredient_id: ingredient.ingredient.id,
+                    quantity: Number(ingredient.quantity),
+                    position: Number(ingredient.position),
+                })),
+            };
+        }
+
+        return {
+            dish_id: item.dish?.id || null,
+            name: item.dish?.name || '',
+            quantity: Number(item.quantity),
+            price: Number(item.price),
+            item_type_id: item.type.id,
+            ingredients: [],
+        };
+    });
+
+    const order = await orderService.createOrder({
+        user_id: userId,
+        delivery_type_id: checkoutData.delivery_type_id,
+        address: checkoutData.address,
+        total_price: Number(cart.total_price),
+        order_items: orderItems,
+    });
+
+    await clearCartByUserId(userId);
+
+    return order;
 }
 
 // Get item price
