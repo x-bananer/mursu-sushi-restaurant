@@ -25,7 +25,7 @@ export async function getUserByEmail(email) {
 		return null;
 	}
 
-	return rows[0];
+	return /** @type {Users} */ (rows[0]);
 }
 
 /**
@@ -71,7 +71,7 @@ export async function getUserById(userId) {
 		return null;
 	}
 
-	return rows[0];
+	return /** @type {Users} */ (rows[0]);
 }
 
 /**
@@ -88,6 +88,54 @@ export async function userExistsById(userId) {
 			LIMIT 1
 		`,
 		[userId],
+	);
+
+	if (rows.length === 0) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Returns user fields needed for checkout discount logic.
+ * @param {number} userId
+ * @returns {Promise<Pick<Users, "id" | "stamp_count" | "is_stamp_discount_active"> | null>}
+ */
+export async function getUserDiscountStateById(userId) {
+	const rows = await select(
+		`
+			SELECT id, stamp_count, is_stamp_discount_active
+			FROM users
+			WHERE id = ?
+			LIMIT 1
+		`,
+		[userId],
+	);
+
+	if (rows.length === 0) {
+		return null;
+	}
+
+	return /** @type {Pick<Users, "id" | "stamp_count" | "is_stamp_discount_active">} */ (rows[0]);
+}
+
+/**
+ * Checks if a specific order belongs to a user.
+ * @param {number} userId
+ * @param {number} orderId
+ * @returns {Promise<boolean>}
+ */
+export async function userOwnsOrder(userId, orderId) {
+	const rows = await select(
+		`
+			SELECT 1
+			FROM orders
+			WHERE id = ?
+				AND user_id = ?
+			LIMIT 1
+		`,
+		[orderId, userId],
 	);
 
 	if (rows.length === 0) {

@@ -1,7 +1,9 @@
 import jwt from "jsonwebtoken";
 
 function createHttpError(statusCode, message) {
-	const error = new Error(message);
+	const error = /** @type {Error & { statusCode: number }} */ (
+		new Error(message)
+	);
 	error.statusCode = statusCode;
 	return error;
 }
@@ -25,13 +27,30 @@ export default function auth(req, res, next) {
 		}
 
 		const [scheme, token] = authHeader.split(" ");
+
+		if (scheme !== "Bearer" || !token) {
+			throw createHttpError(401, "Authorization token is invalid");
+		}
+
 		const payload = jwt.verify(token, getJwtSecret());
 
-		if (!payload || !payload.id) {
+		if (
+			typeof payload !== "object" ||
+			payload === null ||
+			!("id" in payload)
+		) {
 			throw createHttpError(401, "Invalid token payload");
 		}
 
-		const parsedRoleId = Number(payload.roleId);
+		const payloadId = payload.id;
+
+		if (typeof payloadId !== "number" && typeof payloadId !== "string") {
+			throw createHttpError(401, "Invalid token payload");
+		}
+
+		const rawRoleId = "roleId" in payload ? payload.roleId : null;
+
+		const parsedRoleId = Number(rawRoleId);
 		let roleId = null;
 
 		if (Number.isInteger(parsedRoleId)) {
@@ -39,7 +58,7 @@ export default function auth(req, res, next) {
 		}
 
 		req.user = {
-			id: payload.id,
+			id: payloadId,
 			roleId,
 		};
 

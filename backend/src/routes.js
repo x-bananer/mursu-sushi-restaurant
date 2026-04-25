@@ -125,10 +125,7 @@ router.delete("/admin/dishes/:id", adminController.deleteDish);
 
 /* Specials */
 router.put("/admin/dishes/:id/special", adminController.setDailySpecial);
-router.delete(
-	"/admin/dishes/:id/special",
-	adminController.removeDailySpecial,
-);
+router.delete("/admin/dishes/:id/special", adminController.removeDailySpecial);
 
 router.post("/admin/ingredients", adminController.createIngredient);
 router.put("/admin/ingredients/:id", adminController.updateIngredient);
