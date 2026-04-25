@@ -1,0 +1,14 @@
+{
+  "name": "backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:user-flow": "node tests/user.test.js"
+  },
+  "dependencies": {
+    "argon2": "^0.44.0",
+    "dotenv": "^17.4.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.15.2"
+  }
+}
