@@ -32,12 +32,16 @@ export const getCartItemsByCartId = async (cartId) => {
 		`
     SELECT
       cart_item.*,
+      order_item_type.type AS item_type_type,
+      order_item_type.name AS item_type_name,
       dishes.name AS dish_name,
       dishes.description AS dish_description,
       dishes.price AS dish_price,
       dishes.is_available AS dish_is_available,
       dishes.created_at AS dish_created_at
     FROM cart_item
+    LEFT JOIN order_item_type
+      ON order_item_type.id = cart_item.item_type_id
     LEFT JOIN dishes
       ON dishes.id = cart_item.dish_id
     WHERE cart_id = ?
