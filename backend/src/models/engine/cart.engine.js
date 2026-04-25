@@ -6,11 +6,14 @@ export const validateCart = (items) => {
         errors.push('items must be an array');
     } else {
         for (const item of items) {
-            if (typeof item.quantity !== 'number' || item.quantity <= 0) {
+            const quantity = Number(item.quantity);
+            const price = Number(item.price);
+
+            if (Number.isNaN(quantity) || quantity <= 0) {
                 errors.push('quantity must be greater than 0');
             }
 
-            if (typeof item.price !== 'number' || item.price <= 0) {
+            if (Number.isNaN(price) || price <= 0) {
                 errors.push('item price must be a valid number');
             }
         }

@@ -62,7 +62,6 @@ router.post  ('/orders',              orderController.create);    // OrderDTO
 // ─────────────────────────────────────────────────────────────────────────────
 
 router.get   ('/cart', cartController.get);     // GetCartResponse
-router.post  ('/cart', cartController.create);  // CreateCartResponse
 router.patch ('/cart', cartController.update);  // UpdateCartResponse
 
 // ─────────────────────────────────────────────────────────────────────────────
