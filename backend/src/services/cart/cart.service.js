@@ -1,7 +1,8 @@
 import * as cartRepo from '../../models/db/repositories/cart/cart.repository.js';
 import * as cartItemsRepo from '../../models/db/repositories/cart/cartItems.repository.js';
-import * as cartItemIngredientsRepo from '../../models/db/repositories/cart/cartItemIngredients.repository.js';
-import * as mapper from './cart.mapper.js';
+import * as cartItemIngredientsRepository from '../../models/db/repositories/cart/cartItemIngredients.repository.js';
+import * as cartMapper from './cart.mapper.js';
+import * as cartEngine from '../../models/engine/cart.engine.js';
 
 // Create cart for user
 export const createCartByUserId = async (userId, items = []) => {
@@ -83,8 +84,9 @@ export const getCartByUserId = async (userId) => {
 
     const items = await cartItemsRepo.getCartItemsByCartId(cart.id);
     const ingredients = await getCartIngredients(items);
+    const totalPrice = getCartTotalPrice(items);
 
-    return mapper.toCartDTO(cart, items, ingredients);
+    return cartMapper.toCartDTO(cart, items, ingredients, totalPrice);
 }
 
 // Get cart for session
@@ -97,8 +99,9 @@ export const getCartBySessionId = async (sessionId) => {
 
     const items = await cartItemsRepo.getCartItemsByCartId(cart.id);
     const ingredients = await getCartIngredients(items);
+    const totalPrice = getCartTotalPrice(items);
 
-    return mapper.toCartDTO(cart, items, ingredients);
+    return cartMapper.toCartDTO(cart, items, ingredients, totalPrice);
 }
 
 // Update cart for user
@@ -121,7 +124,7 @@ export const updateCartByUserId = async (userId, items = []) => {
 
     const oldItems = await cartItemsRepo.getCartItemsByCartId(cart.id);
     const oldItemIds = oldItems.map(item => item.id);
-    const oldIngredients = await cartItemIngredientsRepo.getCartItemIngredientsByCartItemIds(oldItemIds);
+    const oldIngredients = await cartItemIngredientsRepository.getCartItemIngredientsByCartItemIds(oldItemIds);
     const filteredItemsMap = {};
     const oldIngredientsMap = {};
 
@@ -205,7 +208,7 @@ export const updateCartBySessionId = async (sessionId, items = []) => {
 
     const oldItems = await cartItemsRepo.getCartItemsByCartId(cart.id);
     const oldItemIds = oldItems.map(item => item.id);
-    const oldIngredients = await cartItemIngredientsRepo.getCartItemIngredientsByCartItemIds(oldItemIds);
+    const oldIngredients = await cartItemIngredientsRepository.getCartItemIngredientsByCartItemIds(oldItemIds);
     const filteredItemsMap = {};
     const oldIngredientsMap = {};
 
@@ -298,55 +301,75 @@ export const clearCartBySessionId = async (sessionId) => {
 }
 
 // Get item price
+// item: { dish_id: 1, quantity: 2, item_type_id: 1 }
 const getItemPrice = async (item) => {
-    if (item.item_type_id === 1) {
-        const dish = await cartItemsRepo.getDishById(item.dish_id);
-
-        if (!dish) {
-            throw new Error('Dish not found');
+    try {
+        if (item.item_type_id === 1) {
+            return await getDishItemPrice(item);
         }
 
-        return Number(dish.price);
+        if (item.item_type_id === 2) {
+            return await getCustomItemPrice(item);
+        }
+
+        throw new Error('Invalid cart item type');
+    } catch (error) {
+        throw toInvalidCartDataError(error);
+    }
+}
+
+// Get saved dish price from DB
+const getDishItemPrice = async (item) => {
+    // dish: { id: 1, name: 'Sake Sashimi', price: 12 }
+    const dish = await cartItemsRepo.getDishById(item.dish_id);
+
+    if (!dish) {
+        throw new Error('Dish not found');
     }
 
-    if (item.item_type_id === 2) {
-        const ingredients = item.ingredients || [];
-        const ingredientIds = [];
+    return Number(dish.price);
+}
 
-        for (const ingredient of ingredients) {
-            ingredientIds.push(ingredient.ingredient_id);
+// Calculate custom item price from selected ingredients
+// item: { item_type_id: 2, quantity: 1, ingredients: [{ ingredient_id: 1, quantity: 1, position: 1 }] }
+const getCustomItemPrice = async (item) => {
+    // itemIngredients: [{ ingredient_id: 1, quantity: 1, position: 1 }]
+    const itemIngredients = item.ingredients || [];
+    // itemIngredientIds: [1, 12, 21]
+    const itemIngredientIds = itemIngredients.map((ingredient) => ingredient.ingredient_id);
+
+    // ingredients: [{ id: 1, name: 'Shari Rice', price: 5 }]
+    const ingredients = await cartItemIngredientsRepository.getIngredientsByIds(itemIngredientIds);
+
+    // totalPrice: 23
+    let totalPrice = 0;
+
+    // itemIngredient: { ingredient_id: 1, quantity: 1, position: 1 }
+    for (const itemIngredient of itemIngredients) {
+        // ingredient: { id: 1, name: 'Shari Rice', price: 5 }
+        const ingredient = ingredients.find(
+            (dbIngredient) => dbIngredient.id === itemIngredient.ingredient_id
+        );
+
+        if (!ingredient) {
+            throw new Error('Ingredient not found');
         }
 
-        const ingredientsData = await cartItemIngredientsRepo.getIngredientsByIds(ingredientIds);
-        const ingredientsMap = {};
-        let price = 0;
-
-        for (const ingredientFromDb of ingredientsData) {
-            ingredientsMap[ingredientFromDb.id] = ingredientFromDb;
-        }
-
-        for (const ingredient of ingredients) {
-            const ingredientData = ingredientsMap[ingredient.ingredient_id];
-
-            if (!ingredientData) {
-                throw new Error('Ingredient not found');
-            }
-
-            price = price + Number(ingredientData.price) * Number(ingredient.quantity);
-        }
-
-        return price;
+        totalPrice += Number(ingredient.price) * Number(itemIngredient.quantity);
     }
 
-    return 0;
+    return totalPrice;
 }
 
 // Get all ingredients for cart items
+// items: [{ id: 1, price: 12, quantity: 2 }]
 const getCartIngredients = async (items) => {
+    // ingredients: [{ id: 1, cart_item_id: 2, ingredient_id: 1, quantity: 1, position: 1 }]
     let ingredients = [];
 
     for (const item of items) {
-        const itemIngredients = await cartItemIngredientsRepo.getCartItemIngredientsByCartItemId(item.id);
+        // itemIngredients: [{ id: 1, cart_item_id: 2, ingredient_id: 1, quantity: 1, position: 1 }]
+        const itemIngredients = await cartItemIngredientsRepository.getCartItemIngredientsByCartItemId(item.id);
         ingredients = ingredients.concat(itemIngredients);
     }
 
@@ -354,9 +377,11 @@ const getCartIngredients = async (items) => {
 }
 
 // Create ingredients for one cart item
+// cartItemId: 2
+// ingredients: [{ ingredient_id: 1, quantity: 1, position: 1 }]
 const createCartItemIngredients = async (cartItemId, ingredients) => {
     for (const ingredient of ingredients) {
-        await cartItemIngredientsRepo.createCartItemIngredient({
+        await cartItemIngredientsRepository.createCartItemIngredient({
             cart_item_id: cartItemId,
             ingredient_id: ingredient.ingredient_id,
             quantity: ingredient.quantity,
@@ -366,8 +391,25 @@ const createCartItemIngredients = async (cartItemId, ingredients) => {
 }
 
 // Delete ingredients for one cart item
+// ingredients: [{ id: 1, cart_item_id: 2, ingredient_id: 1, quantity: 1, position: 1 }]
 const deleteCartItemIngredients = async (ingredients) => {
     for (const ingredient of ingredients) {
-        await cartItemIngredientsRepo.deleteCartItemIngredient(ingredient.id);
+        await cartItemIngredientsRepository.deleteCartItemIngredient(ingredient.id);
     }
+}
+
+// Calculate final cart total price from cart items
+// items: [{ id: 1, price: 12, quantity: 2 }]
+const getCartTotalPrice = (items) => {
+    try {
+        return cartEngine.calculateCartTotalPrice(items);
+
+    } catch (error) {
+        throw toInvalidCartDataError(error);
+    }
+}
+
+const toInvalidCartDataError = (error) => {
+    console.error('Cart validation failed:', error);
+    return new Error('Invalid cart data');
 }
