@@ -1,86 +1,68 @@
 import * as paymentRepository from '../../models/db/repositories/order/payment.repository.js';
+import * as cartService from '../cart/cart.service.js';
 
 const getPaymentStatus = async (type) => {
-  const status = await paymentRepository.getPaymentStatusByStatusType(type);
+	const status = await paymentRepository.getPaymentStatusByStatusType(type);
 
-  if (!status) {
-    throw new Error(`Payment status not found`);
-  }
+	if (!status) {
+		throw new Error(`Payment status not found`);
+	}
 
-  return status;
+	return status;
 };
 
-/**
- * Initiate pending MobilePay payment for user cart
- * @param {number} userId
- * @param {number} amount
- */
-export const initiateMobilePayPayment = async (userId, amount) => {
-  const pendingStatus = await getPaymentStatus('pending');
+export const payWithMobilePay = async (userId, checkoutData) => {
+	const pendingStatus = await getPaymentStatus('pending');
+	const completedStatus = await getPaymentStatus('completed');
+	const failedStatus = await getPaymentStatus('failed');
 
-  // TODO temporary dummy data instead of real ref
-  const providerRef = `${Date.now()}`;
+	const cart = await cartService.getCartByUserId(userId);
 
-  const paymentId = await paymentRepository.initiatePayment({
-    user_id: userId,
-    amount: Number(amount),
-    status_id: pendingStatus.id,
-    provider: 'mobilepay',
-    provider_ref: providerRef,
-  });
+	if (!checkoutData.delivery_type_id || !checkoutData.address) {
+		throw new Error('Missing checkout data');
+	}
 
-  return await paymentRepository.getPaymentById(paymentId);
-};
+	if (!cart || !cart.items.length) {
+		throw new Error('Cart is empty');
+	}
 
-/**
- * Mark MobilePay payment as completed
- * @param {number} paymentId
- * @param {number} userId
- */
-export const confirmMobilePayPayment = async (paymentId, userId) => {
-  const pendingStatus = await getPaymentStatus('pending');
-  const completedStatus = await getPaymentStatus('completed');
+	// TODO temporary dummy data instead of real ref
+	const providerRef = `${Date.now()}`;
 
-  const payment = await paymentRepository.getPaymentById(paymentId);
+	const paymentData = {
+		user_id: userId,
+		amount: Number(cart.total_price),
+		status_id: pendingStatus.id,
+		provider: 'mobilepay',
+		provider_ref: providerRef,
+	};
+	const paymentId = await paymentRepository.initiatePayment(paymentData);
 
-  if (!payment || payment.user_id !== userId) {
-    throw new Error('Payment not found');
-  }
+	if (checkoutData.payment_result === 'fail') {
+		await paymentRepository.updatePaymentStatusById(paymentId, userId, failedStatus.id);
+		return {
+			payment: {
+				id: paymentId,
+				status: 'failed',
+			},
+		};
+	}
 
-  if (payment.status_id !== pendingStatus.id) {
-    throw new Error('Payment is not pending');
-  }
+	const order = await cartService.checkoutCartByUserId(userId, {
+		delivery_type_id: checkoutData.delivery_type_id,
+		address: checkoutData.address,
+	});
 
-  await paymentRepository.updatePaymentStatusById(paymentId, userId, completedStatus.id);
+	await paymentRepository.attachOrderToPayment(paymentId, userId, order.id);
+	await paymentRepository.updatePaymentStatusById(paymentId, userId, completedStatus.id);
+	await cartService.clearCartByUserId(userId);
 
-  return await paymentRepository.getPaymentById(paymentId);
-};
-
-export const attachOrderToPayment = async (paymentId, userId, orderId) => {
-  await paymentRepository.attachOrderToPayment(paymentId, userId, orderId);
-  return await paymentRepository.getPaymentById(paymentId);
-};
-
-/**
- * Mark MobilePay payment as failed
- * @param {number} paymentId
- * @param {number} userId
- */
-export const failMobilePayPayment = async (paymentId, userId) => {
-  const pendingStatus = await getPaymentStatus('pending');
-  const failedStatus = await getPaymentStatus('failed');
-
-  const payment = await paymentRepository.getPaymentById(paymentId);
-
-  if (!payment || payment.user_id !== userId) {
-    throw new Error('Payment not found');
-  }
-
-  if (payment.status_id !== pendingStatus.id) {
-    throw new Error('Payment is not pending');
-  }
-
-  await paymentRepository.updatePaymentStatusById(paymentId, userId, failedStatus.id);
-
-  return await paymentRepository.getPaymentById(paymentId);
+	return {
+		order,
+		payment: {
+			id: paymentId,
+			status: 'completed',
+			order_id: order.id,
+		},
+	};
 };
