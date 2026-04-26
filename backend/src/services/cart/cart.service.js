@@ -301,7 +301,7 @@ export const clearCartBySessionId = async (sessionId) => {
     return true;
 }
 
-// Create order from cart and clear cart
+// Create order from cart after payment
 export const checkoutCartByUserId = async (userId, checkoutData) => {
     const cart = await getCartByUserId(userId);
 
@@ -346,8 +346,6 @@ export const checkoutCartByUserId = async (userId, checkoutData) => {
         total_price: Number(cart.total_price),
         order_items: orderItems,
     });
-
-    await clearCartByUserId(userId);
 
     return order;
 }
