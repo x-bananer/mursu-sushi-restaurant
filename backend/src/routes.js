@@ -6,6 +6,7 @@ import * as orderController from './controllers/order.controller.js';
 import * as userController  from './controllers/user.controller.js';
 import * as adminController from './controllers/admin.controller.js';
 import * as cartController  from './controllers/cart.controller.js';
+import * as paymentController from './controllers/payment.controller.js';
 
 const router = Router();
 
@@ -69,9 +70,9 @@ router.post  ('/cart/checkout', cartController.checkout);
 // PAYMENTS
 // ─────────────────────────────────────────────────────────────────────────────
 
-router.post('/orders/:id/payments/mobilepay',         orderController.initiatePayment);
-router.post('/orders/:id/payments/mobilepay/confirm', orderController.confirmPayment);
-router.get ('/orders/:id/payments/status',            orderController.paymentStatus);
+router.post('/payments/mobilepay', paymentController.initiate);
+router.post('/payments/:id/mobilepay/confirm', paymentController.confirm);
+router.post('/payments/:id/mobilepay/fail', paymentController.fail);
 
 // ─────────────────────────────────────────────────────────────
 // USER (uses UserDTO) (authenticated)
