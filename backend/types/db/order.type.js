@@ -44,7 +44,8 @@
 /**
  * @typedef {Object} Payments
  * @property {number} id
- * @property {number} order_id
+ * @property {number | null} order_id
+ * @property {number} user_id
  * @property {number} amount
  * @property {number} status_id
  * @property {string} provider
