@@ -71,8 +71,6 @@ router.post  ('/cart/checkout', cartController.checkout);
 // ─────────────────────────────────────────────────────────────────────────────
 
 router.post('/payments/mobilepay', paymentController.initiate);
-router.post('/payments/:id/mobilepay/confirm', paymentController.confirm);
-router.post('/payments/:id/mobilepay/fail', paymentController.fail);
 
 // ─────────────────────────────────────────────────────────────
 // USER (uses UserDTO) (authenticated)
