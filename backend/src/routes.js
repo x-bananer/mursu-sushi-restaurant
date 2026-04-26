@@ -63,9 +63,9 @@ router.post("/orders", orderController.create);
 // CART - Uses CartDTO
 // ─────────────────────────────────────────────────────────────────────────────
 
-router.get("/cart", cartController.get);
-router.post("/cart", cartController.create);
-router.patch("/cart", cartController.update);
+router.get   ("/cart", cartController.get);
+router.patch ("/cart", cartController.update);
+router.post  ("/cart/checkout", cartController.checkout);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PAYMENTS
