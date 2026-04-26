@@ -7,8 +7,6 @@
  * @typedef {import('../../types/controllers/order.type.js').OrderTrackingResponse} OrderTrackingResponse
  */
 
-import { placeholder } from '../utils/paceholder.js';
-
 import * as tracker from '../services/order/order.tracker.js';
 import * as orderService from '../services/order/order.service.js';
 
@@ -319,8 +317,3 @@ export async function create(req, res, next) {
     next(err);
   }
 }
-
-// Needs to be moved to the cart or to its own controller.
-export const initiatePayment    = placeholder('payments.initiate');
-export const confirmPayment     = placeholder('payments.confirm');
-export const paymentStatus      = placeholder('payments.status');
