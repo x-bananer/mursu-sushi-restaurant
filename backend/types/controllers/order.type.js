@@ -2,8 +2,6 @@
  * TODO
  * Add payment request and response types for:
  * - POST /payments/mobilepay
- * - POST /payments/:id/mobilepay/confirm
- * - POST /payments/:id/mobilepay/fail
  */
 
 
