@@ -172,12 +172,14 @@ CREATE TABLE order_status_history (
 
 CREATE TABLE payments (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  order_id INT NOT NULL,
+  order_id INT NULL,
+  user_id INT NOT NULL,
   amount DECIMAL(10,2) NOT NULL,
   status_id INT NOT NULL,
   provider VARCHAR(50) NOT NULL,
   provider_ref VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (order_id) REFERENCES orders(id),
+  FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (status_id) REFERENCES payment_status(id)
 );
