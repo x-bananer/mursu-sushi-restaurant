@@ -40,3 +40,10 @@ export const removeFavorite = placeholder("dishes.removeFavorite");
 export const listIngredients = placeholder("ingredients.list");
 export const validateCombo = placeholder("combo.validate");
 export const priceCombo = placeholder("combo.price");
+/* ADM only */
+export const createDish        = placeholder('adm.createDish');
+export const updateDish        = placeholder('adm.updateDish');
+export const deleteDish        = placeholder('adm.deleteDish');
+
+export const setDailySpecial   = placeholder('adm.setDailySpecial');
+export const removeDailySpecial= placeholder('adm.removeDailySpecial');
