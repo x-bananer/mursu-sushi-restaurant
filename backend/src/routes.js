@@ -87,8 +87,8 @@ router.post  ('/adm/orders',            orderController.create);
 // ─────────────────────────────────────────────────────────────────────────────
 
 router.get   ('/cart', cartController.get);     // GetCartResponse
-router.post  ('/cart', cartController.create);  // CreateCartResponse
 router.patch ('/cart', cartController.update);  // UpdateCartResponse
+router.post  ('/cart/checkout', cartController.checkout);
 
 /* PAYMENTS */
 router.post('/cart/:id/checkout/payments/mobilepay',         cartController.initiatePayment);
