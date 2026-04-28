@@ -1,4 +1,4 @@
-import { pool } from './connection.js';
+import { pool } from "./connection.js";
 
 /**
  * Select and execute wrappers allow pool for simple queries and conn for multi-step transaction
@@ -15,15 +15,15 @@ import { pool } from './connection.js';
  * @returns {Promise<T[]>}
  */
 export async function select(sql, params = [], conn = null) {
-  const executor = conn ?? pool;
+	const executor = conn ?? pool;
 
-  const [rows] = await executor.query(sql, params);
+	const [rows] = await executor.query(sql, params);
 
-  if (!Array.isArray(rows)) {
-    throw new Error('Expected SELECT query to return rows.');
-  }
+	if (!Array.isArray(rows)) {
+		throw new Error("Expected SELECT query to return rows.");
+	}
 
-  return /** @type {T[]} */ (rows);
+	return /** @type {T[]} */ (rows);
 }
 
 /**
@@ -33,13 +33,13 @@ export async function select(sql, params = [], conn = null) {
  * @returns {Promise<ResultSetHeader>}
  */
 export async function execute(sql, params = [], conn = null) {
-  const executor = conn ?? pool;
+	const executor = conn ?? pool;
 
-  const [result] = await executor.query(sql, params);
+	const [result] = await executor.query(sql, params);
 
-  if (Array.isArray(result)) {
-    throw new Error('Expected ResultSetHeader but got rows.');
-  }
+	if (Array.isArray(result)) {
+		throw new Error("Expected ResultSetHeader but got rows.");
+	}
 
-  return /** @type {ResultSetHeader} */ (result);
+	return /** @type {ResultSetHeader} */ (result);
 }

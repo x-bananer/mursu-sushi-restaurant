@@ -74,12 +74,3 @@ export const checkout = async (req, res, next) => {
         next(err);
     }
 }
-
-// TODO:
-
-export const create             = placeholder('orders.create');
-
-/* PAYMENT */
-export const initiatePayment    = placeholder('payments.initiate');
-export const confirmPayment     = placeholder('payments.confirm');
-export const paymentStatus      = placeholder('payments.status');
