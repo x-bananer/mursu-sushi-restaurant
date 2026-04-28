@@ -19,7 +19,7 @@ import * as orderService from '../services/order/order.service.js';
  */
 
 /**
- * GET /adm/orders
+ * GET /orders
  *
  * PURPOSE:
  * Returns ALL ACTIVE orders for the kitchen dashboard.
@@ -49,7 +49,7 @@ export async function list(req, res, next) {
 }
 
 /**
- * GET /adm/orders/:id
+ * GET /orders/:id
  *
  * PURPOSE:
  * Get FULL details of a single order (admin or user view)
@@ -89,7 +89,7 @@ export async function get(req, res, next) {
 }
 
 /**
- * PATCH /adm/orders/:id/status
+ * PATCH /orders/:id/status
  *
  * PURPOSE:
  * Update the status of an order as it moves through the lifecycle
@@ -271,7 +271,7 @@ export function streamOrders(req, res) {
 }
 
 /**
- * GET /adm/orders/status/count
+ * GET /orders/stats
  *
  * PURPOSE:
  * Get counts of orders per status
@@ -284,7 +284,7 @@ export function streamOrders(req, res) {
  * DATA:
  * - [{ status: 'pending', count: 3 }, ...]
  */
-export async function statusCount(req, res, next) {
+export async function stats(req, res, next) {
   try {
     const stats = await orderService.getOrderCountsByStatus();
     res.json({ stats });
@@ -298,7 +298,7 @@ export async function statusCount(req, res, next) {
  */
 
 /**
- * POST /adm/orders
+ * POST /orders
  *
  * PURPOSE:
  * Create a new order (called by cart AFTER payment)
@@ -319,3 +319,8 @@ export async function create(req, res, next) {
     next(err);
   }
 }
+
+// Needs to be moved to the cart or to its own controller.
+export const initiatePayment    = placeholder('payments.initiate');
+export const confirmPayment     = placeholder('payments.confirm');
+export const paymentStatus      = placeholder('payments.status');
