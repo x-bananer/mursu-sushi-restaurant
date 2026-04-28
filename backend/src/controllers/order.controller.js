@@ -17,7 +17,7 @@ import * as orderService from '../services/order/order.service.js';
  */
 
 /**
- * GET /orders
+ * GET /adm/orders
  *
  * PURPOSE:
  * Returns ALL ACTIVE orders for the kitchen dashboard.
@@ -47,7 +47,7 @@ export async function list(req, res, next) {
 }
 
 /**
- * GET /orders/:id
+ * GET /adm/orders/:id
  *
  * PURPOSE:
  * Get FULL details of a single order (admin or user view)
@@ -87,7 +87,7 @@ export async function get(req, res, next) {
 }
 
 /**
- * PATCH /orders/:id/status
+ * PATCH /adm/orders/:id/status
  *
  * PURPOSE:
  * Update the status of an order as it moves through the lifecycle
@@ -269,7 +269,7 @@ export function streamOrders(req, res) {
 }
 
 /**
- * GET /orders/stats
+ * GET /adm/orders/status/count
  *
  * PURPOSE:
  * Get counts of orders per status
@@ -282,7 +282,7 @@ export function streamOrders(req, res) {
  * DATA:
  * - [{ status: 'pending', count: 3 }, ...]
  */
-export async function stats(req, res, next) {
+export async function statusCount(req, res, next) {
   try {
     const stats = await orderService.getOrderCountsByStatus();
     res.json({ stats });
@@ -296,7 +296,7 @@ export async function stats(req, res, next) {
  */
 
 /**
- * POST /orders
+ * POST /adm/orders
  *
  * PURPOSE:
  * Create a new order (called by cart AFTER payment)
