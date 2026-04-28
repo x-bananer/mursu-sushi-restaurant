@@ -1,7 +1,7 @@
 import * as userService from "../services/user/user.service.js";
 import { placeholder } from "../utils/paceholder.js";
 
-export async function getMe(req, res, next) {
+export async function getProfile(req, res, next) {
 	try {
 		const user = await userService.getUserById(req.user.id);
 
@@ -16,6 +16,11 @@ export async function getMe(req, res, next) {
 	}
 }
 
+export const updateProfile = placeholder("users.updateProfile");
+export const deleteProfile = placeholder('users.deleteProfile');
+
+/* ADMIN only */
+export const listCustomers     = placeholder('adm.listCustomers');
 export async function getUserById(req, res, next) {
 	try {
 		const user = await userService.getUserById(req.params.userId);
@@ -31,6 +36,8 @@ export async function getUserById(req, res, next) {
 	}
 }
 
+// TODO: CHECK IF THE FOLLOWING WILL BE NEEDED BY ENDPOINTS
+// OR IF KSENIA WILL CALL THE SERVICE DIRECTLY AFTER THE PAYMENT CONFIMATION IN CHECKOUT.
 export async function setStampCount(req, res, next) {
 	try {
 		const user = await userService.updateStampCount(
@@ -72,9 +79,3 @@ export async function setStampDiscountActive(req, res, next) {
 		next(error);
 	}
 }
-
-export async function getProfile(req, res, next) {
-	return getMe(req, res, next);
-}
-
-export const updateProfile = placeholder("users.updateProfile");
