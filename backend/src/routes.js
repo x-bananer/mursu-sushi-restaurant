@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
 import * as authController  from './controllers/auth.controller.js';
-import * as menuController  from './controllers/dish.menu.controller.js';
-import * as comboController from './controllers/dish.combo.controller.js'
+import * as dishController  from './controllers/dish.controller.js';
+import * as comboController from './controllers/combo.controller.js'
 import * as orderController from './controllers/order.controller.js';
 import * as userController  from './controllers/user.controller.js';
 import * as cartController  from './controllers/cart.controller.js';
@@ -34,22 +34,22 @@ router.get('/adm/customers', userController.listCustomers); // add authenticate 
 // DISHES MENU
 // ─────────────────────────────────────────────────────────────────────────────
 
-router.get('/dishes',               menuController.list);        // returns DishDTO[]
-router.get('/dishes/:dish_id',      menuController.get);         // returns DishDTO
-router.get('/dishes/daily-special', menuController.specials);    // returns DishDTO
+router.get('/dishes',               dishController.list);        // returns DishDTO[]
+router.get('/dishes/:dish_id',      dishController.get);         // returns DishDTO
+router.get('/dishes/daily-special', dishController.specials);    // returns DishDTO
 
 /* FAVORITES (cutomer logged) */
-router.post  ('/dishes/:dish_id/favorite',   menuController.addFavorite);     // add authenticate later when implemented
-router.delete ('/dishes/:dish_id/favorite',  menuController.removeFavorite);  // add authenticate later when implemented
-router.get    ('/dishes/favorites',          menuController.listFavorites);   // add authenticate later when implemented
+router.post  ('/dishes/:dish_id/favorite',   dishController.addFavorite);     // add authenticate later when implemented
+router.delete ('/dishes/:dish_id/favorite',  dishController.removeFavorite);  // add authenticate later when implemented
+router.get    ('/dishes/favorites',          dishController.listFavorites);   // add authenticate later when implemented
 
 /* ADMIN only */
-router.post  ('/adm/dishes',     menuController.createDish); // add authenticate and adminOnly later when implemented
-router.put   ('/adm/dishes/:id', menuController.updateDish); // add authenticate and adminOnly later when implemented
-router.delete('/adm/dishes/:id', menuController.deleteDish); // add authenticate and adminOnly later when implemented
+router.post  ('/adm/dishes',     dishController.createDish); // add authenticate and adminOnly later when implemented
+router.put   ('/adm/dishes/:id', dishController.updateDish); // add authenticate and adminOnly later when implemented
+router.delete('/adm/dishes/:id', dishController.deleteDish); // add authenticate and adminOnly later when implemented
 
-router.put   ('/adm/dishes/:id/special',   menuController.setDailySpecial); // add authenticate and adminOnly later when implemented
-router.delete('/adm/dishes/:id/special',   menuController.removeDailySpecial); // add authenticate and adminOnly later when implemented
+router.put   ('/adm/dishes/:id/special',   dishController.setDailySpecial); // add authenticate and adminOnly later when implemented
+router.delete('/adm/dishes/:id/special',   dishController.removeDailySpecial); // add authenticate and adminOnly later when implemented
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DISHES COMBO BUILDER  (used by custom orders)
