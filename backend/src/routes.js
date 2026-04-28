@@ -35,7 +35,6 @@ router.get('/adm/customers', userController.listCustomers); // add authenticate 
 // ─────────────────────────────────────────────────────────────────────────────
 
 router.get('/dishes',               dishController.list);        // returns DishDTO[]
-router.get('/dishes/:dish_id',      dishController.get);         // returns DishDTO
 router.get('/dishes/daily-special', dishController.specials);    // returns DishDTO
 
 /* FAVORITES (cutomer logged) */
