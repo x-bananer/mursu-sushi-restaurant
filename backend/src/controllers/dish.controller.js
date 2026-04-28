@@ -23,7 +23,17 @@ export async function specials(req, res) {
 
 export const get = placeholder("dishes.get");
 
-export const listFavorites = placeholder("dishes.listFavorites");
+export async function listFavorites(req, res) {
+	const userId = 1;
+	try {
+		const favorites = await dishService.getUserFavorites(userId);
+		console.log("FAVOR");
+		res.json({ favorites });
+	} catch (err) {
+		console.log("ERRORI");
+		res.status(500).json({ message: "Something went wrong" });
+	}
+}
 export const addFavorite = placeholder("dishes.addFavorite");
 export const removeFavorite = placeholder("dishes.removeFavorite");
 
