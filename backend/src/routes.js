@@ -32,14 +32,6 @@ router.patch('/users/me', auth, userController.updateProfile);
 router.get('/users/:userId', auth, adminOnly, userController.getUserById);
 router.get('/adm/customers', auth, adminOnly, userController.listCustomers);
 
-// IMPORTANT NOTE:
-// I am keeping this 3 endpoints because Veikka added it, but I think we will call for this internally,
-// so no need of this enpoits and its controllers.
-// Once it is confirmed with the rest of the group then we delete or if I got it wrong we keep it.
-router.patch('/users/:userId/stamps', auth, userController.setStampCount);
-router.post('/users/:userId/stamps/increment', auth, adminOnly, userController.addStamp);
-router.patch('/users/:userId/stamp-discount', auth, adminOnly, userController.setStampDiscountActive);
-
 // ─────────────────────────────────────────────────────────────────────────────
 // DISHES MENU
 // ─────────────────────────────────────────────────────────────────────────────
@@ -57,9 +49,9 @@ router.post('/adm/dishes', auth, adminOnly, dishController.createDish);
 router.patch('/adm/dishes/:id', auth, adminOnly, dishController.updateDish);
 router.delete('/adm/dishes/:id', auth, adminOnly, dishController.deleteDish);
 
-router.post('/adm/dishes/:id/special', auth, adminOnly, dishController.setDailySpecial);
-router.patch('/adm/dishes/:id/special', auth, adminOnly, dishController.setDailySpecial);
-router.delete('/adm/dishes/:id/special', auth, adminOnly, dishController.removeDailySpecial);
+router.post('/adm/dishes/:id/special', auth, adminOnly, dishController.createDailySpecial);
+router.patch('/adm/dishes/:id/special', auth, adminOnly, dishController.updateDailySpecial);
+router.delete('/adm/dishes/:id/special', auth, adminOnly, dishController.deleteDailySpecial);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DISHES COMBO BUILDER  (used by custom orders)
@@ -94,6 +86,7 @@ router.post('/adm/orders', orderController.create);
 // CART
 // ─────────────────────────────────────────────────────────────────────────────
 router.get('/cart', cartController.get);
+router.post('/cart', cartController.create);
 router.patch('/cart', cartController.update);
 router.post('/cart/checkout', cartController.checkout);
 

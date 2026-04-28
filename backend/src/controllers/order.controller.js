@@ -19,7 +19,7 @@ import * as orderService from '../services/order/order.service.js';
  */
 
 /**
- * GET /orders
+ * GET /adm/orders
  *
  * PURPOSE:
  * Returns ALL ACTIVE orders for the kitchen dashboard.
@@ -49,7 +49,7 @@ export async function list(req, res, next) {
 }
 
 /**
- * GET /orders/:id
+ * GET /adm/orders/:id
  *
  * PURPOSE:
  * Get FULL details of a single order (admin or user view)
@@ -89,61 +89,33 @@ export async function get(req, res, next) {
 }
 
 /**
- * PATCH /orders/:id/status
+ * PATCH /adm/orders/:id/status
  *
  * PURPOSE:
- * Update the status of an order as it moves through the lifecycle
- * (e.g. pending → preparing → ready → delivered).
+ * Update order status (kitchen workflow)
  *
- * WHO USES THIS:
- * - Kitchen dashboard
- * - Admin panel
- * - Order tracking system
+ * WHY:
+ * Moves order through lifecycle:
+ * pending -> preparing -> ready -> etc.
  *
- * WHY THIS EXISTS:
- * Orders are state machines. Status changes must be controlled,
- * validated, and persisted in a consistent way.
+ * DATA IN:
+ * - statusId (new status)
  *
- * INPUT:
- * - params:
- *   - id: number (order ID)
- *
- * - body:
- *   - status: string
- *     (e.g. "pending", "preparing", "ready", "delivered", "cancelled")
- *
- * VALIDATION:
- * - orderId must be a valid number
- * - status must be a valid transition defined in OrderEngine
- *
- * SIDE EFFECTS (handled in service):
- * - Updates orders.status_id
- * - Inserts entry into order_status_history
- * - Emits real-time events (admin + user scopes)
- *
- * RESPONSE:
- * - success: boolean
- * - order: updated OrderDTO (current state of the order)
+ * SIDE EFFECT:
+ * - updates order.status_id
+ * - inserts status history (timeline)
  */
 export async function updateStatus(req, res, next) {
   try {
     const orderId = Number(req.params.id);
-    const { status } = req.body;
-
-    if (Number.isNaN(orderId)) {
+    const { statusId } = req.body;
+	if (Number.isNaN(orderId)) {
       return res.status(400).json({ message: 'Invalid order id' });
     }
 
-    if (!status) {
-      return res.status(400).json({ message: 'Missing status' });
-    }
+    await orderService.updateOrderStatus(orderId, statusId);
 
-    const updatedOrder = await orderService.updateOrderStatus(orderId, status);
-
-    res.json({
-      success: true,
-      order: updatedOrder
-    });
+    res.json({ success: true });
   } catch (err) {
     next(err);
   }
@@ -249,12 +221,6 @@ export async function tracking(req, res, next) {
  */
 
 export function streamOrders(req, res) {
-  const orderId = Number(req.params.id);
-
-  if (Number.isNaN(orderId)) {
-    return res.status(400).json({ message: 'Invalid order id' });
-  }
-
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
@@ -262,6 +228,12 @@ export function streamOrders(req, res) {
   });
 
   res.write('\n');
+
+  const orderId = Number(req.params.id);
+
+  if (Number.isNaN(orderId)) {
+    return res.status(400).json({ message: 'Invalid order id' });
+  }
 
   tracker.subscribe(res, {
     scope: 'user',
@@ -271,7 +243,7 @@ export function streamOrders(req, res) {
 }
 
 /**
- * GET /orders/stats
+ * GET /adm/orders/status/count
  *
  * PURPOSE:
  * Get counts of orders per status
@@ -284,7 +256,7 @@ export function streamOrders(req, res) {
  * DATA:
  * - [{ status: 'pending', count: 3 }, ...]
  */
-export async function stats(req, res, next) {
+export async function statusCount(req, res, next) {
   try {
     const stats = await orderService.getOrderCountsByStatus();
     res.json({ stats });
@@ -298,7 +270,7 @@ export async function stats(req, res, next) {
  */
 
 /**
- * POST /orders
+ * POST /adm/orders
  *
  * PURPOSE:
  * Create a new order (called by cart AFTER payment)
@@ -309,18 +281,9 @@ export async function stats(req, res, next) {
  */
 export async function create(req, res, next) {
   try {
-	if (!req.body?.order_items) {
-      return res.status(400).json({ message: 'Missing order items' });
-    }
-
     const order = await orderService.createOrder(req.body);
     res.status(201).json({ order });
   } catch (err) {
     next(err);
   }
 }
-
-// Needs to be moved to the cart or to its own controller.
-export const initiatePayment    = placeholder('payments.initiate');
-export const confirmPayment     = placeholder('payments.confirm');
-export const paymentStatus      = placeholder('payments.status');
