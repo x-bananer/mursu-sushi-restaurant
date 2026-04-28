@@ -21,4 +21,3 @@ export async function login(req, res, next) {
 
 export const logout = placeholder("auth.logout");
 export const refresh = placeholder("auth.refresh");
-export const me = placeholder("auth.me");

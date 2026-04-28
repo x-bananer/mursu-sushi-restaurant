@@ -46,5 +46,6 @@ export const createDish        = placeholder('adm.createDish');
 export const updateDish        = placeholder('adm.updateDish');
 export const deleteDish        = placeholder('adm.deleteDish');
 
-export const setDailySpecial   = placeholder('adm.setDailySpecial');
-export const removeDailySpecial= placeholder('adm.removeDailySpecial');
+export const createDailySpecial= placeholder('adm.createDailySpecial');
+export const deleteDailySpecial= placeholder('adm.deleteDailySpecial');
+export const updateDailySpecial= placeholder('adm.updateDailySpecial');
