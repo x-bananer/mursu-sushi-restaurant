@@ -3,10 +3,12 @@ import * as dailySpecialRepo from "../../models/db/repositories/dish/dailySpecia
 
 export async function getDishes() {
 	const dishes = await dishRepo.getDishes();
+
 	return dishes;
 }
 
 export async function getDailySpecial() {
 	const special = await dailySpecialRepo.getDailySpecial();
+
 	return special;
 }
