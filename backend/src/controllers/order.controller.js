@@ -7,8 +7,6 @@
  * @typedef {import('../../types/controllers/order.type.js').OrderTrackingResponse} OrderTrackingResponse
  */
 
-import { placeholder } from '../utils/paceholder.js';
-
 import * as tracker from '../services/order/order.tracker.js';
 import * as orderService from '../services/order/order.service.js';
 

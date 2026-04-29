@@ -8,6 +8,7 @@ import * as comboController from './controllers/combo.controller.js';
 import * as orderController from './controllers/order.controller.js';
 import * as userController  from './controllers/user.controller.js';
 import * as cartController  from './controllers/cart.controller.js';
+import * as paymentController from './controllers/payment.controller.js';
 
 const router = Router();
 
@@ -87,13 +88,9 @@ router.post('/adm/orders', orderController.create);
 // CART
 // ─────────────────────────────────────────────────────────────────────────────
 router.get('/cart', cartController.get);
-router.post('/cart', cartController.create);
 router.patch('/cart', cartController.update);
-router.post('/cart/checkout', cartController.checkout);
 
 /* PAYMENTS */
-router.post('/cart/:id/checkout/payments/mobilepay', auth, cartController.initiatePayment);
-router.post('/cart/:id/checkout/payments/mobilepay/confirm', auth, cartController.confirmPayment);
-router.get('/cart/:id/checkout/payments/status', auth, cartController.paymentStatus);
+router.post('/payments/stripe', auth, paymentController.initiate);
 
 export default router;

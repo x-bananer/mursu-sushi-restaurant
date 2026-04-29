@@ -173,6 +173,6 @@ VALUES
 -- PAYMENTS (CONSISTENT WITH ORDER)
 -- ─────────────────────────────────────────────
 
-INSERT INTO payments (order_id, amount, status_id, provider, provider_ref, created_at)
+INSERT INTO payments (order_id, user_id, amount, status_id, provider, provider_ref, created_at)
 VALUES
-(1, 74.00, 1, 'mobilepay', NULL, NOW());
+(1, 2, 74.00, 1, 'mobilepay', NULL, NOW());
