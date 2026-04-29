@@ -1,4 +1,11 @@
 /**
+ * TODO
+ * Add payment request and response types for:
+ * - POST /payments/stripe
+ */
+
+
+/**
  * POST /orders
  * Create a new order from ready cart data
  */
