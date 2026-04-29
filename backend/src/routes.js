@@ -92,6 +92,6 @@ router.patch ('/cart', cartController.update);  // UpdateCartResponse
 router.post  ('/cart/checkout', cartController.checkout);
 
 /* PAYMENTS */
-router.post('/payments/mobilepay', paymentController.initiate);
+router.post('/payments/stripe', paymentController.initiate);
 
 export default router;

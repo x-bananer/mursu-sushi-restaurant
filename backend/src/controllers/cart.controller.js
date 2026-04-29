@@ -8,6 +8,7 @@
  */
 
 import * as cartService from '../services/cart/cart.service.js';
+// import { placeholder } from '../utils/paceholder.js';
 
 /**
  * GET /cart
@@ -74,12 +75,3 @@ export const checkout = async (req, res, next) => {
         next(err);
     }
 }
-
-// TODO:
-
-export const create             = placeholder('orders.create');
-
-/* PAYMENT */
-export const initiatePayment    = placeholder('payments.initiate');
-export const confirmPayment     = placeholder('payments.confirm');
-export const paymentStatus      = placeholder('payments.status');
