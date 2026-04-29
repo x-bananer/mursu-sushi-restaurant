@@ -3,29 +3,43 @@ import Stripe from 'stripe';
 import * as paymentRepository from '../../models/db/repositories/order/payment.repository.js';
 import * as cartService from '../cart/cart.service.js';
 
+function createHttpError(statusCode, message) {
+	const error = /** @type {Error & { statusCode: number }} */ (new Error(message));
+	error.statusCode = statusCode;
+	return error;
+}
+
 const getPaymentStatus = async (type) => {
 	const status = await paymentRepository.getPaymentStatusByStatusType(type);
 
 	if (!status) {
-		throw new Error(`Payment status not found`);
+		throw createHttpError(500, 'Payment status not found');
 	}
 
 	return status;
 };
 
-export const payWithStripe = async (userId, checkoutData) => {
+export const payWithStripe = async (userId, sessionId, checkoutData) => {
+	if (!Number.isInteger(userId)) {
+		throw createHttpError(401, 'Unauthorized');
+	}
+
+	if (!sessionId) {
+		throw createHttpError(400, 'Missing session_id');
+	}
+
 	const pendingStatus = await getPaymentStatus('pending');
 	const completedStatus = await getPaymentStatus('completed');
 	const failedStatus = await getPaymentStatus('failed');
 
-	const cart = await cartService.getCartByUserId(userId);
+	const cart = await cartService.getCartBySessionId(sessionId);
 
 	if (!checkoutData.delivery_type_id || !checkoutData.address) {
-		throw new Error('Missing checkout data');
+		throw createHttpError(400, 'Missing checkout data');
 	}
 
 	if (!cart || !cart.items.length) {
-		throw new Error('Cart is empty');
+		throw createHttpError(400, 'Cart is empty');
 	}
 
 	let providerRef = null;
@@ -74,14 +88,14 @@ export const payWithStripe = async (userId, checkoutData) => {
 		};
 	}
 
-	const order = await cartService.checkoutCartByUserId(userId, {
+	const order = await cartService.checkoutCartBySessionId(sessionId, userId, {
 		delivery_type_id: checkoutData.delivery_type_id,
 		address: checkoutData.address,
 	});
 
 	await paymentRepository.attachOrderToPayment(paymentId, userId, order.id);
 	await paymentRepository.updatePaymentStatusById(paymentId, userId, completedStatus.id);
-	await cartService.clearCartByUserId(userId);
+	await cartService.clearCartBySessionId(sessionId);
 
 	return {
 		order,

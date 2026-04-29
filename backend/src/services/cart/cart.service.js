@@ -5,43 +5,18 @@ import * as orderService from '../order/order.service.js';
 import * as cartMapper from './cart.mapper.js';
 import * as cartEngine from '../../models/engine/cart.engine.js';
 
-// Create cart for user
-export const createCartByUserId = async (userId, items = []) => {
-    let cart = await cartRepo.getCartByUserId(userId);
-
-    if (cart) {
-        await cartItemsRepo.deleteCartItemsByCartId(cart.id);
-        await cartRepo.updateCartByUserId(userId);
-    } else {
-        await cartRepo.createCartByUserId(userId);
-        cart = await cartRepo.getCartByUserId(userId);
-    }
-
-    if (!cart) {
-        throw new Error('Cart was not created');
-    }
-
-    for (const item of items) {
-        const itemPrice = await getItemPrice(item);
-
-        const cartItemId = await cartItemsRepo.createCartItem({
-            cart_id: cart.id,
-            dish_id: item.dish_id,
-            quantity: item.quantity,
-            price: itemPrice,
-            item_type_id: item.item_type_id,
-        });
-
-        if (item.ingredients) {
-            await createCartItemIngredients(cartItemId, item.ingredients);
-        }
-    }
-
-    return getCartByUserId(userId);
+function createHttpError(statusCode, message) {
+    const error = /** @type {Error & { statusCode: number }} */ (new Error(message));
+    error.statusCode = statusCode;
+    return error;
 }
 
 // Create cart for session
 export const createCartBySessionId = async (sessionId, items = []) => {
+    if (!sessionId) {
+        throw createHttpError(400, 'Missing session_id');
+    }
+
     let cart = await cartRepo.getCartBySessionId(sessionId);
 
     if (cart) {
@@ -75,23 +50,12 @@ export const createCartBySessionId = async (sessionId, items = []) => {
     return getCartBySessionId(sessionId);
 }
 
-// Get cart for user
-export const getCartByUserId = async (userId) => {
-    const cart = await cartRepo.getCartByUserId(userId);
-
-    if (!cart) {
-        return null;
-    }
-
-    const items = await cartItemsRepo.getCartItemsByCartId(cart.id);
-    const ingredients = await getCartIngredients(items);
-    const totalPrice = getCartTotalPrice(items);
-
-    return cartMapper.toCartDTO(cart, items, ingredients, totalPrice);
-}
-
 // Get cart for session
 export const getCartBySessionId = async (sessionId) => {
+    if (!sessionId) {
+        throw createHttpError(400, 'Missing session_id');
+    }
+
     const cart = await cartRepo.getCartBySessionId(sessionId);
 
     if (!cart) {
@@ -105,92 +69,12 @@ export const getCartBySessionId = async (sessionId) => {
     return cartMapper.toCartDTO(cart, items, ingredients, totalPrice);
 }
 
-// Update cart for user
-export const updateCartByUserId = async (userId, items = []) => {
-    const cart = await cartRepo.getCartByUserId(userId);
-
-    if (!cart) {
-        return createCartByUserId(userId, items);
-    }
-
-    const filteredItems = items.filter(item => {
-        return !(item.item_type_id === 2 && (!item.ingredients || item.ingredients.length === 0));
-    });
-
-    if (filteredItems.length === 0) {
-        await cartItemsRepo.deleteCartItemsByCartId(cart.id);
-        await cartRepo.updateCartByUserId(userId);
-        return getCartByUserId(userId);
-    }
-
-    const oldItems = await cartItemsRepo.getCartItemsByCartId(cart.id);
-    const oldItemIds = oldItems.map(item => item.id);
-    const oldIngredients = await cartItemIngredientsRepository.getCartItemIngredientsByCartItemIds(oldItemIds);
-    const filteredItemsMap = {};
-    const oldIngredientsMap = {};
-
-    for (const ingredient of oldIngredients) {
-        if (!oldIngredientsMap[ingredient.cart_item_id]) {
-            oldIngredientsMap[ingredient.cart_item_id] = [];
-        }
-
-        oldIngredientsMap[ingredient.cart_item_id].push(ingredient);
-    }
-
-    for (const item of filteredItems) {
-        if (item.id) {
-            filteredItemsMap[item.id] = true;
-        }
-    }
-
-    for (const oldItem of oldItems) {
-        if (!filteredItemsMap[oldItem.id]) {
-            await deleteCartItemIngredients(oldIngredientsMap[oldItem.id] || []);
-            await cartItemsRepo.deleteCartItem(oldItem.id);
-        }
-    }
-
-    for (const item of filteredItems) {
-        if (item.id) {
-            const itemPrice = await getItemPrice(item);
-
-            await cartItemsRepo.updateCartItem({
-                id: item.id,
-                dish_id: item.dish_id,
-                quantity: item.quantity,
-                price: itemPrice,
-                item_type_id: item.item_type_id,
-            });
-
-            await deleteCartItemIngredients(oldIngredientsMap[item.id] || []);
-
-            if (item.ingredients) {
-                await createCartItemIngredients(item.id, item.ingredients);
-            }
-        } else {
-            const itemPrice = await getItemPrice(item);
-
-            const cartItemId = await cartItemsRepo.createCartItem({
-                cart_id: cart.id,
-                dish_id: item.dish_id,
-                quantity: item.quantity,
-                price: itemPrice,
-                item_type_id: item.item_type_id,
-            });
-
-            if (item.ingredients) {
-                await createCartItemIngredients(cartItemId, item.ingredients);
-            }
-        }
-    }
-
-    await cartRepo.updateCartByUserId(userId);
-
-    return getCartByUserId(userId);
-}
-
 // Update cart for session
 export const updateCartBySessionId = async (sessionId, items = []) => {
+    if (!sessionId) {
+        throw createHttpError(400, 'Missing session_id');
+    }
+
     const cart = await cartRepo.getCartBySessionId(sessionId);
 
     if (!cart) {
@@ -273,22 +157,12 @@ export const updateCartBySessionId = async (sessionId, items = []) => {
     return getCartBySessionId(sessionId);
 }
 
-// Clear cart for user
-export const clearCartByUserId = async (userId) => {
-    const cart = await cartRepo.getCartByUserId(userId);
-
-    if (!cart) {
-        return false;
-    }
-
-    await cartItemsRepo.deleteCartItemsByCartId(cart.id);
-    await cartRepo.updateCartByUserId(userId);
-
-    return true;
-}
-
 // Clear cart for session
 export const clearCartBySessionId = async (sessionId) => {
+    if (!sessionId) {
+        throw createHttpError(400, 'Missing session_id');
+    }
+
     const cart = await cartRepo.getCartBySessionId(sessionId);
 
     if (!cart) {
@@ -301,16 +175,27 @@ export const clearCartBySessionId = async (sessionId) => {
     return true;
 }
 
-// Create order from cart after payment
-export const checkoutCartByUserId = async (userId, checkoutData) => {
-    const cart = await getCartByUserId(userId);
+export const checkoutCartBySessionId = async (sessionId, userId, checkoutData) => {
+    if (!sessionId) {
+        throw createHttpError(400, 'Missing session_id');
+    }
+
+    if (!Number.isInteger(userId)) {
+        throw createHttpError(401, 'Unauthorized');
+    }
+
+    if (!checkoutData.delivery_type_id || !checkoutData.address) {
+        throw createHttpError(400, 'Missing checkout data');
+    }
+
+    const cart = await getCartBySessionId(sessionId);
 
     if (!cart) {
-        throw new Error('Cart not found');
+        throw createHttpError(404, 'Cart not found');
     }
 
     if (!cart.items.length) {
-        throw new Error('Cart is empty');
+        throw createHttpError(400, 'Cart is empty');
     }
 
     const orderItems = cart.items.map((item) => {
