@@ -1,11 +1,4 @@
 /**
- * TODO
- * Add payment request and response types for:
- * - POST /payments/mobilepay
- */
-
-
-/**
  * POST /orders
  * Create a new order from ready cart data
  */
