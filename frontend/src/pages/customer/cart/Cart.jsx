@@ -10,6 +10,7 @@ function CartContent() {
 	const stripe = useStripe();
 	const elements = useElements();
 	const [address, setAddress] = useState("Testikatu 12 A 4, Helsinki");
+	const sessionId = localStorage.getItem("session_id");
 
 	const handlePayment = async () => {
 		if (!stripe || !elements) return;
@@ -30,6 +31,7 @@ function CartContent() {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
+					"x-session-id": sessionId || "",
 				},
 				body: JSON.stringify({
 					delivery_type_id: 3,
