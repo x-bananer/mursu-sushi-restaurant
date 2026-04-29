@@ -4,6 +4,8 @@ import { useState } from "react";
 
 import "./cart.css";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 function CartContent() {
@@ -27,7 +29,7 @@ function CartContent() {
 		if (error || !paymentMethod) return;
 
 		try {
-			const response = await fetch("http://localhost:3000/api/v1/payments/stripe", {
+			const response = await fetch(`${API_BASE_URL}/payments/stripe`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

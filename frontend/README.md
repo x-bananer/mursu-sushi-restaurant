@@ -107,6 +107,15 @@ npm run dev
 
 Your application will be available at `http://localhost:5173`.
 
+### Environment Variables
+
+Create `frontend/.env`:
+
+```env
+VITE_API_BASE_URL=http://localhost:3000/api/v1
+VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+```
+
 ## Building for Production
 
 Create a production build:
