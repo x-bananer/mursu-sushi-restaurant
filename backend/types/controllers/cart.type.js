@@ -1,12 +1,10 @@
 /**
  * GET /cart
- * Get the current active cart for the user or guest session.
- * Cart identity is resolved by server from access token (user) or session_id (guest).
+ * Get the current active cart by session id from `x-session-id` header.
  */
 
 /**
  * @typedef {Object} GetCartRequest
- * @property {string} [session_id] // optional guest session id when user is not authenticated
  */
 
 /**
@@ -15,45 +13,12 @@
  */
 
 /**
- * POST /cart
- * Create a new active cart for the current user or guest session.
- */
-
-/**
- * @typedef {Object} CreateCartRequest
- * @property {string} [session_id] // optional guest session id when user is not authenticated
- * @property {Array<CreateCartItemData>} items
- */
-
-/**
- * @typedef {Object} CreateCartItemData
- * @property {number | null} dish_id
- * @property {number} quantity
- * @property {number} item_type_id // 1 = dish, 2 = custom
- * @property {Array<CreateCartIngredientData> | null} ingredients
- */
-
-
-/**
- * @typedef {Object} CreateCartIngredientData
- * @property {number} ingredient_id
- * @property {number} quantity
- * @property {number} position
- */
-
-/**
- * @typedef {Object} CreateCartResponse
- * @property {import('../dto/cart.type.js').CartDTO} cart
- */
- 
-/**
  * PATCH /cart
- * Update the current active cart for the current user or guest session.
+ * Update the current active cart by session id from `x-session-id` header.
  */
 
 /**
  * @typedef {Object} UpdateCartRequest
- * @property {string} [session_id] // optional guest session id when user is not authenticated
  * @property {Array<UpdateCartItemData>} items
  */
 
@@ -92,4 +57,13 @@
 /**
  * @typedef {Object} CheckoutCartResponse
  * @property {import('../dto/order.type.js').OrderDTO} order
+ */
+
+/**
+ * HTTP request type for authenticated checkout endpoint.
+ */
+/**
+ * @typedef {import('express').Request<{}, CheckoutCartResponse, CheckoutCartRequest> & {
+ *   user?: { id?: number | string, roleId?: number | null }
+ * }} CheckoutCartHttpRequest
  */
