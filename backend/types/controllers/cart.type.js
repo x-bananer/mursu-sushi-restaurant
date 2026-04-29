@@ -58,12 +58,3 @@
  * @typedef {Object} CheckoutCartResponse
  * @property {import('../dto/order.type.js').OrderDTO} order
  */
-
-/**
- * HTTP request type for authenticated checkout endpoint.
- */
-/**
- * @typedef {import('express').Request<{}, CheckoutCartResponse, CheckoutCartRequest> & {
- *   user?: { id?: number | string, roleId?: number | null }
- * }} CheckoutCartHttpRequest
- */
