@@ -35,6 +35,12 @@ CREATE TABLE badge (
   name VARCHAR(50) NOT NULL
 );
 
+CREATE TABLE ingredient_type (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  type VARCHAR(20) NOT NULL,
+  name VARCHAR(50) NOT NULL
+);
+
 -- ── USER DOMAIN ─────────────────────────────────────────────
 
 CREATE TABLE users (
@@ -73,7 +79,9 @@ CREATE TABLE dish_badges (
 CREATE TABLE ingredients (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
-  price DECIMAL(10,2) NOT NULL
+  price DECIMAL(10,2) NOT NULL,
+  ingredient_type_id INT NOT NULL,
+  FOREIGN KEY (ingredient_type_id) REFERENCES ingredient_type(id)
 );
 
 CREATE TABLE daily_specials (

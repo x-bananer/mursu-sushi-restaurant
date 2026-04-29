@@ -35,23 +35,23 @@ VALUES
 -- INGREDIENTS (FOR COMBO BUILDER + DIETARY ENGINE)
 -- ─────────────────────────────────────────────
 
-INSERT INTO ingredients (id, name, price)
+INSERT INTO ingredients (id, name, price, ingredient_type_id)
 VALUES
 -- bases
-(1, 'Shari Rice', 5.00),
-(2, 'Udon Silk', 9.00),
-(3, 'Soba Earth', 8.00),
+(1, 'Shari Rice', 5.00, 1),
+(2, 'Udon Silk', 9.00, 1),
+(3, 'Soba Earth', 8.00, 1),
 
 -- proteins
-(10, 'Seared Wagyu', 34.00),
-(11, 'Bluefin Toro', 28.00),
-(12, 'Smoked Tofu', 12.00),
+(10, 'Seared Wagyu', 34.00, 2),
+(11, 'Bluefin Toro', 28.00, 2),
+(12, 'Smoked Tofu', 12.00, 2),
 
 -- toppings
-(20, 'Nori Dust', 4.00),
-(21, 'Yuzu Zest', 6.00),
-(22, 'Daikon Lace', 5.00),
-(23, 'Shiso Leaf', 5.00);
+(20, 'Nori Dust', 4.00, 3),
+(21, 'Yuzu Zest', 6.00, 3),
+(22, 'Daikon Lace', 5.00, 3),
+(23, 'Shiso Leaf', 5.00, 3);
 
 -- ─────────────────────────────────────────────
 -- DISH BADGES
