@@ -5,10 +5,18 @@
  * @typedef {import('../../types/controllers/cart.type.js').UpdateCartResponse} UpdateCartResponse
  * @typedef {import('../../types/controllers/cart.type.js').CheckoutCartRequest} CheckoutCartRequest
  * @typedef {import('../../types/controllers/cart.type.js').CheckoutCartResponse} CheckoutCartResponse
+ * @typedef {import('../../types/controllers/cart.type.js').CheckoutCartHttpRequest} CheckoutCartHttpRequest
  */
 
 import * as cartService from '../services/cart/cart.service.js';
-// import { placeholder } from '../utils/paceholder.js';
+
+function createHttpError(statusCode, message) {
+	const error = /** @type {Error & { statusCode: number }} */ (
+		new Error(message)
+	);
+	error.statusCode = statusCode;
+	return error;
+}
 
 /**
  * GET /cart
@@ -18,16 +26,18 @@ import * as cartService from '../services/cart/cart.service.js';
  * @param {import('express').Response} res
  * @param {import('express').NextFunction} next
  */
-export const get = async (req, res, next) => {
-    try {
-        // TODO: get user is from request when auth is ready
-        const userId = 2;
-        const cart = await cartService.getCartByUserId(userId);
+export async function get(req, res, next) {
+	try {
+		const sessionId = String(req.headers["x-session-id"] ?? "").trim();
+		if (!sessionId) {
+			throw createHttpError(400, "Missing session_id");
+		}
+		const cart = await cartService.getCartBySessionId(sessionId);
 
-        return res.json({ cart });
-    } catch (err) {
-        next(err);
-    }
+		return res.json({ cart });
+	} catch (err) {
+		next(err);
+	}
 }
 
 /**
@@ -38,40 +48,48 @@ export const get = async (req, res, next) => {
  * @param {import('express').Response} res
  * @param {import('express').NextFunction} next
  */
-export const update = async (req, res, next) => {
-    try {
-        // TODO: get userId from request when auth is ready
-        const userId = 2;
+export async function update(req, res, next) {
+	try {
+		const sessionId = String(req.headers["x-session-id"] ?? "").trim();
+		if (!sessionId) {
+			throw createHttpError(400, "Missing session_id");
+		}
 
-        const { items } = req.body;
-        const cart = await cartService.updateCartByUserId(userId, items);
+		const { items } = req.body;
+		const cart = await cartService.updateCartBySessionId(sessionId, items);
 
-        return res.json({ cart });
-    } catch (err) {
-        next(err);
-    }
+		return res.json({ cart });
+	} catch (err) {
+		next(err);
+	}
 }
 
 /**
  * POST /cart/checkout
  *
- * @param {import('express').Request<{}, CheckoutCartResponse, CheckoutCartRequest>} req
+ * @param {CheckoutCartHttpRequest} req
  * @param {import('express').Response} res
  * @param {import('express').NextFunction} next
  */
-export const checkout = async (req, res, next) => {
-    try {
-        // TODO: get userId from request when auth is ready
-        const userId = 2;
-        const { delivery_type_id, address } = req.body;
+export async function checkout(req, res, next) {
+	try {
+		const sessionId = String(req.headers["x-session-id"] ?? "").trim();
+		if (!sessionId) {
+			throw createHttpError(400, "Missing session_id");
+		}
+		const userId = Number(req.user?.id);
+		if (!Number.isInteger(userId)) {
+			throw createHttpError(401, "Unauthorized");
+		}
+		const { delivery_type_id, address } = req.body;
 
-        const order = await cartService.checkoutCartByUserId(userId, {
-            delivery_type_id,
-            address,
-        });
+		const order = await cartService.checkoutCartBySessionId(sessionId, userId, {
+			delivery_type_id,
+			address,
+		});
 
-        return res.json({ order });
-    } catch (err) {
-        next(err);
-    }
+		return res.json({ order });
+	} catch (err) {
+		next(err);
+	}
 }
