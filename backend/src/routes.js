@@ -1,8 +1,10 @@
 import { Router } from 'express';
+import auth from './middleware/auth.js';
+import adminOnly from "./middleware/adminOnly.js";
 
 import * as authController  from './controllers/auth.controller.js';
 import * as dishController  from './controllers/dish.controller.js';
-import * as comboController from './controllers/combo.controller.js'
+import * as comboController from './controllers/combo.controller.js';
 import * as orderController from './controllers/order.controller.js';
 import * as userController  from './controllers/user.controller.js';
 import * as cartController  from './controllers/cart.controller.js';
@@ -15,21 +17,21 @@ const router = Router();
 // ─────────────────────────────────────────────────────────────────────────────
 
 router.post('/auth/register', authController.register);
-router.post('/auth/login',    authController.login);
-router.post('/auth/logout',   authController.logout); // add authenticate later when implemented
-router.post('/auth/refresh',  authController.refresh);
+router.post('/auth/login', authController.login);
+router.post('/auth/logout', auth, authController.logout);
+router.post('/auth/refresh', auth, authController.refresh);
 
 // ─────────────────────────────────────────────────────────────
 // USER (authenticated)
 // ─────────────────────────────────────────────────────────────
 
-router.post('/users', userController.createProfile);
-router.get('/users/me', userController.getProfile);        // UserDTO // add authenticate later when implemented
-router.delete('/users/me', userController.deleteProfile);  // UserDTO // add authenticate later when implemented
-router.patch('/users/me', userController.updateProfile);   // UserDTO // add authenticate later when implemented
+router.get('/users/me', auth, userController.getProfile);
+router.delete('/users/me', auth, userController.deleteProfile);
+router.patch('/users/me', auth, userController.updateProfile);
 
 /* ADMIN only */
-router.get('/adm/customers', userController.listCustomers); // add authenticate and adminOnly later when implemented
+router.get('/users/:userId', auth, adminOnly, userController.getUserById);
+router.get('/adm/customers', auth, adminOnly, userController.listCustomers);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DISHES MENU
@@ -37,59 +39,57 @@ router.get('/adm/customers', userController.listCustomers); // add authenticate 
 
 router.get('/dishes',               dishController.list);        // returns DishDTO[]
 router.get('/dishes/daily-special', dishController.specials);    // returns DishDTO
+//router.get("/dishes/:dish_id", dishController.get); // returns DishDTO
 
 /* FAVORITES (cutomer logged) */
-router.post  ('/dishes/:dish_id/favorite',   dishController.addFavorite);     // add authenticate later when implemented
-router.delete ('/dishes/:dish_id/favorite',  dishController.removeFavorite);  // add authenticate later when implemented
-router.get    ('/dishes/favorites',          dishController.listFavorites);   // add authenticate later when implemented
+router.post('/dishes/:dish_id/favorite', auth, dishController.addFavorite);
+router.delete('/dishes/:dish_id/favorite', auth, dishController.removeFavorite);
+router.get('/dishes/favorites', auth, dishController.listFavorites);
 
 /* ADMIN only */
-router.post  ('/adm/dishes',     dishController.createDish); // add authenticate and adminOnly later when implemented
-router.put   ('/adm/dishes/:id', dishController.updateDish); // add authenticate and adminOnly later when implemented
-router.delete('/adm/dishes/:id', dishController.deleteDish); // add authenticate and adminOnly later when implemented
+router.post('/adm/dishes', auth, adminOnly, dishController.createDish);
+router.patch('/adm/dishes/:id', auth, adminOnly, dishController.updateDish);
+router.delete('/adm/dishes/:id', auth, adminOnly, dishController.deleteDish);
 
-router.put   ('/adm/dishes/:id/special',   dishController.setDailySpecial); // add authenticate and adminOnly later when implemented
-router.delete('/adm/dishes/:id/special',   dishController.removeDailySpecial); // add authenticate and adminOnly later when implemented
+router.post('/adm/dishes/:id/special', auth, adminOnly, dishController.createDailySpecial);
+router.patch('/adm/dishes/:id/special', auth, adminOnly, dishController.updateDailySpecial);
+router.delete('/adm/dishes/:id/special', auth, adminOnly, dishController.deleteDailySpecial);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DISHES COMBO BUILDER  (used by custom orders)
 // ─────────────────────────────────────────────────────────────────────────────
+router.get('/dishes/ingredients', comboController.listIngredients);
+router.post('/dishes/combo/validate', comboController.validateCombo);
+router.post('/dishes/combo/price', comboController.priceCombo);
 
-router.get('/dishes/ingredients',     comboController.listIngredients);  // returns IngredientDTO[]
-router.post('/dishes/combo/validate', comboController.validateCombo);    // From engie
-router.post('/dishes/combo/price',    comboController.priceCombo);       // From engie
-
-router.post  ('/adm/ingredients',     comboController.createIngredient); // add authenticate and adminOnly later when implemented
-router.put   ('/adm/ingredients/:id', comboController.updateIngredient); // add authenticate and adminOnly later when implemented
-router.delete('/adm/ingredients/:id', comboController.deleteIngredient); // add authenticate and adminOnly later when implemented
-
+/* ADMIN only */
+router.post('/adm/ingredients', auth, adminOnly, comboController.createIngredient);
+router.patch('/adm/ingredients/:id', auth, adminOnly, comboController.updateIngredient);
+router.delete('/adm/ingredients/:id', auth, adminOnly, comboController.deleteIngredient);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ORDERS
 // ─────────────────────────────────────────────────────────────────────────────
 
 /* LOGGED USER */
-router.get('/orders/active',          orderController.getActive);
-/* ANONYMOUS USER */
-router.get('/orders/:id/tracking',    orderController.tracking);
+router.get('/orders/active', auth, orderController.getActive);
 /* REAL TIME ORDER TRACKER STREAMER */
-router.get('/orders/:id/stream',      orderController.streamOrders);
+router.get('/orders/:id/stream', auth, orderController.streamOrders);
 
 /* ADMIN only */
-router.get('/adm/orders/status/count', orderController.statusCount);  // add authenticate and adminOnly later when implemented
-router.patch('/adm/orders/:id/status', orderController.updateStatus); // add authenticate and adminOnly later when implemented
-router.get ('/adm/orders/:id',         orderController.get);          // add authenticate and adminOnly later when implemented
-router.get('/adm/orders',              orderController.list);         // add authenticate and adminOnly later when implemented
-// remove create from front end access once car is implemented:
-router.post  ('/adm/orders',            orderController.create);
+router.get('/adm/orders/status/count', auth, adminOnly, orderController.statusCount);
+router.patch('/adm/orders/:id/status', auth, adminOnly, orderController.updateStatus);
+router.get('/adm/orders/:id', auth, adminOnly, orderController.get);
+router.get('/adm/orders', auth, adminOnly, orderController.list);
+// remove create from front end access once cart is implemented:
+router.post('/adm/orders', orderController.create);
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CART - Uses CartDTO
+// CART
 // ─────────────────────────────────────────────────────────────────────────────
-
-router.get   ('/cart', cartController.get);     // GetCartResponse
-router.patch ('/cart', cartController.update);  // UpdateCartResponse
-router.post  ('/cart/checkout', cartController.checkout);
+router.get('/cart', cartController.get);
+router.patch('/cart', cartController.update);
+router.post('/cart/checkout', cartController.checkout);
 
 /* PAYMENTS */
 router.post('/payments/stripe', paymentController.initiate);
