@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "db:setup": "node src/models/db/schemas/setup.db.js",
-    "test:user-flow": "node tests/user.test.js"
+    "test:user-flow": "node tests/user.test.js",
+    "test:combo-flow": "node tests/combo.test.js"
   },
   "keywords": [],
   "author": "",
