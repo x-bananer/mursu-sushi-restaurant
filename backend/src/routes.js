@@ -89,7 +89,6 @@ router.post('/adm/orders', orderController.create);
 // ─────────────────────────────────────────────────────────────────────────────
 router.get('/cart', cartController.get);
 router.patch('/cart', cartController.update);
-router.post('/cart/checkout', auth, cartController.checkout);
 
 /* PAYMENTS */
 router.post('/payments/stripe', auth, paymentController.initiate);

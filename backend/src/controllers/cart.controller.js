@@ -33,24 +33,3 @@ export async function update(req, res, next) {
 		next(err);
 	}
 }
-
-/**
- * POST /cart/checkout
- *
- */
-export async function checkout(req, res, next) {
-	try {
-		const sessionId = String(req.headers["x-session-id"] ?? "").trim();
-		const userId = Number(req.user?.id);
-		const { delivery_type_id, address } = req.body;
-
-		const order = await cartService.checkoutCartBySessionId(sessionId, userId, {
-			delivery_type_id,
-			address,
-		});
-
-		return res.json({ order });
-	} catch (err) {
-		next(err);
-	}
-}

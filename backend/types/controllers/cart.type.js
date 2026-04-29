@@ -42,19 +42,3 @@
  * @typedef {Object} UpdateCartResponse
  * @property {import('../dto/cart.type.js').CartDTO} cart
  */
-
-/**
- * POST /cart/checkout
- * Create order from current cart.
- */
-
-/**
- * @typedef {Object} CheckoutCartRequest
- * @property {number} delivery_type_id
- * @property {string} address
- */
-
-/**
- * @typedef {Object} CheckoutCartResponse
- * @property {import('../dto/order.type.js').OrderDTO} order
- */
