@@ -36,8 +36,9 @@ router.get('/adm/customers', auth, adminOnly, userController.listCustomers);
 // DISHES MENU
 // ─────────────────────────────────────────────────────────────────────────────
 
-router.get('/dishes', dishController.list);
-router.get('/dishes/daily-special', dishController.specials);
+router.get('/dishes',               dishController.list);        // returns DishDTO[]
+router.get('/dishes/daily-special', dishController.specials);    // returns DishDTO
+//router.get("/dishes/:dish_id", dishController.get); // returns DishDTO
 
 /* FAVORITES (cutomer logged) */
 router.post('/dishes/:dish_id/favorite', auth, dishController.addFavorite);
