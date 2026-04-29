@@ -1,22 +1,9 @@
-/**
- * @typedef {import('../../types/controllers/cart.type.js').GetCartRequest} GetCartRequest
- * @typedef {import('../../types/controllers/cart.type.js').GetCartResponse} GetCartResponse
- * @typedef {import('../../types/controllers/cart.type.js').UpdateCartRequest} UpdateCartRequest
- * @typedef {import('../../types/controllers/cart.type.js').UpdateCartResponse} UpdateCartResponse
- * @typedef {import('../../types/controllers/cart.type.js').CheckoutCartRequest} CheckoutCartRequest
- * @typedef {import('../../types/controllers/cart.type.js').CheckoutCartResponse} CheckoutCartResponse
- * @typedef {import('../../types/controllers/cart.type.js').CheckoutCartHttpRequest} CheckoutCartHttpRequest
- */
-
 import * as cartService from '../services/cart/cart.service.js';
 
 /**
  * GET /cart
  * Return current cart for authenticated user or guest session.
  *
- * @param {import('express').Request<{}, GetCartResponse, {}, GetCartRequest>} req
- * @param {import('express').Response} res
- * @param {import('express').NextFunction} next
  */
 export async function get(req, res, next) {
 	try {
@@ -33,9 +20,6 @@ export async function get(req, res, next) {
  * PATCH /cart
  * Update cart for authenticated user or guest session.
  *
- * @param {import('express').Request<{}, UpdateCartResponse, UpdateCartRequest>} req
- * @param {import('express').Response} res
- * @param {import('express').NextFunction} next
  */
 export async function update(req, res, next) {
 	try {
@@ -53,9 +37,6 @@ export async function update(req, res, next) {
 /**
  * POST /cart/checkout
  *
- * @param {CheckoutCartHttpRequest} req
- * @param {import('express').Response} res
- * @param {import('express').NextFunction} next
  */
 export async function checkout(req, res, next) {
 	try {

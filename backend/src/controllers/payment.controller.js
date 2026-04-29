@@ -1,10 +1,5 @@
 import * as paymentService from '../services/integrations/payment.service.js';
 
-/**
- * @param {import('../../types/controllers/payment.type.js').InitiatePaymentHttpRequest} req
- * @param {import('express').Response} res
- * @param {import('express').NextFunction} next
- */
 export async function initiate(req, res, next) {
 	try {
 		const userId = Number(req.user?.id);
