@@ -143,6 +143,12 @@
 	color: var(--color-white);
 }
 
+.combo-summary__error {
+	margin-top: 10px;
+	text-align: center;
+	color: var(--color-danger);
+}
+
 .combo-summary__button:hover {
 	border-color: var(--color-gray);
 	background: var(--color-white);

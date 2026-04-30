@@ -152,6 +152,7 @@ export default function ComboSummary() {
                                 € {Number(combo?.total_price ?? 0)}
                             </span>
                         </div>
+                       
                         <Button
                             onClick={handleAddToCart}
                             disabled={createLoading}
@@ -159,6 +160,9 @@ export default function ComboSummary() {
                         >
                             Add to cart
                         </Button>
+                         {createError && (
+                            <p className="combo-summary__error">{createError}</p>
+                        )}
                     </>
                 }
 
