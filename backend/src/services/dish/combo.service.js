@@ -2,15 +2,15 @@ import * as ingredientRepo from '../../models/db/repositories/dish/ingredients.r
 import * as cartService from '../cart/cart.service.js';
 import * as comboEngine from '../../models/engine/combo.engine.js';
 
-export async function previewCombo(ingredientsFromClient = []) {
+export async function previewCombo(ingredientsFromClient = [], withValidation = false) {
     const ingredientsFromDb = await ingredientRepo.getIngredients();
 
-    const combo = comboEngine.buildCombo(ingredientsFromClient, ingredientsFromDb);
+    const combo = comboEngine.buildCombo(ingredientsFromClient, ingredientsFromDb, withValidation);
     return combo;
 }
 
 export async function createCombo(sessionId, ingredientsFromClient) {
-    const validatedCombo = await previewCombo(ingredientsFromClient);
+    const validatedCombo = await previewCombo(ingredientsFromClient, true);
 
     const currentCart = await cartService.getCartBySessionId(sessionId);
 
