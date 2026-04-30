@@ -2,9 +2,46 @@ import './combo-layer.css';
 
 import Button from '../../../shared/button/Button';
 
-export default function ComboLayer({ isFixed, ingredient }) {
+import { useDrag, useDrop } from 'react-dnd';
+
+export default function ComboLayer({ isFixed, ingredient, index, moveIngredient }) {
+
+    const [{ isDragging }, dragRef] = useDrag(
+        () => ({
+            type: 'layer',
+            item: { fromIndex: index, toIndex: index, type: 'filling' },
+            canDrag: !isFixed,
+        }),
+        [ingredient, index, isFixed]
+    );
+
+    const [, dropRef] = useDrop(
+        () => ({
+            accept: 'layer',
+            hover: (dragItem) => {
+                if (!isFixed && dragItem.fromIndex !== index) {
+                    moveIngredient({
+                        fromIndex: dragItem.fromIndex,
+                        toIndex: index,
+                    });
+
+                    dragItem.fromIndex = index;
+                    dragItem.toIndex = index;
+                }
+            },
+        }),
+        [index, isFixed, moveIngredient]
+    );
+
     return (
-        <article className={`combo-layer ${isFixed ? 'combo-layer--fixed' : 'combo-layer--draggable'}`}>
+        <article
+            ref={(node) => {
+                dragRef(node);
+                dropRef(node);
+            }}
+            className={`combo-layer ${isFixed ? 'combo-layer--fixed' : 'combo-layer--draggable'}`}
+            style={{ opacity: isDragging ? 0.5 : 1 }}
+        >
             {isFixed ?
                 <div className="combo-layer__aside combo-layer__aside--left">
                     <svg

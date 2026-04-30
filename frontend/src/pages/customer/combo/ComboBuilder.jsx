@@ -22,12 +22,12 @@ export default function ComboBuilder() {
 					<div className="combo-page__hero">
 						<h1 className="combo-page__title">Build a Set</h1>
 						<p className="combo-page__subtitle">
-							Choose your layers for a custom oshi sushi set: <br></br> one perfect topping, up to three fillings, and a perfectly paired base					
+							Choose your layers for a custom oshi sushi set: <br></br> one perfect topping, up to three fillings, and a perfectly paired base
 						</p>
 					</div>
-					<ComboSection title="Base" ingredients={base} />
-					<ComboSection title="Fillings" ingredients={fillings} />
 					<ComboSection title="Toppings" ingredients={toppings} />
+					<ComboSection title="Fillings" ingredients={fillings} />
+					<ComboSection title="Base" ingredients={base} />
 				</div>
 				<ComboSummary />
 			</DndProvider>
