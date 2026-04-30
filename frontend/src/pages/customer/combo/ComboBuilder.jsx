@@ -2,6 +2,7 @@ import "./combo-builder.css";
 
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { useState } from "react";
 
 import { useComboIngredients } from '../../../hooks/apiHooks/combo';
 
@@ -10,10 +11,58 @@ import ComboSummary from '../../../components/customer/combo/combo-summary/Combo
 
 export default function ComboBuilder() {
 	const { ingredients, loading, error } = useComboIngredients();
+	const [selectedIngredients, setSelectedIngredients] = useState([]);
 
 	const base = ingredients.filter((i) => i.type?.type === 'base');
 	const fillings = ingredients.filter((i) => i.type?.type === 'filling');
 	const toppings = ingredients.filter((i) => i.type?.type === 'topping');
+
+	const addIngredient = (ingredient) => {
+		setSelectedIngredients((prev) => {
+			const ingredientWithUid = { ...ingredient, uid: `${Date.now()}-${Math.random()}` };
+			const type = ingredient?.type?.type;
+
+			if (type === 'topping') {
+				const notToppingIngredients = prev.filter((item) => item?.type?.type !== 'topping');
+				return [...notToppingIngredients, ingredientWithUid];
+			}
+
+			if (type === 'filling') {
+				const fillingIngredients = prev.filter((item) => item?.type?.type === 'filling');
+				const notFillingIngredients = prev.filter((item) => item?.type?.type !== 'filling');
+				const newFillingIngredients = [ingredientWithUid, ...fillingIngredients].slice(0, 3);
+				return [...notFillingIngredients, ...newFillingIngredients];
+			}
+
+			if (type === 'base') {
+				const notBaseIngredients = prev.filter((item) => item?.type?.type !== 'base');
+				return [...notBaseIngredients, ingredientWithUid];
+			}
+
+			return [...prev, ingredientWithUid];
+		});
+	};
+
+	const removeIngredient = (uid) => {
+		setSelectedIngredients((prev) => prev.filter((item) => item?.uid !== uid));
+	};
+
+	const moveIngredient = (ingredient) => {
+		setSelectedIngredients((prev) => {
+			const fillings = prev.filter((i) => i.type.type === 'filling');
+			const notFillings = prev.filter((i) => i.type.type !== 'filling');
+
+			const updatedFillings = [...fillings];
+			const [ingredientToMove] = updatedFillings.splice(ingredient.fromIndex, 1);
+			updatedFillings.splice(ingredient.toIndex, 0, ingredientToMove);
+
+			return [...notFillings, ...updatedFillings];
+		});
+	};
+
+	const clearSelectedIngredients = () => {
+		setSelectedIngredients([]);
+	};
 
 	return (
 		<div className="combo-page">
@@ -25,11 +74,32 @@ export default function ComboBuilder() {
 							Choose your layers for a custom oshi sushi set: <br></br> one perfect topping, up to three fillings, and a perfectly paired base
 						</p>
 					</div>
-					<ComboSection title="Toppings" ingredients={toppings} />
-					<ComboSection title="Fillings" ingredients={fillings} />
-					<ComboSection title="Base" ingredients={base} />
+					<ComboSection
+						title="Toppings"
+						ingredients={toppings}
+						onAddIngredient={addIngredient}
+						selectedIngredients={selectedIngredients}
+					/>
+					<ComboSection
+						title="Fillings"
+						ingredients={fillings}
+						onAddIngredient={addIngredient}
+						selectedIngredients={selectedIngredients}
+					/>
+					<ComboSection
+						title="Base"
+						ingredients={base}
+						onAddIngredient={addIngredient}
+						selectedIngredients={selectedIngredients}
+					/>
 				</div>
-				<ComboSummary />
+				<ComboSummary
+					selectedIngredients={selectedIngredients}
+					onAddIngredient={addIngredient}
+					onRemoveIngredient={removeIngredient}
+					onMoveIngredient={moveIngredient}
+					onClearSelectedIngredients={clearSelectedIngredients}
+				/>
 			</DndProvider>
 		</div>
 	);
