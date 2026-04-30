@@ -65,3 +65,61 @@ function extractGeometry(route) {
   console.warn('[ORS] Unknown geometry format');
   return [];
 }
+
+// ── Steps ────────────────────────────────────────────────
+
+function mapStep(step) {
+  return {
+    instruction: step.instruction ?? '',
+    durationSecs: Math.round(step.duration ?? 0),
+    distanceM: Math.round(step.distance ?? 0),
+  };
+}
+
+// ── HTTP ─────────────────────────────────────────────────
+
+async function orsRequest(body, attempt = 1) {
+  if (!ORS_API_KEY) {
+    throw new Error('ORS_API_KEY is missing');
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+  try {
+    const res = await fetch(ORS_BASE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: ORS_API_KEY,
+      },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+
+    if (res.status === 429 && attempt <= MAX_RETRIES) {
+      await new Promise(r => setTimeout(r, 1000 * attempt));
+      return orsRequest(body, attempt + 1);
+    }
+
+    if (!res.ok) {
+      throw new Error(`ORS ${res.status}: ${await res.text()}`);
+    }
+
+    return res.json();
+
+  } catch (err) {
+    const retryable =
+      err.name === 'AbortError' ||
+      err.message.includes('fetch');
+
+    if (retryable && attempt <= MAX_RETRIES) {
+      await new Promise(r => setTimeout(r, 500 * attempt));
+      return orsRequest(body, attempt + 1);
+    }
+
+    throw err;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
