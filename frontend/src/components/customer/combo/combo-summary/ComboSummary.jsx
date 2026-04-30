@@ -10,14 +10,6 @@ import { useComboPreview } from '../../../../hooks/apiHooks';
 export default function ComboSummary() {
     const [selectedIngredients, setSelectedIngredients] = useState([]);
 
-    const ingredientsForPreview = selectedIngredients.map((item, index) => ({
-        ingredient_id: item.id,
-        quantity: 1,
-        position: index + 1,
-    }));
-
-    const { combo, loading, error } = useComboPreview(ingredientsForPreview);
-
     const [{ isOver, canDrop }, ingredientDropRef] = useDrop(
         () => ({
             accept: 'ingredient',
@@ -92,6 +84,20 @@ export default function ComboSummary() {
         if (type === 'topping') groupedLayers.topping.push(ingredient);
     });
 
+    const orderedForBackend = [
+        ...groupedLayers.base,
+        ...groupedLayers.filling,
+        ...groupedLayers.topping,
+    ];
+
+    const ingredientsForPreview = orderedForBackend.map((item, index) => ({
+        ingredient_id: item.id,
+        quantity: 1,
+        position: index + 1,
+    }));
+
+    const { combo, loading, error } = useComboPreview(ingredientsForPreview);
+
     const isActive = isOver && canDrop;
 
     return (
@@ -128,11 +134,18 @@ export default function ComboSummary() {
                         )}
                     </div>
                 </div>
-                <div className="combo-summary__total">
-                    <span className="combo-summary__total-label">Total</span>
-                    <span className="combo-summary__total-value">50.00</span>
-                </div>
-                <Button className="combo-summary__button">Add to cart</Button>
+                {selectedIngredients.length > 0 &&
+                    <>
+                        <div className="combo-summary__total">
+                            <span className="combo-summary__total-label">Total</span>
+                            <span className="combo-summary__total-value">
+                                € {Number(combo?.total_price ?? 0)}
+                            </span>
+                        </div>
+                        <Button className="combo-summary__button">Add to cart</Button>
+                    </>
+                }
+
             </div>
         </aside>
     );
