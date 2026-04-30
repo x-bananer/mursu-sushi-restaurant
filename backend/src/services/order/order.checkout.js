@@ -164,3 +164,32 @@ async function buildPickup(base, userCoords, restaurantCoords) {
 async function buildDineIn(base, userCoords, restaurantCoords) {
   return buildPickup(base, userCoords, restaurantCoords);
 }
+
+// ─────────────────────────────────────────────
+// MAIN ENTRY
+// ─────────────────────────────────────────────
+
+export async function orderEstimates(order, options = {}) {
+  const {
+    userCoords = null,
+    serviceType,
+    activeOrdersAheadCount = 0,
+  } = options;
+
+  const restaurantCoords = getRestaurantCoords();
+  const base = buildBase(order, activeOrdersAheadCount, restaurantCoords);
+
+  switch (serviceType) {
+    case SERVICE_TYPE.DELIVERY:
+      return buildDelivery(base, userCoords, restaurantCoords);
+
+    case SERVICE_TYPE.PICKUP:
+      return buildPickup(base, userCoords, restaurantCoords);
+
+    case SERVICE_TYPE.DINE_IN:
+      return buildDineIn(base, userCoords, restaurantCoords);
+
+    default:
+      throw new Error(`Invalid serviceType: ${serviceType}`);
+  }
+}
