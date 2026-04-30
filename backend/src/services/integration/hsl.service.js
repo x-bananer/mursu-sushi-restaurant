@@ -116,3 +116,58 @@ function mapLeg(leg) {
     geometry: decodeGeometry(leg),
   };
 }
+
+// ── Request layer ─────────────────────────────────────────────────────────────
+
+async function hslRequest(query, attempt = 1) {
+  const controller = new AbortController();
+  const timeout    = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+  try {
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    if (API_KEY) {
+      headers['digitransit-subscription-key'] = API_KEY;
+    }
+
+    console.debug('[HSL] request attempt:', attempt);
+
+    const res = await fetch(HSL_ENDPOINT, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ query }),
+      signal: controller.signal,
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`HSL API ${res.status}: ${res.statusText} — ${text}`);
+    }
+
+    const json = await res.json();
+
+    if (json.errors?.length) {
+      throw new Error(`HSL GraphQL: ${json.errors[0].message}`);
+    }
+
+    return json.data;
+
+  } catch (err) {
+    const retryable =
+      err.name === 'AbortError' ||
+      err.message.includes('fetch') ||
+      err.message.includes('network');
+
+    if (retryable && attempt <= MAX_RETRIES) {
+      await new Promise(r => setTimeout(r, 500 * attempt));
+      return hslRequest(query, attempt + 1);
+    }
+
+    throw err;
+
+  } finally {
+    clearTimeout(timeout);
+  }
+}
