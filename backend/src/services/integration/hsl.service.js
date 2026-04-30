@@ -62,3 +62,57 @@ function buildQuery(from, to, transportMode, numItineraries = 1) {
     }
   }`;
 }
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function normalizePlaceName(name, fallback) {
+  if (!name) return fallback;
+  if (name === 'Origin') return 'Start';
+  if (name === 'Destination') return 'End';
+  return name;
+}
+
+function decodeGeometry(leg) {
+  const encoded = leg.legGeometry?.points;
+
+  if (!encoded || typeof encoded !== 'string') return [];
+
+  try {
+    return polyline.decode(encoded); // [[lat, lon], ...]
+  } catch {
+    console.warn('[HSL] polyline decode failed for leg:', leg.mode);
+    return [];
+  }
+}
+
+function mapLeg(leg) {
+  const durationMins = Math.round((leg.endTime - leg.startTime) / 60000);
+
+  return {
+    mode: leg.mode,
+
+    durationMins: Math.max(0, durationMins),
+    distanceM:    Math.round(leg.distance ?? 0),
+
+    from: {
+      name: normalizePlaceName(leg.from?.name, 'Start'),
+      lat:  leg.from?.lat ?? 0,
+      lon:  leg.from?.lon ?? 0,
+    },
+
+    to: {
+      name: normalizePlaceName(leg.to?.name, 'End'),
+      lat:  leg.to?.lat ?? 0,
+      lon:  leg.to?.lon ?? 0,
+    },
+
+    route: leg.route
+      ? {
+          shortName: leg.route.shortName ?? '',
+          longName:  leg.route.longName  ?? '',
+        }
+      : null,
+
+    geometry: decodeGeometry(leg),
+  };
+}
