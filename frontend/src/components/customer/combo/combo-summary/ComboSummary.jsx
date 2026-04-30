@@ -9,6 +9,7 @@ import { useComboPreview, useCreateCombo } from '../../../../hooks/apiHooks/comb
 
 export default function ComboSummary() {
     const [selectedIngredients, setSelectedIngredients] = useState([]);
+    const [successMessage, setSuccessMessage] = useState('');
 
     const [{ isOver, canDrop }, ingredientDropRef] = useDrop(
         () => ({
@@ -103,12 +104,15 @@ export default function ComboSummary() {
     const { createCombo, loading: createLoading, error: createError } = useCreateCombo();
 
     const handleAddToCart = async () => {
-        const sessionId = localStorage.getItem('session_id'); // или откуда берёшь
+        const sessionId = localStorage.getItem('session_id');
         await createCombo(ingredientsForPreview, sessionId);
         setSelectedIngredients([]);
+
+        setSuccessMessage('Your oshi-sushi set has been successfully added to the cart!');
+        setTimeout(() => {
+            setSuccessMessage('');
+        }, 3000);
     };
-
-
 
     return (
         <aside className="combo-summary">
@@ -152,19 +156,22 @@ export default function ComboSummary() {
                                 € {Number(combo?.total_price ?? 0)}
                             </span>
                         </div>
-                       
-                        <Button
-                            onClick={handleAddToCart}
-                            disabled={createLoading}
-                            className="combo-summary__button"
-                        >
-                            Add to cart
-                        </Button>
-                         {createError && (
-                            <p className="combo-summary__error">{createError}</p>
-                        )}
                     </>
                 }
+                <Button
+                    onClick={handleAddToCart}
+                    disabled={createLoading || selectedIngredients.length === 0}
+                    className="combo-summary__button"
+                >
+                    Add to cart
+                </Button>
+                {createError && (
+                    <p className="combo-summary__error">{createError}</p>
+                )}
+
+                {successMessage && (
+                    <div className="combo-summary__toast">{successMessage}</div>
+                )}
 
             </div>
         </aside>
