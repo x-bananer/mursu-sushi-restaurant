@@ -25,19 +25,20 @@ export default function ComboSummary() {
 
     const addIngredient = (ingredient) => {
         setSelectedIngredients((prev) => {
+            const ingredientWithUid = { ...ingredient, uid: `${Date.now()}-${Math.random()}` };
             const type = ingredient?.type?.type;
 
             // exactly one topping
             if (type === 'topping') {
                 const notToppingIngredients = prev.filter((item) => item?.type?.type !== 'topping');
-                return [...notToppingIngredients, ingredient];
+                return [...notToppingIngredients, ingredientWithUid];
             }
 
             // up to three fillings
             if (type === 'filling') {
                 const fillingIngredients = prev.filter((item) => item?.type?.type === 'filling');
                 const notFillingIngredients = prev.filter((item) => item?.type?.type !== 'filling');
-                const newFillingIngredients = [ingredient, ...fillingIngredients].slice(0, 3);
+                const newFillingIngredients = [ingredientWithUid, ...fillingIngredients].slice(0, 3);
 
                 return [...notFillingIngredients, ...newFillingIngredients];
             }
@@ -45,10 +46,10 @@ export default function ComboSummary() {
             // exactly one base
             if (type === 'base') {
                 const notBaseIngredients = prev.filter((item) => item?.type?.type !== 'base');
-                return [...notBaseIngredients, ingredient];
+                return [...notBaseIngredients, ingredientWithUid];
             }
 
-            return [...prev, ingredient];
+            return [...prev, ingredientWithUid];
         });
     };
 
@@ -63,6 +64,10 @@ export default function ComboSummary() {
 
             return [...notFillings, ...updatedFillings];
         });
+    };
+
+    const removeIngredient = (uid) => {
+        setSelectedIngredients((prev) => prev.filter((item) => item?.uid !== uid));
     };
 
     const groupedLayers = {
@@ -91,14 +96,14 @@ export default function ComboSummary() {
                     className={`combo-summary__stack ${canDrop ? 'combo-summary__stack--can-drop' : ''} ${isActive ? 'combo-summary__stack--active' : ''}`}
                 >
                     {groupedLayers.topping.map((ingredient, index) => (
-                        <ComboLayer key={`topping-${ingredient.id}-${index}`} ingredient={ingredient} index={index} isFixed moveIngredient={moveIngredient} />
+                        <ComboLayer key={`topping-${ingredient.id}-${index}`} ingredient={ingredient} index={index} isFixed moveIngredient={moveIngredient} removeIngredient={removeIngredient} />
                     ))}
                     {groupedLayers.filling.map((ingredient, index) => (
-                        <ComboLayer key={`filling-${ingredient.id}-${index}`} ingredient={ingredient} index={index} moveIngredient={moveIngredient} />
+                        <ComboLayer key={`filling-${ingredient.id}-${index}`} ingredient={ingredient} index={index} moveIngredient={moveIngredient} removeIngredient={removeIngredient} />
                     ))}
 
                     {groupedLayers.base.map((ingredient, index) => (
-                        <ComboLayer key={`base-${ingredient.id}-${index}`} ingredient={ingredient} index={index} isFixed moveIngredient={moveIngredient} />
+                        <ComboLayer key={`base-${ingredient.id}-${index}`} ingredient={ingredient} index={index} isFixed moveIngredient={moveIngredient} removeIngredient={removeIngredient} />
                     ))}
 
                     <div className="combo-summary__drop-hint">

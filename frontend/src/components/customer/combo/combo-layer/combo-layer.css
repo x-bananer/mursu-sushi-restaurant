@@ -17,6 +17,10 @@
   background: rgba(0, 0, 0, 0.05);
 }
 
+.combo-layer--draggable {
+  cursor: grab;
+}
+
 .combo-layer__main {
   flex: 1;
   min-width: 0;

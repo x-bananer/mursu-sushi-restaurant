@@ -4,7 +4,7 @@ import Button from '../../../shared/button/Button';
 
 import { useDrag, useDrop } from 'react-dnd';
 
-export default function ComboLayer({ isFixed, ingredient, index, moveIngredient }) {
+export default function ComboLayer({ isFixed, ingredient, index, moveIngredient, removeIngredient }) {
 
     const [{ isDragging }, dragRef] = useDrag(
         () => ({
@@ -32,6 +32,10 @@ export default function ComboLayer({ isFixed, ingredient, index, moveIngredient 
         }),
         [index, isFixed, moveIngredient]
     );
+
+    const handleRemove = () => {
+        removeIngredient(ingredient?.uid);
+    };
 
     return (
         <article
@@ -81,6 +85,7 @@ export default function ComboLayer({ isFixed, ingredient, index, moveIngredient 
                 <Button
                     className="combo-layer__btn"
                     variant="link"
+                    onClick={handleRemove}
                 >
                     <svg
                         viewBox="0 0 24 24"
