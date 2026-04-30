@@ -20,13 +20,15 @@ export default function ComboLayer({ isFixed, ingredient, index, moveIngredient,
             accept: 'layer',
             hover: (dragItem) => {
                 if (!isFixed && dragItem.fromIndex !== index) {
+                    dragItem.toIndex = index;
+                }
+            },
+            drop: (dragItem) => {
+                if (!isFixed && dragItem.fromIndex !== dragItem.toIndex) {
                     moveIngredient({
                         fromIndex: dragItem.fromIndex,
-                        toIndex: index,
+                        toIndex: dragItem.toIndex,
                     });
-
-                    dragItem.fromIndex = index;
-                    dragItem.toIndex = index;
                 }
             },
         }),

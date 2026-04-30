@@ -5,9 +5,18 @@ import ComboLayer from '../combo-layer/ComboLayer';
 
 import { useDrop } from 'react-dnd';
 import { useState } from 'react';
+import { useComboPreview } from '../../../../hooks/apiHooks';
 
 export default function ComboSummary() {
     const [selectedIngredients, setSelectedIngredients] = useState([]);
+
+    const ingredientsForPreview = selectedIngredients.map((item, index) => ({
+        ingredient_id: item.id,
+        quantity: 1,
+        position: index + 1,
+    }));
+
+    const { combo, loading, error } = useComboPreview(ingredientsForPreview);
 
     const [{ isOver, canDrop }, ingredientDropRef] = useDrop(
         () => ({
