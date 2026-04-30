@@ -114,3 +114,53 @@ async function buildDelivery(base, userCoords, restaurantCoords) {
     deliveredAt,
   };
 }
+
+// ─────────────────────────────────────────────
+// PICKUP (HSL)
+// ─────────────────────────────────────────────
+
+async function buildPickup(base, userCoords, restaurantCoords) {
+  if (!userCoords) return { ...base, travel: null, leaveAt: null };
+
+  const mode = recommendedMode(userCoords, restaurantCoords);
+
+  const route = await getHslRoute({
+    from: userCoords,
+    to: restaurantCoords,
+    mode,
+  });
+
+  const travelMins =
+    route?.durationMins ??
+    (mode === 'walk'
+      ? fallbackWalkTime(userCoords, restaurantCoords)
+      : fallbackTransitTime(userCoords, restaurantCoords));
+
+  const leaveAt = new Date(
+    base.readyAt.getTime() - (travelMins + ARRIVAL_BUFFER_MIN) * 60000
+  );
+
+  return {
+    ...base,
+    recommendedMode: mode,
+    travel: {
+      mode,
+      durationMins: travelMins,
+      distanceM: route?.distanceM ?? null,
+      geometry:
+        route?.legs?.flatMap(l => l.geometry ?? []) ?? [],
+
+      legs: route?.legs ?? [],
+      steps: [],
+    },
+    leaveAt,
+  };
+}
+
+// ─────────────────────────────────────────────
+// DINE IN
+// ─────────────────────────────────────────────
+
+async function buildDineIn(base, userCoords, restaurantCoords) {
+  return buildPickup(base, userCoords, restaurantCoords);
+}
