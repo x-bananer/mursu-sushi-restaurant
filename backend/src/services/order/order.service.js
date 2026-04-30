@@ -5,8 +5,10 @@ import * as statusHistoryRepo from '../../models/db/repositories/order/orderStat
 
 import * as mapper from './order.mapper.js';
 import * as tracker from './order.tracker.js';
+import * as orderCheckout from './order.checkout.js';
 import { OrderEngine } from '../../models/engine/order.engine.js';
 import { withTransaction } from '../../models/db/connection.js';
+
 
 /**
  * =========================================================
@@ -267,4 +269,33 @@ export async function getOrderHistory(orderId) {
  */
 export async function getOrderCountsByStatus() {
   return await orderRepo.getOrderCountsByStatus();
+}
+
+/**
+ * =========================================================
+ * ORDER CHECKOUT PLANNER (delivery, pick-up, dine-in)
+ * =========================================================
+ */
+function getOrdersAhead(allOrders, currentOrder) {
+  return allOrders.filter(o =>
+      o.id !== currentOrder.id &&
+      o.status_type !== 'delivered' &&
+      o.status_type !== 'cancelled' &&
+      new Date(o.created_at) < new Date(currentOrder.created_at)
+    );
+}
+
+export async function getOrderRoute(orderId, userLocation) {
+  const order = await getOrder(orderId);
+  if (!order) throw new Error('Order not found');
+
+  const activeOrders = await orderRepo.getActiveOrders();
+
+  const activeOrdersAhead = getOrdersAhead(activeOrders, order);
+
+  return await orderCheckout.orderEstimates(order, {
+    userCoords: userLocation,
+    serviceType: order.delivery_type.type,
+    activeOrdersAheadCount: activeOrdersAhead.length,
+  });
 }
