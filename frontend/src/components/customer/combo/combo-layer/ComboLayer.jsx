@@ -2,7 +2,7 @@ import './combo-layer.css';
 
 import Button from '../../../shared/button/Button';
 
-export default function ComboLayer({ isFixed }) {
+export default function ComboLayer({ isFixed, ingredient }) {
     return (
         <article className={`combo-layer ${isFixed ? 'combo-layer--fixed' : 'combo-layer--draggable'}`}>
             {isFixed ?
@@ -35,14 +35,12 @@ export default function ComboLayer({ isFixed }) {
                     <span className="combo-layer__handle">⋮⋮</span>
                 </div>
             }
-
-
             <div className="combo-layer__main">
-                <p className="combo-layer__title">Shari Rice</p>
-                <p className="combo-layer__type">Bottom Base</p>
+                <p className="combo-layer__title">{ingredient.name}</p>
+                <p className="combo-layer__type">{ingredient.type.name}</p>
             </div>
             <div className="combo-layer__aside combo-layer__aside--right">
-                <span className="combo-layer__price">5.00</span>
+                <span className="combo-layer__price">€{ingredient.price}</span>
                 <Button
                     className="combo-layer__btn"
                     variant="link"

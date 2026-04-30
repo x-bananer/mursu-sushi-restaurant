@@ -2,7 +2,7 @@ import './combo-section.css';
 
 import ComboCard from '../combo-card/ComboCard';
 
-export default function ComboSection({ title = "" }) {
+export default function ComboSection({ title = "", ingredients = [] }) {
     return (
         <section className="combo-section">
             <div className="combo-section__head">
@@ -11,7 +11,9 @@ export default function ComboSection({ title = "" }) {
                 </h2>
             </div>
             <div className="combo-section__grid">
-                <ComboCard />
+                {ingredients.map((ingredient) => {
+                    return <ComboCard key={ingredient.id} ingredient={ingredient} />;
+                })}
             </div>
         </section>
     )
