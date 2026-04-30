@@ -62,3 +62,21 @@ function fallbackCarTime(from, to) {
   const km = distanceMetres(from, to) / 1000;
   return Math.round((km / 30) * 60);
 }
+
+// ─────────────────────────────────────────────
+// BASE (kitchen truth source)
+// ─────────────────────────────────────────────
+
+function buildBase(order, activeOrdersAheadCount, restaurantCoords) {
+  const kitchen = KitchenEngine.estimateReadyTime(order, {
+    activeOrdersAheadCount,
+  });
+
+  return {
+    prepTime: kitchen.prepTime,
+    queueDelay: kitchen.queueDelay,
+    readyAt: kitchen.readyAt,
+    queuePosition: kitchen.queuePosition,
+    restaurantCoords,
+  };
+}
