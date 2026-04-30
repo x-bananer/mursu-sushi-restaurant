@@ -35,3 +35,30 @@ const MODE_MAP = {
   rail:    'RAIL',
   ferry:   'FERRY',
 };
+
+// ── GraphQL query ─────────────────────────────────────────────────────────────
+
+function buildQuery(from, to, transportMode, numItineraries = 1) {
+  return `{
+    plan(
+      from: { lat: ${from.lat}, lon: ${from.lon} }
+      to:   { lat: ${to.lat},   lon: ${to.lon}   }
+      transportModes: [{ mode: ${transportMode} }]
+      numItineraries: ${numItineraries}
+    ) {
+      itineraries {
+        duration
+        legs {
+          mode
+          startTime
+          endTime
+          distance
+          from { name lat lon }
+          to   { name lat lon }
+          route { shortName longName }
+          legGeometry { points }
+        }
+      }
+    }
+  }`;
+}
