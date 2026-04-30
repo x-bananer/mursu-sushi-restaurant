@@ -80,3 +80,37 @@ function buildBase(order, activeOrdersAheadCount, restaurantCoords) {
     restaurantCoords,
   };
 }
+
+// ─────────────────────────────────────────────
+// DELIVERY (ORS CAR)
+// ─────────────────────────────────────────────
+
+async function buildDelivery(base, userCoords, restaurantCoords) {
+  if (!userCoords) return { ...base, travel: null, deliveredAt: null };
+
+  const route = await getCarRoute({
+    from: restaurantCoords,
+    to: userCoords,
+  });
+
+  const travelMins =
+    route?.durationMins ??
+    fallbackCarTime(restaurantCoords, userCoords);
+
+  const deliveredAt = new Date(
+    base.readyAt.getTime() + (travelMins + DELIVERY_BUFFER_MIN) * 60000
+  );
+
+  return {
+    ...base,
+    travel: {
+      mode: 'car',
+      durationMins: travelMins,
+      distanceM: route?.distanceM ?? null,
+      geometry: route?.geometry ?? [],
+      steps: route?.steps ?? [],
+      legs: [],
+    },
+    deliveredAt,
+  };
+}
