@@ -3,7 +3,7 @@ import "./combo-builder.css";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import { useComboIngredients } from '../../../hooks/apiHooks';
+import { useComboIngredients } from '../../../hooks/apiHooks/combo';
 
 import ComboSection from '../../../components/customer/combo/combo-section/ComboSection';
 import ComboSummary from '../../../components/customer/combo/combo-summary/ComboSummary';

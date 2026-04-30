@@ -5,7 +5,7 @@ import ComboLayer from '../combo-layer/ComboLayer';
 
 import { useDrop } from 'react-dnd';
 import { useState } from 'react';
-import { useComboPreview } from '../../../../hooks/apiHooks';
+import { useComboPreview, useCreateCombo } from '../../../../hooks/apiHooks/combo';
 
 export default function ComboSummary() {
     const [selectedIngredients, setSelectedIngredients] = useState([]);
@@ -96,9 +96,19 @@ export default function ComboSummary() {
         position: index + 1,
     }));
 
-    const { combo, loading, error } = useComboPreview(ingredientsForPreview);
+    const { combo, loading: comboLoading, error: comboError } = useComboPreview(ingredientsForPreview);
 
     const isActive = isOver && canDrop;
+
+    const { createCombo, loading: createLoading, error: createError } = useCreateCombo();
+
+    const handleAddToCart = async () => {
+        const sessionId = localStorage.getItem('session_id'); // или откуда берёшь
+        await createCombo(ingredientsForPreview, sessionId);
+        setSelectedIngredients([]);
+    };
+
+
 
     return (
         <aside className="combo-summary">
@@ -142,7 +152,13 @@ export default function ComboSummary() {
                                 € {Number(combo?.total_price ?? 0)}
                             </span>
                         </div>
-                        <Button className="combo-summary__button">Add to cart</Button>
+                        <Button
+                            onClick={handleAddToCart}
+                            disabled={createLoading}
+                            className="combo-summary__button"
+                        >
+                            Add to cart
+                        </Button>
                     </>
                 }
 
