@@ -123,3 +123,52 @@ async function orsRequest(body, attempt = 1) {
     clearTimeout(timeout);
   }
 }
+
+// ── Public API ───────────────────────────────────────────
+
+export async function getCarRoute({ from, to }) {
+  if (!from || !to) {
+    throw new TypeError('getCarRoute: from and to required');
+  }
+
+  if (
+    typeof from.lat !== 'number' ||
+    typeof from.lon !== 'number' ||
+    typeof to.lat !== 'number' ||
+    typeof to.lon !== 'number'
+  ) {
+    throw new TypeError('Invalid coordinate format');
+  }
+
+  try {
+    const data = await orsRequest({
+      coordinates: [
+        [from.lon, from.lat],
+        [to.lon, to.lat],
+      ],
+      instructions: true,
+      geometry: true,
+      geometry_simplify: false,
+      language: 'en',
+    });
+
+    const route = data?.routes?.[0];
+    if (!route) return null;
+	//console.log('[ORS RAW ROUTE]');
+	//console.dir(route, { depth: null });
+
+    const summary = route.summary;
+    const steps = route.segments?.flatMap(s => s.steps ?? []) ?? [];
+
+    return {
+      durationMins: Math.round(summary.duration / 60),
+      distanceM: Math.round(summary.distance),
+      geometry: extractGeometry(route),
+      steps: steps.map(mapStep),
+    };
+
+  } catch (err) {
+    console.error('[ORS] getCarRoute failed:', err.message);
+    return null;
+  }
+}
