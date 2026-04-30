@@ -171,3 +171,60 @@ async function hslRequest(query, attempt = 1) {
     clearTimeout(timeout);
   }
 }
+
+// ── Public API ────────────────────────────────────────────────────────────────
+
+export async function getRoute({ from, to, mode }) {
+  if (!from || !to) {
+    throw new TypeError('getRoute: from and to coordinates are required');
+  }
+
+  const transportMode = MODE_MAP[mode];
+
+  if (!transportMode) {
+    throw new Error(
+      `getRoute: unsupported mode "${mode}". Supported: ${Object.keys(MODE_MAP).join(', ')}`
+    );
+  }
+
+  try {
+    const data      = await hslRequest(buildQuery(from, to, transportMode));
+    const itinerary = data?.plan?.itineraries?.[0];
+
+    if (!itinerary) return null;
+
+    const legs = (itinerary.legs ?? []).map(mapLeg);
+
+    const distanceM = legs.reduce((sum, l) => sum + l.distanceM, 0);
+
+    return {
+      durationMins: Math.round(itinerary.duration / 60),
+      distanceM,
+      legs,
+    };
+
+  } catch (err) {
+    console.error('[HSL] getRoute failed:', err.message);
+    return null;
+  }
+}
+
+
+export async function getRoutesForModes({
+  from,
+  to,
+  modes = ['walk', 'transit'],
+}) {
+  if (!modes.length) return {};
+
+  const results = await Promise.allSettled(
+    modes.map(mode => getRoute({ from, to, mode }))
+  );
+
+  return Object.fromEntries(
+    modes.map((mode, i) => [
+      mode,
+      results[i].status === 'fulfilled' ? results[i].value : null,
+    ])
+  );
+}
