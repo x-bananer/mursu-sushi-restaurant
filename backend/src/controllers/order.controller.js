@@ -97,7 +97,7 @@ export async function get(req, res, next) {
  * pending -> preparing -> ready -> etc.
  *
  * DATA IN:
- * - statusId (new status)
+ * - status (new status)
  *
  * SIDE EFFECT:
  * - updates order.status_id
@@ -106,12 +106,12 @@ export async function get(req, res, next) {
 export async function updateStatus(req, res, next) {
   try {
     const orderId = Number(req.params.id);
-    const { statusId } = req.body;
+    const { status } = req.body;
 	if (Number.isNaN(orderId)) {
       return res.status(400).json({ message: 'Invalid order id' });
     }
 
-    await orderService.updateOrderStatus(orderId, statusId);
+    await orderService.updateOrderStatus(orderId, status);
 
     res.json({ success: true });
   } catch (err) {
@@ -205,7 +205,7 @@ export async function tracking(req, res, next) {
  */
 
 /**
- * GET /orders/:id/stream
+ * GET adm/orders/:id/stream
  *
  * PURPOSE:
  * Real-time updates using Server-Sent Events (SSE)
