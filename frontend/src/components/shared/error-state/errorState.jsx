@@ -17,12 +17,3 @@ export default function ErrorState({
   );
 }
 
-/**
- * I can help you build a full UI feedback system:
-
-Loader ✅
-ErrorState ✅
-EmptyState (no data)✅
-SuccessState
-Toast notifications
- */
