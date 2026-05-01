@@ -46,3 +46,37 @@ export const useActiveOrder = () => {
 
   return { order, loading, error };
 };
+
+/**
+ * GET /orders/:id/stream
+ */
+
+export const useOrderStream = (orderId) => {
+  const [status, setStatus] = useState(null);
+
+  useEffect(() => {
+    if (!orderId) return;
+
+    const url = `${import.meta.env.VITE_API_BASE_URL}/orders/${orderId}/stream`;
+    const eventSource = new EventSource(url);
+
+    eventSource.addEventListener("order_status_updated", (event) => {
+      const data = JSON.parse(event.data);
+      setStatus(data.payload.status);
+    });
+
+    eventSource.addEventListener("order_created", (event) => {
+      const data = JSON.parse(event.data);
+      setStatus(data.payload.status);
+    });
+
+    eventSource.onerror = (err) => {
+      console.error("SSE error:", err);
+      eventSource.close();
+    };
+
+    return () => eventSource.close();
+  }, [orderId]);
+
+  return status;
+};
