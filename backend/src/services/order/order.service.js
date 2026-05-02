@@ -299,3 +299,14 @@ export async function getOrderRoute(orderId, userLocation) {
     activeOrdersAheadCount: activeOrdersAhead.length,
   });
 }
+
+export async function getOrderRouteByMode(orderId, userLocation, mode) {
+  const order = await getOrder(orderId);
+  if (!order) throw new Error('Order not found');
+
+  return await orderCheckout.getRouteForMode({
+    order,
+    userCoords: userLocation,
+    mode,
+  });
+}
