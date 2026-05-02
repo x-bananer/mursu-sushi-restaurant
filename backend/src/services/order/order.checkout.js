@@ -166,7 +166,7 @@ async function buildDineIn(base, userCoords, restaurantCoords) {
 }
 
 // ─────────────────────────────────────────────
-// MAIN ENTRY
+// MAIN ENTRY FOR GETTING A RECOMMENDED MODE
 // ─────────────────────────────────────────────
 
 export async function orderEstimates(order, options = {}) {
@@ -192,4 +192,67 @@ export async function orderEstimates(order, options = {}) {
     default:
       throw new Error(`Invalid serviceType: ${serviceType}`);
   }
+}
+
+// ─────────────────────────────────────────────
+// MAIN ENTRY FOR SWITCHING MODES
+// ─────────────────────────────────────────────
+export async function getRouteForMode({
+  order,
+  userCoords,
+  mode,
+}) {
+  const restaurantCoords = getRestaurantCoords();
+
+  if (!userCoords) {
+    throw new Error('User coordinates required');
+  }
+
+  // DELIVERY restriction
+  if (order.delivery_type.type === SERVICE_TYPE.DELIVERY && mode !== 'car') {
+    throw new Error('Only car mode allowed for delivery');
+  }
+
+  // ── CAR (ORS) ───────────────────────────
+  if (mode === 'car') {
+    const route = await getCarRoute({
+      from: restaurantCoords,
+      to: userCoords,
+    });
+
+    const duration =
+      route?.durationMins ??
+      fallbackCarTime(restaurantCoords, userCoords);
+
+    return {
+      mode: 'car',
+      durationMins: duration,
+      distanceM: route?.distanceM ?? null,
+      geometry: route?.geometry ?? [],
+      steps: route?.steps ?? [],
+      legs: [],
+    };
+  }
+
+  // ── HSL MODES ───────────────────────────
+  const route = await getHslRoute({
+    from: userCoords,
+    to: restaurantCoords,
+    mode,
+  });
+
+  const duration =
+    route?.durationMins ??
+    (mode === 'walk'
+      ? fallbackWalkTime(userCoords, restaurantCoords)
+      : fallbackTransitTime(userCoords, restaurantCoords));
+
+  return {
+    mode,
+    durationMins: duration,
+    distanceM: route?.distanceM ?? null,
+    geometry: route?.legs?.flatMap(l => l.geometry ?? []) ?? [],
+    legs: route?.legs ?? [],
+    steps: [],
+  };
 }
