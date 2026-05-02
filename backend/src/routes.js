@@ -70,6 +70,7 @@ router.delete('/adm/ingredients/:id', auth, adminOnly, comboController.deleteIng
 // ─────────────────────────────────────────────────────────────────────────────
 /* ETA + ROUTING (USER TRACKING UI) */
 router.get('/orders/:id/estimate/:lat/:lon', orderController.estimate);
+router.get('/orders/:id/route/:mode/:lat/:lon', orderController.routeByMode);
 /* LOGGED USER */
 router.get('/orders/active', auth, orderController.getActive);
 /* REAL TIME ORDER TRACKER STREAMER */

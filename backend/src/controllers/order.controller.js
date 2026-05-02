@@ -317,3 +317,40 @@ export async function estimate(req, res, next) {
     next(err);
   }
 }
+
+/**
+ * GET /orders/:id/route/:mode/:lat/:lon
+ */
+export async function routeByMode(req, res, next) {
+  try {
+    const orderId = Number(req.params.id);
+    const mode = req.params.mode;
+
+    const lat = Number(req.params.lat);
+    const lon = Number(req.params.lon);
+
+    if (Number.isNaN(orderId)) {
+      return res.status(400).json({ message: 'Invalid order id' });
+    }
+
+    if (!mode) {
+      return res.status(400).json({ message: 'Mode required' });
+    }
+
+    const userCoords =
+      !Number.isNaN(lat) && !Number.isNaN(lon)
+        ? { lat, lon }
+        : null;
+
+    const result = await orderService.getOrderRouteByMode(
+      orderId,
+      userCoords,
+      mode
+    );
+
+    res.json({ route: result });
+
+  } catch (err) {
+    next(err);
+  }
+}
