@@ -208,23 +208,3 @@ export async function getRoute({ from, to, mode }) {
     return null;
   }
 }
-
-
-export async function getRoutesForModes({
-  from,
-  to,
-  modes = ['walk', 'transit'],
-}) {
-  if (!modes.length) return {};
-
-  const results = await Promise.allSettled(
-    modes.map(mode => getRoute({ from, to, mode }))
-  );
-
-  return Object.fromEntries(
-    modes.map((mode, i) => [
-      mode,
-      results[i].status === 'fulfilled' ? results[i].value : null,
-    ])
-  );
-}
