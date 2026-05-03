@@ -60,7 +60,7 @@ export const calculateCartTotalPrice = (items, hasStampDiscount = false, dailySp
     totalPrice = totalPrice - stampDiscount;
 
     return {
-        totalPrice: totalPrice,
-        discount: totalDiscount,
+        totalPrice: Number(totalPrice.toFixed(2)),
+        discount: Number(totalDiscount.toFixed(2)),
     };
 };
