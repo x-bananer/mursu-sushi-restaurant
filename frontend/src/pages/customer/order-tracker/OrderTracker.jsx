@@ -1,13 +1,20 @@
 import "./order-tracker.css";
 import { useEffect } from "react";
 
+import { FiClock } from "react-icons/fi";
+
 import OrderSteps from "../../../components/customer/order-tracker/order-steps/OrderSteps";
 import JourneyPlanner from "../../../components/customer/order-tracker/journey-planner/JourneyPlanner";
 import Map from "../../../components/customer/order-tracker/map/Map";
 import OrderDestination from "../../../components/customer/order-tracker/order-destination/OrderDestination";
 import OrderSummary from "../../../components/customer/order-tracker/order-summary/OrderSummary";
 
-import { useActiveOrder, useOrderStream, useOrderTracking } from "../../../hooks/apiHooks/orderTracker";
+import {
+  useActiveOrder,
+  useOrderStream,
+  useOrderTracking
+} from "../../../hooks/apiHooks/orderTracker";
+
 import { useGeolocation } from "../../../hooks/apiHooks/geolocation";
 
 import Loader from "../../../components/shared/loader/Loader";
@@ -18,6 +25,7 @@ export default function OrderTracker() {
   const { order, loading, error } = useActiveOrder();
   const status = useOrderStream(order?.id);
   const { history, loadTracking } = useOrderTracking(order?.id);
+
   const {
     lat,
     lon,
@@ -27,7 +35,6 @@ export default function OrderTracker() {
 
   useEffect(() => {
     if (!status?.status?.type) return;
-
     loadTracking();
   }, [status]);
 
@@ -37,7 +44,7 @@ export default function OrderTracker() {
   console.log("Geolocation ", { lat, lon, geoLoading, geoError });
   console.groupEnd();
 
-   if (loading) {
+  if (loading) {
     return (
       <div className="order">
         <Loader text="Loading order..." />
@@ -64,49 +71,61 @@ export default function OrderTracker() {
     );
   }
 
-	return (
-		<div className="order">
-			{/* HERO */}
-			<div className="order__hero">
-				<h1 className="order__title">Track Order</h1>
-				<div className="order__hero-right">
-					<div className="status-badge"> ⏱ {status?.status?.name ?? order?.status?.name} </div>
-				</div>
-			</div>
+  return (
+    <div className="order">
+      {/* HERO */}
+      <div className="order__hero">
+        <h1 className="order__title">Track Order</h1>
 
-			<div className="order__panel">
-				<aside className="order__sidebar">
-					{/* LIVE STREAM */}
-					<OrderSteps
+        <div className="order__hero-right">
+          <div className="status-badge">
+            <FiClock size={14} />
+            {status?.status?.name ?? order?.status?.name}
+          </div>
+        </div>
+      </div>
+
+      <div className="order__panel">
+        <aside className="order__sidebar">
+          <OrderSteps
             history={history}
             orderId={order?.id}
             serviceType={order.delivery_type.type}
           />
 
-					<JourneyPlanner/>
+          <JourneyPlanner />
 
-					{/* ETA */}
-					<p className="order__estimation">Estimation: </p>
-					<div className="order__ready-wrapper">
-					<div className="order__ready">
-						<p className="order__ready-label">Ready at</p>
-						<p className="order__ready-time">11:20</p>
-					</div>
-					<div className="order__ready">
-						<p className="order__ready-label">Leave at</p>
-						<p className="order__ready-time">11:00</p>
-					</div>
-					</div>
-				</aside>
+          {/* ETA */}
+          <p className="order__estimation">Estimation: </p>
 
-				<div className="order__right">
-					{/* MAP */}
-					<Map/>
+          <div className="order__ready-wrapper">
+            <div className="order__ready">
+              <p className="order__ready-label">Ready at</p>
+              <p className="order__ready-time">11:20</p>
+            </div>
 
-					<OrderDestination address={order.address} serviceType={order.delivery_type.type} />
-				</div>
-			</div>
-			<OrderSummary orderId={order.id} items={order.order_items} totalPrice={order.total_price}/>
-		</div>
-	);
+            <div className="order__ready">
+              <p className="order__ready-label">Leave at</p>
+              <p className="order__ready-time">11:00</p>
+            </div>
+          </div>
+        </aside>
+
+        <div className="order__right">
+          <Map />
+
+          <OrderDestination
+            address={order.address}
+            serviceType={order.delivery_type.type}
+          />
+        </div>
+      </div>
+
+      <OrderSummary
+        orderId={order.id}
+        items={order.order_items}
+        totalPrice={order.total_price}
+      />
+    </div>
+  );
 }
