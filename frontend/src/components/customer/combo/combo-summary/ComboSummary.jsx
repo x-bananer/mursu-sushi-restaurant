@@ -3,7 +3,7 @@ import './combo-summary.css';
 import Button from '../../../shared/button/Button';
 import Toast from '../../../shared/toast/Toast';
 import ComboLayer from '../combo-layer/ComboLayer';
-import ErrorState from '../../../shared/error-state/errorState';
+import ErrorState from '../../../shared/error-state/ErrorState';
 
 import { useDrop } from 'react-dnd';
 import { useState } from 'react';
