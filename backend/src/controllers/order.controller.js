@@ -157,7 +157,7 @@ export async function getActive(req, res, next) {
 
 /**
  * =========================================================
- * TRACKING (IN ORDER-TRACKER PAGE) and for USERS NOT LOGGED IN
+ * TRACKING (IN ORDER-TRACKER PAGE)
  * =========================================================
  */
 
@@ -283,6 +283,73 @@ export async function create(req, res, next) {
   try {
     const order = await orderService.createOrder(req.body);
     res.status(201).json({ order });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * GET /orders/:id/estimate/:lat/:lon
+ *
+ * PURPOSE:
+ * Returns ETA + routing + kitchen timing for an order
+ */
+export async function estimate(req, res, next) {
+  try {
+    const orderId = Number(req.params.id);
+
+    const lat = Number(req.params.lat);
+    const lon = Number(req.params.lon);
+
+    if (Number.isNaN(orderId)) {
+      return res.status(400).json({ message: 'Invalid order id' });
+    }
+
+    let userCoords = null;
+    if (!Number.isNaN(lat) && !Number.isNaN(lon)) {
+      userCoords = { lat, lon };
+    }
+
+    const result = await orderService.getOrderRoute(orderId, userCoords);
+
+    res.json({ estimate: result });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * GET /orders/:id/route/:mode/:lat/:lon
+ */
+export async function routeByMode(req, res, next) {
+  try {
+    const orderId = Number(req.params.id);
+    const mode = req.params.mode;
+
+    const lat = Number(req.params.lat);
+    const lon = Number(req.params.lon);
+
+    if (Number.isNaN(orderId)) {
+      return res.status(400).json({ message: 'Invalid order id' });
+    }
+
+    if (!mode) {
+      return res.status(400).json({ message: 'Mode required' });
+    }
+
+    const userCoords =
+      !Number.isNaN(lat) && !Number.isNaN(lon)
+        ? { lat, lon }
+        : null;
+
+    const result = await orderService.getOrderRouteByMode(
+      orderId,
+      userCoords,
+      mode
+    );
+
+    res.json({ route: result });
+
   } catch (err) {
     next(err);
   }
