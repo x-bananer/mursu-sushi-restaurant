@@ -192,10 +192,23 @@ export const addUserIdToCart = async (sessionId, userId) => {
         throw createHttpError(400, 'Missing user_id');
     }
 
-    const cart = await cartRepo.getCartBySessionId(sessionId);
-
+    let cart = await cartRepo.getCartBySessionId(sessionId);
     if (!cart) {
         await cartRepo.createCartBySessionId(sessionId);
+        cart = await cartRepo.getCartBySessionId(sessionId);
+    }
+
+    const sessionCartItems = await cartItemsRepo.getCartItemsByCartId(cart.id);
+
+    if (sessionCartItems.length === 0) {
+        await cartRepo.updateCartSessionIdByUserId(userId, sessionId);
+        const userCartInSession = await cartRepo.getCartBySessionId(sessionId);
+
+        if (!userCartInSession || !userCartInSession.user_id) {
+            await cartRepo.addUserIdToCart(sessionId, userId);
+        }
+
+        return;
     }
 
     await cartRepo.addUserIdToCart(sessionId, userId);
