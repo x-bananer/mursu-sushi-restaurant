@@ -90,3 +90,18 @@ export const updateCartSessionIdByUserId = async (userId, sessionId) => {
 		[sessionId, userId]
 	);
 }
+
+/**
+ * DELETE CART BY ID
+ * @param {number} cartId
+ * @returns {Promise<void>}
+ */
+export const deleteCartById = async (cartId) => {
+	await execute(
+		`
+    DELETE FROM cart
+    WHERE id = ?
+    `,
+		[cartId]
+	);
+}

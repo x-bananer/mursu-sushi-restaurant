@@ -201,10 +201,16 @@ export const addUserIdToCart = async (sessionId, userId) => {
     const sessionCartItems = await cartItemsRepo.getCartItemsByCartId(cart.id);
 
     if (sessionCartItems.length === 0) {
+        await cartRepo.deleteCartById(cart.id);
         await cartRepo.updateCartSessionIdByUserId(userId, sessionId);
         const userCartInSession = await cartRepo.getCartBySessionId(sessionId);
 
-        if (!userCartInSession || !userCartInSession.user_id) {
+        if (!userCartInSession) {
+            await cartRepo.createCartBySessionId(sessionId);
+        }
+
+        const refreshedCart = await cartRepo.getCartBySessionId(sessionId);
+        if (refreshedCart && !refreshedCart.user_id) {
             await cartRepo.addUserIdToCart(sessionId, userId);
         }
 
