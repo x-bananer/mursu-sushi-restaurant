@@ -64,14 +64,13 @@ export default function ComboSummary({
     const { createCombo, loading: createLoading, error: createError } = useCreateCombo();
 
     const handleAddToCart = async () => {
-        try {
-            const sessionId = localStorage.getItem('session_id');
-            await createCombo(ingredientsForPreview, sessionId);
-            onClearSelectedIngredients();
-            setSuccessMessage('Your oshi-sushi set has been successfully added to the cart!');
-        } catch {
-            // Error state comes from useCreateCombo hook.
-        }
+        const sessionId = localStorage.getItem('session_id');
+        const cart = await createCombo(ingredientsForPreview, sessionId);
+
+        if (!cart) return;
+
+        onClearSelectedIngredients();
+        setSuccessMessage('Your oshi-sushi set has been successfully added to the cart!');
     };
 
     return (

@@ -83,10 +83,10 @@ const useCreateCombo = () => {
 				body: JSON.stringify({ ingredients }),
 			});
 
-			return response.cart;
+			return response.cart ?? null;
 		} catch (err) {
 			setError(err.message);
-			throw err;
+			return null;
 		} finally {
 			setLoading(false);
 		}
