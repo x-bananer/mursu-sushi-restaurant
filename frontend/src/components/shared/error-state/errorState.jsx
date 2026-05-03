@@ -3,9 +3,10 @@ import "./error-state.css";
 export default function ErrorState({
   message = "Something went wrong",
   onRetry,
+  isLight = false,
 }) {
   return (
-    <div className="error-state">
+    <div className={`error-state ${isLight ? "error-state--light" : ""}`}>
       <p className="error-state__message">{message}</p>
 
       {onRetry && (
@@ -16,4 +17,3 @@ export default function ErrorState({
     </div>
   );
 }
-

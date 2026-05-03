@@ -12,7 +12,11 @@
 
 .loader__text {
   font-size: 14px;
-  color: #666;
+  color: var(--color-gray);
+}
+
+.loader--light .loader__text {
+  color: var(--color-light-light-gray);
 }
 
 @keyframes spin {

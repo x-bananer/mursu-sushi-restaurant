@@ -5,6 +5,14 @@
   column-gap: 64px;
 }
 
+.combo-page--state {
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
 .combo-page__hero {
   padding-bottom: 56px;
 }

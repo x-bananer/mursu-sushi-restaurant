@@ -8,6 +8,9 @@ import { useComboIngredients } from '../../../hooks/apiHooks/combo';
 
 import ComboSection from '../../../components/customer/combo/combo-section/ComboSection';
 import ComboSummary from '../../../components/customer/combo/combo-summary/ComboSummary';
+import Loader from '../../../components/shared/loader/Loader';
+import ErrorState from '../../../components/shared/error-state/ErrorState';
+import EmptyState from '../../../components/shared/empty-state/EmptyState';
 
 export default function ComboBuilder() {
 	const { ingredients, loading, error } = useComboIngredients();
@@ -63,6 +66,34 @@ export default function ComboBuilder() {
 	const clearSelectedIngredients = () => {
 		setSelectedIngredients([]);
 	};
+
+	if (loading) {
+		return (
+			<div className="combo-page combo-page--state">
+				<Loader text="Loading ingredients..." isLight />
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="combo-page combo-page--state">
+				<ErrorState message={error} isLight />
+			</div>
+		);
+	}
+
+	if (ingredients.length === 0) {
+		return (
+			<div className="combo-page combo-page--state">
+				<EmptyState
+					title="No ingredients yet"
+					description="Combo ingredients are temporarily unavailable."
+					isLight
+				/>
+			</div>
+		);
+	}
 
 	return (
 		<div className="combo-page">
