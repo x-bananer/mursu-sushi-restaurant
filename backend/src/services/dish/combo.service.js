@@ -2,15 +2,26 @@ import * as ingredientRepo from '../../models/db/repositories/dish/ingredients.r
 import * as cartService from '../cart/cart.service.js';
 import * as comboEngine from '../../models/engine/combo.engine.js';
 
-export async function previewCombo(ingredientsFromClient = []) {
+function createHttpError(statusCode, message) {
+    const error = /** @type {Error & { statusCode: number }} */ (new Error(message));
+    error.statusCode = statusCode;
+    return error;
+}
+
+export async function previewCombo(ingredientsFromClient = [], withValidation = false) {
     const ingredientsFromDb = await ingredientRepo.getIngredients();
 
-    const combo = comboEngine.buildCombo(ingredientsFromClient, ingredientsFromDb);
+    const combo = comboEngine.buildCombo(ingredientsFromClient, ingredientsFromDb, withValidation);
     return combo;
 }
 
 export async function createCombo(sessionId, ingredientsFromClient) {
-    const validatedCombo = await previewCombo(ingredientsFromClient);
+    let validatedCombo;
+    try {
+        validatedCombo = await previewCombo(ingredientsFromClient, true);
+    } catch (error) {
+        throw createHttpError(400, error.message || 'Invalid combo data');
+    }
 
     const currentCart = await cartService.getCartBySessionId(sessionId);
 
