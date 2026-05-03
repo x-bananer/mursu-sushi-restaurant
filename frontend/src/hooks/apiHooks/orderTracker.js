@@ -120,3 +120,41 @@ export const useOrderTracking = (orderId) => {
 
   return { history, loadTracking, loading, error };
 };
+
+export const useEtaEstimation = (orderId, userCoordsLat, userCoordsLong) => {
+  const [etaEstimation, setEtaEstimation] = useState(null);
+  const [etaLoading, setEtaLoading] = useState(true);
+  const [etaError, setEtaError] = useState(null);
+
+  const loadEtaEstimation = async () => {
+  if (!orderId || userCoordsLat == null || userCoordsLong == null) return;
+
+	try {
+      setEtaLoading(true);
+      setEtaError(null);
+
+      const response = await fetchData(
+        `/orders/${orderId}/estimate/${userCoordsLat}/${userCoordsLong}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      setEtaEstimation(response.estimate || {});
+    } catch (err) {
+      setEtaError(err.message);
+    } finally {
+      setEtaLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadEtaEstimation();
+  }, [orderId, userCoordsLat, userCoordsLong]);
+
+  return { etaEstimation, loadEtaEstimation, etaLoading, etaError  };
+
+}
