@@ -87,6 +87,45 @@ public/
 - Centralized icons for consistency
 - Responsive-first navigation (bottom nav on mobile)
 
+## Shared Toast
+
+Use shared toast component for success/info notifications:
+
+- Path: `src/components/shared/toast/Toast.jsx`
+- Styles: `src/components/shared/toast/toast.css`
+
+Props:
+
+- `message` (`string`) - text to show. If empty, toast is not rendered.
+- `duration` (`number`, optional) - auto close timeout in ms. Default: `5000`.
+- `onClose` (`function`, optional) - callback to clear state after timeout.
+
+Example:
+
+```jsx
+import { useState } from 'react';
+import Toast from '../../components/shared/toast/Toast';
+
+export default function Example() {
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const onSuccess = () => {
+    setSuccessMessage('Saved successfully!');
+  };
+
+  return (
+    <>
+      <button onClick={onSuccess}>Save</button>
+      <Toast
+        message={successMessage}
+        duration={5000}
+        onClose={() => setSuccessMessage('')}
+      />
+    </>
+  );
+}
+```
+
 ## Getting Started
 
 ### Installation

@@ -1,6 +1,7 @@
 import './combo-summary.css';
 
 import Button from '../../../shared/button/Button';
+import Toast from '../../../shared/toast/Toast';
 import ComboLayer from '../combo-layer/ComboLayer';
 
 import { useDrop } from 'react-dnd';
@@ -67,9 +68,6 @@ export default function ComboSummary({
         onClearSelectedIngredients();
 
         setSuccessMessage('Your oshi-sushi set has been successfully added to the cart!');
-        setTimeout(() => {
-            setSuccessMessage('');
-        }, 3000);
     };
 
     return (
@@ -127,10 +125,7 @@ export default function ComboSummary({
                     <p className="combo-summary__error">{createError}</p>
                 )}
 
-                {successMessage && (
-                    <div className="combo-summary__toast">{successMessage}</div>
-                )}
-
+                <Toast message={successMessage} duration={5000} onClose={() => setSuccessMessage('')} />
             </div>
         </aside>
     );
