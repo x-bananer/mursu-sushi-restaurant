@@ -184,15 +184,9 @@ export async function tracking(req, res, next) {
       return res.status(400).json({ message: 'Invalid order id' });
     }
 
-    const order = await orderService.getOrder(orderId);
-
-    if (!order) {
-      return res.status(404).json({ message: 'Order not found' });
-    }
-
     const history = await orderService.getOrderHistory(orderId);
 
-    res.json({ order, history });
+    res.json({ history });
   } catch (err) {
     next(err);
   }

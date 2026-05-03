@@ -73,6 +73,7 @@ router.delete('/adm/ingredients/:id', auth, adminOnly, comboController.deleteIng
 
 /* LOGGED USER */
 router.get('/orders/active', auth, orderController.getActive);
+router.get('/orders/:id/tracking', orderController.tracking);
 /* REAL TIME ORDER TRACKER STREAMER */
 router.get('/orders/:id/stream', orderController.streamOrders);
 
