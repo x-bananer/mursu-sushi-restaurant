@@ -24,7 +24,7 @@ dotenv.config();
  * OpenRouteService car routing integration (production ready)
  */
 
-const ORS_BASE_URL = 'https://api.openrouteservice.org/v2/directions/driving-car';
+const ORS_BASE_URL = process.env.ORS_BASE_URL;
 const ORS_API_KEY  = process.env.ORS_API_KEY;
 const TIMEOUT_MS   = 10_000;
 const MAX_RETRIES  = 2;

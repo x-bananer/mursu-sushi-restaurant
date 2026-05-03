@@ -16,7 +16,7 @@ dotenv.config();
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
-const HSL_ENDPOINT = 'https://api.digitransit.fi/routing/v2/hsl/gtfs/v1';
+const HSL_BASE_URL = process.env.HSL_BASE_URL;
 
 const TIMEOUT_MS  = 8000;
 const MAX_RETRIES = 2;
@@ -134,7 +134,7 @@ async function hslRequest(query, attempt = 1) {
 
     console.debug('[HSL] request attempt:', attempt);
 
-    const res = await fetch(HSL_ENDPOINT, {
+    const res = await fetch(HSL_BASE_URL, {
       method: 'POST',
       headers,
       body: JSON.stringify({ query }),
