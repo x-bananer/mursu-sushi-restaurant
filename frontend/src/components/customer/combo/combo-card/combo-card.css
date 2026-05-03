@@ -1,0 +1,77 @@
+.combo-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border: 1px solid var(--color-dark-gray);
+  text-align: left;
+  cursor:grab;
+}
+
+.combo-card--selected {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.combo-card__title {
+  color: var(--color-white);
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 28px;
+}
+
+.combo-card__text {
+  margin-top: 8px;
+  color: var(--color-light-gray);
+  font-family: var(--font-button);
+  font-size: 10px;
+  line-height: 14px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.combo-card__price {
+  padding-top: 10px;
+  color: var(--color-white);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  margin-top: auto;
+}
+
+.combo-card__badge {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: var(--color-white);
+  color: var(--color-black);
+  font-family: var(--font-button);
+  font-size: 11px;
+  line-height: 1;
+}
+
+.combo-card__mobile-action {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .combo-card {
+    justify-content: flex-start;
+    padding: 20px;
+  }
+
+  .combo-card__mobile-action {
+    display: flex;
+    margin-top: auto;
+    padding-top: 16px;
+  }
+
+  .combo-card__mobile-action .btn-counter__btn {
+    width: 32px;
+    height: 32px;
+  }
+}

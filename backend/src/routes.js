@@ -58,9 +58,9 @@ router.delete('/adm/dishes/:id/special', auth, adminOnly, dishController.deleteD
 // ─────────────────────────────────────────────────────────────────────────────
 // DISHES COMBO BUILDER  (used by custom orders)
 // ─────────────────────────────────────────────────────────────────────────────
-router.get('/dishes/ingredients', comboController.listIngredients);
-router.post('/dishes/combo/validate', comboController.validateCombo);
-router.post('/dishes/combo/price', comboController.priceCombo);
+router.get('/dishes/combo/ingredients', comboController.listComboIngredients);
+router.post('/dishes/combo/preview', comboController.previewCombo);
+router.post('/dishes/combo/create', comboController.createCombo);
 
 /* ADMIN only */
 router.post('/adm/ingredients', auth, adminOnly, comboController.createIngredient);

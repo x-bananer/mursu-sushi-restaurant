@@ -50,3 +50,10 @@ INSERT INTO badge (id, name) VALUES
 (6, 'Popular'),
 (7, 'New'),
 (8, 'Chef Special');
+
+-- ── INGREDIENT TYPE ───────────────────────────
+
+INSERT INTO ingredient_type (id, type, name) VALUES
+(1, 'base', 'Base'),
+(2, 'filling', 'Filling'),
+(3, 'topping', 'Topping');
