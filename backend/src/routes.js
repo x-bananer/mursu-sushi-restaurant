@@ -73,12 +73,13 @@ router.delete('/adm/ingredients/:id', auth, adminOnly, comboController.deleteIng
 
 /* LOGGED USER */
 router.get('/orders/active', auth, orderController.getActive);
+router.get('/orders/:id/tracking', orderController.tracking);
 /* REAL TIME ORDER TRACKER STREAMER */
-router.get('/orders/:id/stream', auth, orderController.streamOrders);
+router.get('/orders/:id/stream', orderController.streamOrders);
 
 /* ADMIN only */
 router.get('/adm/orders/status/count', auth, adminOnly, orderController.statusCount);
-router.patch('/adm/orders/:id/status', auth, adminOnly, orderController.updateStatus);
+router.patch('/adm/orders/:id/status', orderController.updateStatus);
 router.get('/adm/orders/:id', auth, adminOnly, orderController.get);
 router.get('/adm/orders', auth, adminOnly, orderController.list);
 // remove create from front end access once cart is implemented:

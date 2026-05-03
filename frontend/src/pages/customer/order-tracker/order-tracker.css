@@ -127,14 +127,26 @@ details[open] > .accordion__header .accordion__icon {
 
 /* ── ready at — bottom of white card ──────── */
 
+.order__estimation {
+  font-family: var(--font-button);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #909090;
+
+  margin-top: 6px;
+  padding: 0 10px 24px;
+}
+
+.order__ready-wrapper {
+  display: flex;
+  gap: 16px;
+}
+
 .order__ready {
   margin-top: auto;
   padding: 0 20px 24px;
-}
-
-.order__ready-divider {
-  height: 1px;
-  margin-top: 20px;
 }
 
 .order__ready-label {
@@ -144,7 +156,7 @@ details[open] > .accordion__header .accordion__icon {
   letter-spacing: 2px;
   text-transform: uppercase;
   color: #909090;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .order__ready-time {
