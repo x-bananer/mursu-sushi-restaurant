@@ -9,6 +9,14 @@ import * as orderCheckout from './order.checkout.js';
 import { OrderEngine } from '../../models/engine/order.engine.js';
 import { withTransaction } from '../../models/db/connection.js';
 
+// =========================================================
+// UTILS
+// =========================================================
+function createHttpError(statusCode, message) {
+  const error = /** @type {Error & { statusCode: number }} */ (new Error(message));
+  error.statusCode = statusCode;
+  return error;
+}
 
 /**
  * =========================================================
@@ -103,7 +111,7 @@ export async function updateOrderStatus(orderId, nextStatus) {
   const updatedOrderId = await withTransaction(async (conn) => {
 
     const order = await orderRepo.getOrderById(orderId);
-    if (!order) throw new Error('Order not found');
+    if (!order) throw createHttpError(400, 'Order not found');
 
     const validation = OrderEngine.validateTransition(
       {
@@ -114,7 +122,8 @@ export async function updateOrderStatus(orderId, nextStatus) {
     );
 
     if (!validation.valid) {
-      throw new Error(validation.errors.join(', '));
+      throw createHttpError(400, validation.errors.join(', '));
+
     }
 
     const statusId = mapStatusToId(nextStatus);
@@ -287,7 +296,7 @@ function getOrdersAhead(allOrders, currentOrder) {
 
 export async function getOrderRoute(orderId, userLocation) {
   const order = await getOrder(orderId);
-  if (!order) throw new Error('Order not found');
+  if (!order) throw createHttpError(400, 'Order not found');
 
   const activeOrders = await orderRepo.getActiveOrders();
 
@@ -302,7 +311,7 @@ export async function getOrderRoute(orderId, userLocation) {
 
 export async function getOrderRouteByMode(orderId, userLocation, mode) {
   const order = await getOrder(orderId);
-  if (!order) throw new Error('Order not found');
+  if (!order) throw createHttpError(400, 'Order not found');
 
   return await orderCheckout.getRouteForMode({
     order,

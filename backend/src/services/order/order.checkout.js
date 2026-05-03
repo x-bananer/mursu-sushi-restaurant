@@ -13,18 +13,22 @@ import { getCarRoute } from '../integration/ors.service.js';
 import { distanceMetres, recommendedMode } from '../../utils/haversine.js';
 
 // ─────────────────────────────────────────────
-// TYPES
+// UTILS
 // ─────────────────────────────────────────────
+function createHttpError(statusCode, message) {
+  const error = /** @type {Error & { statusCode: number }} */ (new Error(message));
+  error.statusCode = statusCode;
+  return error;
+}
 
+// ─────────────────────────────────────────────
+// CONFIG
+// ─────────────────────────────────────────────
 export const SERVICE_TYPE = {
   DELIVERY: 'delivery',
   PICKUP: 'pickup',
   DINE_IN: 'dine_in',
 };
-
-// ─────────────────────────────────────────────
-// CONFIG
-// ─────────────────────────────────────────────
 
 const DELIVERY_BUFFER_MIN = 5;
 const ARRIVAL_BUFFER_MIN = 2;
@@ -38,9 +42,8 @@ function getRestaurantCoords() {
   const lon = Number(process.env.RESTAURANT_LON);
 
   if (!lat || !lon || Number.isNaN(lat) || Number.isNaN(lon)) {
-    throw new Error('Missing RESTAURANT_LAT / RESTAURANT_LON');
+	throw createHttpError(400, 'Missing RESTAURANT_LAT / RESTAURANT_LON');
   }
-
   return { lat, lon };
 }
 
@@ -190,7 +193,7 @@ export async function orderEstimates(order, options = {}) {
       return buildDineIn(base, userCoords, restaurantCoords);
 
     default:
-      throw new Error(`Invalid serviceType: ${serviceType}`);
+	  throw createHttpError(400, `Invalid serviceType: ${serviceType}`);
   }
 }
 
@@ -205,12 +208,12 @@ export async function getRouteForMode({
   const restaurantCoords = getRestaurantCoords();
 
   if (!userCoords) {
-    throw new Error('User coordinates required');
+	throw createHttpError(400, 'User coordinates required');
   }
 
   // DELIVERY restriction
   if (order.delivery_type.type === SERVICE_TYPE.DELIVERY && mode !== 'car') {
-    throw new Error('Only car mode allowed for delivery');
+	throw createHttpError(400, 'Only car mode allowed for delivery');
   }
 
   // ── CAR (ORS) ───────────────────────────
