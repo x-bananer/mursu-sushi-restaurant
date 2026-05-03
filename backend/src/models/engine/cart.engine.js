@@ -25,22 +25,42 @@ export const validateCart = (items) => {
     };
 };
 
-// Calculate final cart total price from item prices and quantities
-export const calculateCartTotalPrice = (items) => {
+// Calculate final cart total price from item prices and quantities and discounts
+export const calculateCartTotalPrice = (items, hasStampDiscount = false, dailySpecialDishIds = []) => {
     const validation = validateCart(items);
+    
+    const DISCOUNT_PERCENT = 10;
 
     if (!validation.valid) {
         throw new Error(validation.errors.join(', '));
     }
 
     let totalPrice = 0;
+    let dailySpecialDiscount = 0;
+    let stampDiscount = 0;
+    let totalDiscount = 0;
 
     for (const item of items) {
-        totalPrice += Number(item.price) * Number(item.quantity);
+        let itemPrice = Number(item.price) * Number(item.quantity);
+
+        const isDailySpecialDish = dailySpecialDishIds.includes(item.dish_id);
+
+        if (isDailySpecialDish) {
+            const itemDailySpecialDiscount = itemPrice * DISCOUNT_PERCENT / 100;
+            dailySpecialDiscount += itemDailySpecialDiscount;
+            itemPrice -= itemDailySpecialDiscount;
+        }
+
+        totalPrice += itemPrice;
     }
 
-    // TODO: add 10% stamp discount when user.repository is ready
-    // TODO: add 10% daily special discount when dish.repository is ready
+    stampDiscount = hasStampDiscount ? totalPrice * DISCOUNT_PERCENT / 100 : 0;
+    
+    totalDiscount = dailySpecialDiscount + stampDiscount;
+    totalPrice = totalPrice - stampDiscount;
 
-    return totalPrice;
+    return {
+        totalPrice: totalPrice,
+        discount: totalDiscount,
+    };
 };
