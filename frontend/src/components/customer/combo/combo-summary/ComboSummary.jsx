@@ -3,6 +3,7 @@ import './combo-summary.css';
 import Button from '../../../shared/button/Button';
 import Toast from '../../../shared/toast/Toast';
 import ComboLayer from '../combo-layer/ComboLayer';
+import ErrorState from '../../../shared/error-state/errorState';
 
 import { useDrop } from 'react-dnd';
 import { useState } from 'react';
@@ -56,18 +57,21 @@ export default function ComboSummary({
         position: index + 1,
     }));
 
-    const { combo, loading: comboLoading, error: comboError } = useComboPreview(ingredientsForPreview);
+    const { combo, error: comboError } = useComboPreview(ingredientsForPreview);
 
     const isActive = isOver && canDrop;
 
     const { createCombo, loading: createLoading, error: createError } = useCreateCombo();
 
     const handleAddToCart = async () => {
-        const sessionId = localStorage.getItem('session_id');
-        await createCombo(ingredientsForPreview, sessionId);
-        onClearSelectedIngredients();
-
-        setSuccessMessage('Your oshi-sushi set has been successfully added to the cart!');
+        try {
+            const sessionId = localStorage.getItem('session_id');
+            await createCombo(ingredientsForPreview, sessionId);
+            onClearSelectedIngredients();
+            setSuccessMessage('Your oshi-sushi set has been successfully added to the cart!');
+        } catch {
+            // Error state comes from useCreateCombo hook.
+        }
     };
 
     return (
@@ -121,9 +125,8 @@ export default function ComboSummary({
                 >
                     Add to cart
                 </Button>
-                {createError && (
-                    <p className="combo-summary__error">{createError}</p>
-                )}
+                {comboError && <ErrorState message={comboError} />}
+                {createError && <ErrorState message={createError} />}
 
                 <Toast message={successMessage} duration={5000} onClose={() => setSuccessMessage('')} />
             </div>
