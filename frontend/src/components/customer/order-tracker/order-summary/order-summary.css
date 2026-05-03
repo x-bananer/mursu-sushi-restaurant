@@ -86,3 +86,13 @@
   line-height: 1;
   color: var(--color-white);
 }
+
+@media (max-width: 480px) {
+  .order-user {
+    display: none;
+  }
+
+  .order-price__value {
+    font-size: 30px;
+  }
+}
