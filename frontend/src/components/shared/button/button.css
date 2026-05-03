@@ -112,6 +112,13 @@
   color: var(--color-light-gray);
 }
 
+.btn:disabled,
+.btn--disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 @media (max-width: 768px) {
   .btn--large {
     min-height: 52px;

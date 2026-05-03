@@ -1,37 +1,55 @@
 import "./order-summary.css";
 
-export default function OrderSummary() {
+export default function OrderSummary({orderId, items =[], totalPrice}) {
+	console.log('items: ', items);
 	return (
-		<div className="order__bottom">
-				<div className="order-summary">
-					<p className="order-summary__label">Order</p>
-					<ul className="order-summary__items">
-						<li className="order-summary__item">
-							<span className="order-summary__name">
-								01 Obsidian Roll
-							</span>
-							<span className="order-summary__price">$18.00</span>
-						</li>
-						<li className="order-summary__item">
-							<span className="order-summary__name">
-								02 Bone Sashimi
-							</span>
-							<span className="order-summary__price">$24.00</span>
-						</li>
-					</ul>
-				</div>
+    <div className="order__bottom">
+      <div className="order-summary">
+        <p className="order-summary__label">Order — id: {orderId}</p>
 
-				<div className="order-guest">
-					<p className="order-guest__text">
-						Ordering as guest — create a free account to save orders
-						and earn badges.
-					</p>
-				</div>
+        <ul className="order-summary__items">
+          {items.map((item, index) => {
+            const isDish = item.type?.type === "dish";
+            const isCustom = item.type?.type === "custom";
 
-				<div className="order-price">
-					<p className="order-price__label">Total Price</p>
-					<p className="order-price__value">$42.00</p>
-				</div>
-			</div>
-	);
+            let name = "";
+            let price = Number(item.price).toFixed(2);
+
+            if (isDish) {
+              name = item.dish?.name || "Unknown dish";
+            }
+
+            if (isCustom) {
+              name = item.type?.name || "Custom Combo";
+            }
+
+            return (
+              <li key={index} className="order-summary__item">
+                <span className="order-summary__name">
+                  {String(item.quantity).padStart(2, "0")} {name}
+                </span>
+
+                <span className="order-summary__price">
+                  ${price}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      <div className="order-user">
+        <p className="order-user__text">
+          Any active rewards or discounts are automatically applied to your order.
+        </p>
+      </div>
+
+      <div className="order-price">
+        <p className="order-price__label">Total Price</p>
+        <p className="order-price__value">
+          ${Number(totalPrice).toFixed(2)}
+        </p>
+      </div>
+    </div>
+  );
 }

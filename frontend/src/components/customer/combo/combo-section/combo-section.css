@@ -1,0 +1,62 @@
+.combo-section + .combo-section {
+  margin-top: 56px;
+}
+
+.combo-section__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-dark-gray);
+}
+
+.combo-section__title {
+  color: var(--color-white);
+  font-family: var(--font-button);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 28px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.combo-section__counter {
+  color: var(--color-light-gray);
+  font-family: var(--font-button);
+  font-size: 10px;
+  line-height: 16px;
+  text-transform: uppercase;
+}
+
+.combo-section__grid {
+  display: grid;
+  margin-top: 32px;
+  /* border-top: 1px solid var(--color-dark-gray);
+  border-left: 1px solid var(--color-dark-gray); */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+
+@media (max-width: 768px) {
+  .combo-section + .combo-section {
+    margin-top: 40px;
+  }
+
+  .combo-section__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+@media (max-width: 480px) {
+  .combo-section__head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .combo-section__grid {
+    grid-template-columns: 1fr;
+  }
+}

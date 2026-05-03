@@ -1,10 +1,12 @@
-export function buildCombo(ingredientsFromClient, ingredientsFromDb) {
+export function buildCombo(ingredientsFromClient, ingredientsFromDb, withValidation = false) {
     const ingredients = [...ingredientsFromClient].sort((a, b) => Number(a.position) - Number(b.position));
 
-    validateRequiredFields(ingredients);
-    validateIngredientsExist(ingredients, ingredientsFromDb);
-    validateItemsQuantity(ingredients, ingredientsFromDb);
-    validateItemsOrder(ingredients, ingredientsFromDb);
+    if (withValidation) {
+        validateRequiredFields(ingredients);
+        validateIngredientsExist(ingredients, ingredientsFromDb);
+        validateItemsQuantity(ingredients, ingredientsFromDb);
+        validateItemsOrder(ingredients, ingredientsFromDb);
+    }
 
     const totalPrice = calculateComboPrice(ingredients, ingredientsFromDb);
 

@@ -1,71 +1,127 @@
 import "./order-steps.css";
+import { FiChevronDown } from "react-icons/fi";
 
-export default function OrderSteps() {
-	return (
-		<details className="accordion" open>
-						<summary className="accordion__header">
-							<span className="accordion__title">
-								Order Status
-							</span>
-							<span className="accordion__icon">
-								<svg
-									viewBox="0 0 24 24"
-									fill="none"
-									width="14"
-									height="14"
-								>
-									<path
-										d="M6 9L12 15L18 9"
-										stroke="currentColor"
-										strokeWidth="1.5"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-									/>
-								</svg>
-							</span>
-						</summary>
+const STEPS = [
+  {
+    key: "pending",
+    label: "Placed",
+    message: (formattedTime, orderId) =>
+      `${formattedTime} — Payment confirmed via Stripe. Your order id is ${orderId}.`,
+  },
+  {
+    key: "confirmed",
+    label: "Confirmed",
+    message: (formattedTime) =>  `${formattedTime} — Kitchen has received your order.`,
+  },
+  {
+    key: "preparing",
+    label: "Preparing",
+    message: (formattedTime) =>  `${formattedTime} — Your sushi is now being processed.`,
+  },
+  {
+    key: "ready",
+    label: "Ready",
+    message: (formattedTime, orderId, serviceType) => {
+      const messages = {
+        delivery:
+           `${formattedTime} — We are now coming to you, be ready to receive your delivery.`,
+        pickup:  `${formattedTime} — We are ready, just waiting for you now.`,
+        restaurant:  `${formattedTime} — Enjoy your meal!`,
+      };
 
-						<div className="accordion__body">
-							<ul className="order-steps">
-								<li className="order-step order-step--done">
-									<span className="order-step__dot"></span>
-									<div>
-										<p className="order-step__label">
-											Order Placed
-										</p>
-										<p className="order-step__meta">
-											13:32 — Payment confirmed via
-											MobilePay
-										</p>
-									</div>
-								</li>
+      return messages[serviceType] || "— Your order is ready.";
+    },
+  },
+];
 
-								<li className="order-step order-step--active">
-									<span className="order-step__dot"></span>
-									<div>
-										<p className="order-step__label">
-											Order Confirmed
-										</p>
-										<p className="order-step__meta">
-											13:35 — Kitchen has received your
-											order
-										</p>
-									</div>
-								</li>
+function formatTime(time) {
+  if (!time) return "";
 
-								<li className="order-step order-step--pending">
-									<span className="order-step__dot"></span>
-									<div>
-										<p className="order-step__label">
-											Ready for Pickup
-										</p>
-										<p className="order-step__meta">
-											We will notify you when it's ready
-										</p>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</details>
-	);
+  return new Date(time).toLocaleString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+export default function OrderSteps({
+  history = [],
+  orderId,
+  serviceType,
+}) {
+  console.group("ORDER STEPS DEBUG");
+  console.log("history:", history);
+  console.log("orderId ", orderId);
+  console.log("serviceType ", serviceType);
+  console.groupEnd();
+
+  // Build index-based lookup
+  const historyByIndex = {};
+  history.forEach((item) => {
+    const index = item.status_id - 1;
+
+    if (index >= 0 && index < STEPS.length) {
+      historyByIndex[index] = item.changed_at;
+    }
+  });
+
+  // clamp current index
+  const currentIndex = Math.min(
+    Math.max(...history.map((item) => item.status_id - 1), 0),
+    STEPS.length - 1
+  );
+
+  const getStepState = (index) => {
+    if (index < currentIndex) return "done";
+    if (index === currentIndex) return "active";
+    return "pending";
+  };
+
+  return (
+    <details className="accordion" open>
+      <summary className="accordion__header">
+        <span className="accordion__title">Order Status</span>
+
+        <span className="accordion__icon">
+          <FiChevronDown size={14} />
+        </span>
+      </summary>
+
+      <div className="accordion__body">
+        <ul className="order-steps">
+          {STEPS.map((step, index) => {
+            const state = getStepState(index);
+
+            const stepTime = historyByIndex[index];
+            const formattedTime = formatTime(stepTime);
+
+            let message = "";
+
+            if (stepTime) {
+              message = step.message(
+                formattedTime,
+                orderId,
+                serviceType
+              );
+            } else if (index > currentIndex) {
+              message = "";
+            }
+
+            return (
+              <li
+                key={step.key}
+                className={`order-step order-step--${state}`}
+              >
+                <span className="order-step__dot" />
+
+                <div>
+                  <p className="order-step__label">{step.label}</p>
+                  <p className="order-step__meta">{message}</p>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </details>
+  );
 }
