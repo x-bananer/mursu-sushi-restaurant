@@ -1,6 +1,54 @@
+import { CardElement, Elements, useElements, useStripe } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { useState } from "react";
+
 import "./cart.css";
 
-export default function Cart() {
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+
+function CartContent() {
+	const stripe = useStripe();
+	const elements = useElements();
+	const [address, setAddress] = useState("Testikatu 12 A 4, Helsinki");
+	const sessionId = localStorage.getItem("session_id");
+
+	const handlePayment = async () => {
+		if (!stripe || !elements) return;
+
+		const card = elements.getElement(CardElement);
+		
+		if (!card) return;
+
+		const { error, paymentMethod } = await stripe.createPaymentMethod({
+			type: "card",
+			card,
+		});
+
+		if (error || !paymentMethod) return;
+
+		try {
+			const response = await fetch(`${API_BASE_URL}/payments/stripe`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"x-session-id": sessionId || "",
+				},
+				body: JSON.stringify({
+					delivery_type_id: 3,
+					address,
+					payment_method_id: paymentMethod.id,
+				}),
+			});
+
+			const data = await response.json();
+			console.log(response.status, data);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	return (
 		<div className="cart-page">
 			<div className="cart-page__container">
@@ -182,38 +230,23 @@ export default function Cart() {
 							className="input-field__input"
 							type="text"
 							placeholder="Enter the delivery address"
+							value={address}
+							onChange={(e) => setAddress(e.target.value)}
 						/>
 					</label>
 				</section>
 				<section className="cart-page__section payment">
 					<h2 className="payment__title">Payment</h2>
-					<button className="payment__option" type="button">
-						<span className="payment__aside">
-							<svg
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth={1}
-							>
-								<rect
-									x={7}
-									y={2}
-									width={10}
-									height={20}
-									rx={2}
-								/>
-								<circle cx={12} cy={18} r={1} />
-								<path d="M9 5h6" />
-							</svg>
-						</span>
-						<span className="payment__main">
-							<span className="payment__name">MobilePay</span>
-							<span className="payment__description">
-								Instant confirmation
-							</span>
-						</span>
-						<span className="payment__radio payment__radio--active" />
-					</button>
+					<div
+						style={{
+							padding: "24px",
+							border: "1px solid var(--color-dark-gray)",
+							background: "#fff",
+							color: "#000",
+						}}
+					>
+						<CardElement options={{ disableLink: true }} />
+					</div>
 				</section>
 			</div>
 			<aside className="cart-page__summary order-summary">
@@ -244,6 +277,7 @@ export default function Cart() {
 					<button
 						className="btn btn--dark order-summary__button"
 						type="button"
+						onClick={handlePayment}
 					>
 						Pay €43.90
 					</button>
@@ -254,5 +288,13 @@ export default function Cart() {
 				</div>
 			</aside>
 		</div>
+	);
+}
+
+export default function Cart() {
+	return (
+		<Elements stripe={stripePromise}>
+			<CartContent />
+		</Elements>
 	);
 }

@@ -21,6 +21,14 @@
  * @property {number} id
  * @property {string} name
  * @property {number} price
+ * @property {number} ingredient_type_id
+ */
+
+/**
+ * @typedef {Object} IngredientType
+ * @property {number} id
+ * @property {string} type
+ * @property {string} name
  */
 
 /**
@@ -35,7 +43,3 @@
  * @property {number} user_id
  * @property {number} dish_id
  */
-
-
-
-

@@ -35,6 +35,12 @@ CREATE TABLE badge (
   name VARCHAR(50) NOT NULL
 );
 
+CREATE TABLE ingredient_type (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  type VARCHAR(20) NOT NULL,
+  name VARCHAR(50) NOT NULL
+);
+
 -- ── USER DOMAIN ─────────────────────────────────────────────
 
 CREATE TABLE users (
@@ -73,7 +79,9 @@ CREATE TABLE dish_badges (
 CREATE TABLE ingredients (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
-  price DECIMAL(10,2) NOT NULL
+  price DECIMAL(10,2) NOT NULL,
+  ingredient_type_id INT NOT NULL,
+  FOREIGN KEY (ingredient_type_id) REFERENCES ingredient_type(id)
 );
 
 CREATE TABLE daily_specials (
@@ -172,12 +180,14 @@ CREATE TABLE order_status_history (
 
 CREATE TABLE payments (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  order_id INT NOT NULL,
+  order_id INT NULL,
+  user_id INT NOT NULL,
   amount DECIMAL(10,2) NOT NULL,
   status_id INT NOT NULL,
   provider VARCHAR(50) NOT NULL,
   provider_ref VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (order_id) REFERENCES orders(id),
+  FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (status_id) REFERENCES payment_status(id)
 );

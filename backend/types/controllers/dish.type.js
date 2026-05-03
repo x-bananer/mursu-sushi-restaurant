@@ -27,47 +27,54 @@
  */
 
 /**
- * POST /dishes/combo/validate
- * Validate custom combo ingredients against combo builder rules
+ * GET /dishes/combo/ingredients
+ * Get ingredients list for combo builder.
  */
 
 /**
- * @typedef {Object} ValidateComboRequest
- * @property {Array<ValidateComboIngredientData>} ingredients
+ * @typedef {Object} ComboIngredientsRequest
  */
 
 /**
- * @typedef {Object} ValidateComboIngredientData
+ * @typedef {Object} ComboIngredientsResponse
+ * @property {Array<import('../dto/dish.type.js').IngredientDTO & { type: { id: number, type: string, name: string } | null }>} ingredients
+ */
+
+/**
+ * POST /dishes/combo/preview
+ * Validate custom combo and calculate total price.
+ */
+
+/**
+ * @typedef {Object} ComboPreviewRequest
+ * @property {Array<ComboPreviewIngredientData>} ingredients
+ */
+
+/**
+ * @typedef {Object} ComboPreviewIngredientData
  * @property {number} ingredient_id
  * @property {number} quantity
  * @property {number} position
  */
 
 /**
- * @typedef {Object} ValidateComboResponse
- * @property {boolean} success
+ * @typedef {Object} ComboPreviewResponse
+ * @property {{ ingredients: Array<ComboPreviewIngredientData>, total_price: number }} combo
  */
 
 /**
- * POST /dishes/combo/price
- * Calculate price for custom combo ingredients
+ * POST /dishes/combo/create
+ * Create combo item and add it to cart.
  */
 
 /**
- * @typedef {Object} ComboPriceRequest
- * @property {Array<ComboPriceIngredientData>} ingredients
+ * @typedef {Object} ComboCreateRequest
+ * @property {Array<ComboPreviewIngredientData>} ingredients
  */
 
 /**
- * @typedef {Object} ComboPriceIngredientData
- * @property {number} ingredient_id
- * @property {number} quantity
- * @property {number} position
- */
-
-/**
- * @typedef {Object} ComboPriceResponse
- * @property {number} price
+ * @typedef {Object} ComboCreateResponse
+ * @property {import('../dto/cart.type.js').CartDTO} cart
  */
 
 /**

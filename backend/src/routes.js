@@ -8,6 +8,7 @@ import * as comboController from './controllers/combo.controller.js';
 import * as orderController from './controllers/order.controller.js';
 import * as userController  from './controllers/user.controller.js';
 import * as cartController  from './controllers/cart.controller.js';
+import * as paymentController from './controllers/payment.controller.js';
 
 const router = Router();
 
@@ -36,8 +37,9 @@ router.get('/adm/customers', auth, adminOnly, userController.listCustomers);
 // DISHES MENU
 // ─────────────────────────────────────────────────────────────────────────────
 
-router.get('/dishes', dishController.list);
-router.get('/dishes/daily-special', dishController.specials);
+router.get('/dishes',               dishController.list);        // returns DishDTO[]
+router.get('/dishes/daily-special', dishController.specials);    // returns DishDTO
+//router.get("/dishes/:dish_id", dishController.get); // returns DishDTO
 
 /* FAVORITES (cutomer logged) */
 router.post('/dishes/:dish_id/favorite', auth, dishController.addFavorite);
@@ -56,9 +58,9 @@ router.delete('/adm/dishes/:id/special', auth, adminOnly, dishController.deleteD
 // ─────────────────────────────────────────────────────────────────────────────
 // DISHES COMBO BUILDER  (used by custom orders)
 // ─────────────────────────────────────────────────────────────────────────────
-router.get('/dishes/ingredients', comboController.listIngredients);
-router.post('/dishes/combo/validate', comboController.validateCombo);
-router.post('/dishes/combo/price', comboController.priceCombo);
+router.get('/dishes/combo/ingredients', comboController.listComboIngredients);
+router.post('/dishes/combo/preview', comboController.previewCombo);
+router.post('/dishes/combo/create', comboController.createCombo);
 
 /* ADMIN only */
 router.post('/adm/ingredients', auth, adminOnly, comboController.createIngredient);
@@ -88,13 +90,9 @@ router.post('/adm/orders', orderController.create);
 // CART
 // ─────────────────────────────────────────────────────────────────────────────
 router.get('/cart', cartController.get);
-router.post('/cart', cartController.create);
 router.patch('/cart', cartController.update);
-router.post('/cart/checkout', cartController.checkout);
 
 /* PAYMENTS */
-router.post('/cart/:id/checkout/payments/mobilepay', auth, cartController.initiatePayment);
-router.post('/cart/:id/checkout/payments/mobilepay/confirm', auth, cartController.confirmPayment);
-router.get('/cart/:id/checkout/payments/status', auth, cartController.paymentStatus);
+router.post('/payments/stripe', auth, paymentController.initiate);
 
 export default router;

@@ -4,6 +4,7 @@ import morgan from 'morgan';
 
 import router from './routes.js';
 import { startHeartbeat } from './services/order/order.tracker.js';
+import errorHandler from './middleware/errorHandler.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,7 +33,7 @@ app.use('/api/v1', router);
 // ─────────────────────────────────────────────────────────────
 // GLOBAL ERROR HANDLER
 // ─────────────────────────────────────────────────────────────
-// app.use(errorHandler);   TODO: Catch-all errors and handle it
+app.use(errorHandler);
 
 // ─────────────────────────────────────────────────────────────
 // START SERVER
