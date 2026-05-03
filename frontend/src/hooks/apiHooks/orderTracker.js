@@ -62,7 +62,10 @@ export const useOrderStream = (orderId) => {
 
     eventSource.addEventListener("order_status_updated", (event) => {
       const data = JSON.parse(event.data);
-      setStatus(data.payload.status);
+      setStatus(data.payload);
+	  if (data.payload.status === "delivered") {
+    	eventSource.close();
+  	  }
     });
 
     eventSource.addEventListener("order_created", (event) => {
@@ -79,4 +82,41 @@ export const useOrderStream = (orderId) => {
   }, [orderId]);
 
   return status;
+};
+
+export const useOrderTracking = (orderId) => {
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const loadTracking = async () => {
+    if (!orderId) return;
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await fetchData(
+        `/orders/${orderId}/tracking`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      setHistory(response.history || []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadTracking();
+  }, [orderId]);
+
+  return { history, loadTracking, loading, error };
 };
