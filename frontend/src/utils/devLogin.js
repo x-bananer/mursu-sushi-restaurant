@@ -1,3 +1,7 @@
+/**
+ * Temporary file only for development assitance till login and registration page is implemented.
+ */
+
 import { fetchData } from "./fetchData";
 
 export default async function devLogin() {
