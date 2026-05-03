@@ -106,7 +106,7 @@ export default function OrderTracker() {
 					<OrderDestination address={order.address} serviceType={order.delivery_type.type} />
 				</div>
 			</div>
-			<OrderSummary orderId={order.id} dish={order.order_items} totalPrice={order.total_price}/>
+			<OrderSummary orderId={order.id} items={order.order_items} totalPrice={order.total_price}/>
 		</div>
 	);
 }
