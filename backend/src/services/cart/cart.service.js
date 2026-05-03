@@ -183,6 +183,24 @@ export const clearCartBySessionId = async (sessionId) => {
     return true;
 }
 
+export const addUserIdToCart = async (sessionId, userId) => {
+    if (!sessionId) {
+        throw createHttpError(400, 'Missing session_id');
+    }
+
+    if (!userId) {
+        throw createHttpError(400, 'Missing user_id');
+    }
+
+    const cart = await cartRepo.getCartBySessionId(sessionId);
+
+    if (!cart) {
+        await cartRepo.createCartBySessionId(sessionId);
+    }
+
+    await cartRepo.addUserIdToCart(sessionId, userId);
+}
+
 export const checkoutCartBySessionId = async (sessionId, userId, checkoutData) => {
     if (!sessionId) {
         throw createHttpError(400, 'Missing session_id');

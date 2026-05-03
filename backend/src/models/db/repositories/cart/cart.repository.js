@@ -56,3 +56,20 @@ export const updateCartBySessionId = async (sessionId) => {
 		[sessionId]
 	);
 }
+
+/**
+ * ATTACH USER ID TO CART BY SESSION ID
+ * @param {string} sessionId
+ * @param {number} userId
+ * @returns {Promise<void>}
+ */
+export const addUserIdToCart = async (sessionId, userId) => {
+	await execute(
+		`
+    UPDATE cart
+    SET user_id = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE session_id = ?
+    `,
+		[userId, sessionId]
+	);
+}
