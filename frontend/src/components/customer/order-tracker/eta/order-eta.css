@@ -17,7 +17,7 @@
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: #909090;
+  color: var(--color-gray);
   margin-bottom: 6px;
 }
 
@@ -25,6 +25,6 @@
   font-family: var(--font-title);
   font-size: 56px;
   font-weight: 700;
-  color: #131313;
+  color: var(--color-black);
   line-height: 1;
 }

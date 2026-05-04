@@ -30,22 +30,22 @@
 }
 
 .journey__mode-btn:hover {
-  background: #f5f5f5;
+  background: var(--color-white);
 }
 
 .journey__mode-btn--active {
-  background: #131313;
+  background: var(--background-color);
 }
 
 .journey__mode-btn--active .journey__mode-icon,
 .journey__mode-btn--active .journey__mode-label {
-  color: #ffffff;
+  color: var(--color-white)
 }
 
 .journey__mode-icon {
   width: 22px;
   height: 22px;
-  color: #474747;
+  color: var(--color-dark-gray);
   flex-shrink: 0;
 }
 
@@ -55,6 +55,6 @@
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: #808080;
+  color: var(--color-gray);
   line-height: 1;
 }
