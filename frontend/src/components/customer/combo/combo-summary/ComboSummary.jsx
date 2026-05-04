@@ -7,7 +7,7 @@ import ErrorState from '../../../shared/error-state/ErrorState';
 
 import { useDrop } from 'react-dnd';
 import { useState } from 'react';
-import { useComboPreview, useCreateCombo } from '../../../../hooks/apiHooks/combo';
+import { useComboPreview } from '../../../../hooks/apiHooks/combo';
 import { useCartContext } from '../../../../hooks/contextHooks/cart';
 
 export default function ComboSummary({
@@ -18,7 +18,7 @@ export default function ComboSummary({
     onClearSelectedIngredients,
 }) {
     const [successMessage, setSuccessMessage] = useState('');
-    const { sessionId } = useCartContext();
+    const { addComboToCart, cartActionLoading, cartActionError } = useCartContext();
 
     const [{ isOver, canDrop }, ingredientDropRef] = useDrop(
         () => ({
@@ -63,10 +63,8 @@ export default function ComboSummary({
 
     const isActive = isOver && canDrop;
 
-    const { createCombo, loading: createLoading, error: createError } = useCreateCombo();
-
     const handleAddToCart = async () => {
-        const cart = await createCombo(ingredientsForPreview, sessionId);
+        const cart = await addComboToCart(ingredientsForPreview);
 
         if (!cart) return;
 
@@ -120,13 +118,13 @@ export default function ComboSummary({
                 }
                 <Button
                     onClick={handleAddToCart}
-                    disabled={createLoading || selectedIngredients.length === 0}
+                    disabled={cartActionLoading || selectedIngredients.length === 0}
                     className="combo-summary__button"
                 >
                     Add to cart
                 </Button>
                 {comboError && <ErrorState message={comboError} />}
-                {createError && <ErrorState message={createError} />}
+                {cartActionError && <ErrorState message={cartActionError} />}
 
                 <Toast message={successMessage} duration={5000} onClose={() => setSuccessMessage('')} />
             </div>

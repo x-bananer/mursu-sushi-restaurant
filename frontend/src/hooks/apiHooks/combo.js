@@ -65,35 +65,4 @@ const useComboPreview = (ingredientsForPreview) => {
 	return { combo, loading, error };
 };
 
-const useCreateCombo = () => {
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState(null);
-
-	const createCombo = async (ingredients, sessionId) => {
-		try {
-			setLoading(true);
-			setError(null);
-
-			const response = await fetchData('/dishes/combo/create', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'x-session-id': sessionId,
-				},
-				body: JSON.stringify({ ingredients }),
-			});
-
-			return response.cart ?? null;
-		} catch (err) {
-			setError(err.message);
-			return null;
-		} finally {
-			setLoading(false);
-		}
-	};
-
-	return { createCombo, loading, error };
-};
-
-
-export { useComboIngredients, useComboPreview, useCreateCombo };
+export { useComboIngredients, useComboPreview };
