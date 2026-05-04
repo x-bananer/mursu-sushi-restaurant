@@ -1,4 +1,4 @@
-import * as paymentService from '../services/integrations/payment.service.js';
+import * as paymentService from '../services/integration/payment.service.js';
 
 export async function initiate(req, res, next) {
 	try {
