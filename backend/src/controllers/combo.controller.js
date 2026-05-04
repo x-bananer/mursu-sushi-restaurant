@@ -39,6 +39,15 @@ export async function listComboIngredients(req, res, next) {
     }
 }
 
+export async function listIngredientTypes(req, res, next) {
+   try {
+        const ingredientTypes = await comboService.listIngredientTypes();
+        return res.json({ ingredientTypes });
+    } catch (err) {
+        next(err);
+    }
+}
+
 /* ADM only */
 export async function createIngredient(req, res, next) {
     try {

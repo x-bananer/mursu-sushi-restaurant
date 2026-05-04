@@ -63,6 +63,7 @@ router.post('/dishes/combo/preview', comboController.previewCombo);
 router.post('/dishes/combo/create', comboController.createCombo);
 
 /* ADMIN only */
+router.get('/adm/ingredients/types', auth, adminOnly, comboController.listIngredientTypes);
 router.post('/adm/ingredients', auth, adminOnly, comboController.createIngredient);
 router.patch('/adm/ingredients/:id', auth, adminOnly, comboController.updateIngredient);
 router.delete('/adm/ingredients/:id', auth, adminOnly, comboController.deleteIngredient);

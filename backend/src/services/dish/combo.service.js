@@ -70,6 +70,10 @@ export async function listComboIngredients() {
     return formattedIngredients;
 }
 
+export async function listIngredientTypes() {
+    return ingredientRepo.getIngredientTypes();
+}
+
 export async function createIngredient(payload = {}) {
     const name = String(payload?.name ?? "").trim();
     const price = Number(payload?.price);
