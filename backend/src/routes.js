@@ -84,6 +84,7 @@ router.get('/orders/:id/stream', orderController.streamOrders);
 router.get('/adm/orders/status/count', auth, orderController.statusCount);
 router.patch('/adm/orders/:id/status', orderController.updateStatus);
 router.get('/adm/orders/:id', auth, adminOnly, orderController.get);
+router.get('/adm/orders/stream', orderController.streamAdmOrders);
 router.get('/adm/orders', orderController.list);
 // remove create from front end access once cart is implemented:
 router.post('/adm/orders', orderController.create);
