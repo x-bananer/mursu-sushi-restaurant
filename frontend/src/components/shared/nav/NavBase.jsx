@@ -1,12 +1,13 @@
 import { Link } from "react-router";
 import "./nav.css";
 
-export default function NavBase({ left = [], center, right = [], extraRight }) {
+export default function NavBase({ left = [], center, right = [], extraRight, badge = '' }) {
 	return (
 		<nav className="nav layout">
 			<div className="nav__left">
 				{left.map((item, i) =>
 					item.onClick ? (
+						<>
 						<button
 							key={i}
 							onClick={item.onClick}
@@ -14,6 +15,11 @@ export default function NavBase({ left = [], center, right = [], extraRight }) {
 						>
 							{item.content}
 						</button>
+						{badge && 
+							<div className="nav__link-badge">
+								{badge}
+							</div>}
+						</>
 					) : (
 						<Link
 							key={i}
@@ -38,6 +44,9 @@ export default function NavBase({ left = [], center, right = [], extraRight }) {
 							className={`nav__link${item.isIcon ? " nav__icon-link" : ""}`}
 						>
 							{item.content}
+							{item.to === "/cart" && badge && (
+								<div className="nav__link-badge">{badge}</div>
+							)}
 						</button>
 					) : (
 						<Link
@@ -46,6 +55,9 @@ export default function NavBase({ left = [], center, right = [], extraRight }) {
 							className={`nav__link${item.isIcon ? " nav__icon-link" : ""}`}
 						>
 							{item.content}
+							{item.to === "/cart" && badge && (
+								<div className="nav__link-badge">{badge}</div>
+							)}
 						</Link>
 					),
 				)}
