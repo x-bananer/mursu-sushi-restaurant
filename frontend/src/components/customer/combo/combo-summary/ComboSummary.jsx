@@ -8,6 +8,7 @@ import ErrorState from '../../../shared/error-state/ErrorState';
 import { useDrop } from 'react-dnd';
 import { useState } from 'react';
 import { useComboPreview, useCreateCombo } from '../../../../hooks/apiHooks/combo';
+import { useCartContext } from '../../../../hooks/contextHooks/cart';
 
 export default function ComboSummary({
     selectedIngredients = [],
@@ -17,6 +18,7 @@ export default function ComboSummary({
     onClearSelectedIngredients,
 }) {
     const [successMessage, setSuccessMessage] = useState('');
+    const { sessionId } = useCartContext();
 
     const [{ isOver, canDrop }, ingredientDropRef] = useDrop(
         () => ({
@@ -64,7 +66,6 @@ export default function ComboSummary({
     const { createCombo, loading: createLoading, error: createError } = useCreateCombo();
 
     const handleAddToCart = async () => {
-        const sessionId = localStorage.getItem('session_id');
         const cart = await createCombo(ingredientsForPreview, sessionId);
 
         if (!cart) return;

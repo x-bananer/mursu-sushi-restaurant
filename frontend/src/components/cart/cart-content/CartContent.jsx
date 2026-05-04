@@ -9,45 +9,45 @@ import CartSummary from '../cart-summary/CartSummary';
 import './cart-content.css';
 
 export default function CartContent() {
-	const stripe = useStripe();
-	const elements = useElements();
+	// const stripe = useStripe();
+	// const elements = useElements();
 
-	const sessionId = localStorage.getItem("session_id");
+	// const sessionId = localStorage.getItem("session_id");
 
-	const handlePayment = async () => {
-		if (!stripe || !elements) return;
+	// const handlePayment = async () => {
+	// 	if (!stripe || !elements) return;
 
-		const card = elements.getElement(CardElement);
+	// 	const card = elements.getElement(CardElement);
 		
-		if (!card) return;
+	// 	if (!card) return;
 
-		const { error, paymentMethod } = await stripe.createPaymentMethod({
-			type: "card",
-			card,
-		});
+	// 	const { error, paymentMethod } = await stripe.createPaymentMethod({
+	// 		type: "card",
+	// 		card,
+	// 	});
 
-		if (error || !paymentMethod) return;
+	// 	if (error || !paymentMethod) return;
 
-		try {
-			const response = await fetch(`${API_BASE_URL}/payments/stripe`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					"x-session-id": sessionId || "",
-				},
-				body: JSON.stringify({
-					delivery_type_id: 3,
-					address,
-					payment_method_id: paymentMethod.id,
-				}),
-			});
+	// 	try {
+	// 		const response = await fetch(`${API_BASE_URL}/payments/stripe`, {
+	// 			method: "POST",
+	// 			headers: {
+	// 				"Content-Type": "application/json",
+	// 				"x-session-id": sessionId || "",
+	// 			},
+	// 			body: JSON.stringify({
+	// 				delivery_type_id: 3,
+	// 				address,
+	// 				payment_method_id: paymentMethod.id,
+	// 			}),
+	// 		});
 
-			const data = await response.json();
-			console.log(response.status, data);
-		} catch (error) {
-			console.error(error);
-		}
-	};
+	// 		const data = await response.json();
+	// 		console.log(response.status, data);
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// };
 
 	return (
 		<div className="cart-content">
@@ -67,7 +67,7 @@ export default function CartContent() {
 				</section>
 			</div>
             <aside className="cart-content__summary">
-                <CartSummary></CartSummary>
+                <CartSummary />
             </aside>
 		</div>
 	);
