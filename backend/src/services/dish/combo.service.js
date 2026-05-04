@@ -69,3 +69,91 @@ export async function listComboIngredients() {
 
     return formattedIngredients;
 }
+
+export async function listIngredientTypes() {
+    return ingredientRepo.getIngredientTypes();
+}
+
+export async function createIngredient(payload = {}) {
+    const name = String(payload?.name ?? "").trim();
+    const price = Number(payload?.price);
+    const ingredientTypeId = Number(payload?.ingredient_type_id);
+
+    if (!name) {
+        throw createHttpError(400, "Ingredient name is required");
+    }
+
+    if (Number.isNaN(price) || price < 0) {
+        throw createHttpError(400, "Valid ingredient price is required");
+    }
+
+    if (!Number.isInteger(ingredientTypeId) || ingredientTypeId <= 0) {
+        throw createHttpError(400, "Valid ingredient_type_id is required");
+    }
+
+    const ingredientId = await ingredientRepo.createIngredient({
+        name,
+        price,
+        ingredient_type_id: ingredientTypeId,
+    });
+    
+    return ingredientRepo.getIngredientById(ingredientId);
+}
+
+export async function updateIngredient(ingredientId, payload = {}) {
+    if (!Number.isInteger(ingredientId) || ingredientId <= 0) {
+        throw createHttpError(400, "Valid ingredient id is required");
+    }
+
+    const updates = {};
+
+    if (payload.name !== undefined) {
+        const name = String(payload.name).trim();
+        if (!name) {
+            throw createHttpError(400, "Ingredient name cannot be empty");
+        }
+        updates.name = name;
+    }
+
+    if (payload.price !== undefined) {
+        const price = Number(payload.price);
+        if (Number.isNaN(price) || price < 0) {
+            throw createHttpError(400, "Valid ingredient price is required");
+        }
+        updates.price = price;
+    }
+
+    if (payload.ingredient_type_id !== undefined) {
+        const ingredientTypeId = Number(payload.ingredient_type_id);
+        if (!Number.isInteger(ingredientTypeId) || ingredientTypeId <= 0) {
+            throw createHttpError(400, "Valid ingredient_type_id is required");
+        }
+        updates.ingredient_type_id = ingredientTypeId;
+    }
+
+    if (Object.keys(updates).length === 0) {
+        throw createHttpError(400, "No fields provided for update");
+    }
+
+    const isUpdated = await ingredientRepo.updateIngredientById(ingredientId, updates);
+
+    if (!isUpdated) {
+        throw createHttpError(404, "Ingredient not found");
+    }
+
+    return ingredientRepo.getIngredientById(ingredientId);
+}
+
+export async function deleteIngredient(ingredientId) {
+    if (!Number.isInteger(ingredientId) || ingredientId <= 0) {
+        throw createHttpError(400, "Valid ingredient id is required");
+    }
+
+    const isDeleted = await ingredientRepo.deleteIngredientById(ingredientId);
+
+    if (!isDeleted) {
+        throw createHttpError(404, "Ingredient not found");
+    }
+
+    return true;
+}
