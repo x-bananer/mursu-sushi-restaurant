@@ -5,7 +5,7 @@ export default function LiveOrdersCard({ order, onAction }) {
   let nextStatus = null;
 
   if (status === "pending") {
-    actionLabel = "Confirm Order";
+    actionLabel = "Accept Order";
     nextStatus = "confirmed";
   } else if (status === "confirmed") {
     actionLabel = "Mark Preparing";
@@ -14,8 +14,8 @@ export default function LiveOrdersCard({ order, onAction }) {
     actionLabel = "Mark Ready";
     nextStatus = "ready";
   } else if (status === "ready") {
-    actionLabel = "Complete";
-    nextStatus = "completed";
+    actionLabel = "Mark Delivered";
+    nextStatus = "delivered";
   }
 
   const renderItem = (item) => {
