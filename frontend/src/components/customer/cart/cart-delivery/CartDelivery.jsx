@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect } from 'react'
 import { FaCar, FaUtensils, FaWalking } from 'react-icons/fa'
 
 import './cart-delivery.css'
@@ -6,15 +6,22 @@ import './cart-delivery.css'
 import InputField from '../../../shared/input-field/InputField';
 import { useDeliveryTypes } from '../../../../hooks/apiHooks/cart';
 
-export default function CartDelivery() {
-    const [address, setAddress] = useState("");
+export default function CartDelivery({
+    deliveryTypeId,
+    setDeliveryTypeId,
+    address,
+    setAddress,
+    setSelectedDeliveryType,
+}) {
     const { deliveryTypes, deliveryTypesLoading, deliveryTypesError } = useDeliveryTypes();
-    const [selectedTypeId, setSelectedTypeId] = useState(null);
 
-    const activeTypeId = selectedTypeId ?? deliveryTypes[0]?.id ?? null;
+    const activeTypeId = deliveryTypeId ?? deliveryTypes[0]?.id ?? null;
     const selectedType = deliveryTypes.find((type) => type.id === activeTypeId) || null;
-    
     const isDeliverySelected = selectedType?.type === 'delivery';
+
+    useEffect(() => {
+        setSelectedDeliveryType(selectedType);
+    }, [selectedType, setSelectedDeliveryType]);
 
     const getDeliveryTypeIcon = (type) => {
         if (type === 'delivery') return <FaCar />;
@@ -34,7 +41,7 @@ export default function CartDelivery() {
                         key={type.id}
                         className={`cart-delivery__option ${activeTypeId === type.id ? 'cart-delivery__option--active' : ''}`}
                         type="button"
-                        onClick={() => setSelectedTypeId(type.id)}
+                        onClick={() => setDeliveryTypeId(type.id)}
                     >
                         {getDeliveryTypeIcon(type.type)}
                         <span className="cart-delivery__label">{type.name}</span>
