@@ -24,7 +24,7 @@ const ETA = {
     },
     row2: {
       before: "Delivered by:",
-      value: (eta) => formatTime(eta?.leaveAt),
+      value: (eta) => formatTime(eta?.deliveredAt),
       after: "",
     },
   },
@@ -71,6 +71,8 @@ const ETA = {
    Component
 ----------------------------- */
 export default function OrderETA({ eta, serviceType, durationMins }) {
+  console.log('serviceType: ', serviceType);
+  console.log('eta?.leaveAt: ', eta?.deliveredAt );
   const etaUI = ETA[serviceType] || ETA.default;
 
   if (!eta) {
@@ -97,7 +99,21 @@ export default function OrderETA({ eta, serviceType, durationMins }) {
       </div>
 
       {/* Row 2 */}
-      {etaUI.row2 && (
+      {serviceType === "delivery" ? (
+        <div className="order__ready">
+        <p className="order__ready-label">{etaUI.row2.before}</p>
+
+        <p className="order__ready-time">
+          {etaUI.row2.value?.(eta)}
+        </p>
+
+        {etaUI.row2.after && (
+          <p className="order__ready-label">{etaUI.row2.after}</p>
+        )}
+      </div>
+
+      ) : (
+
         <div className="order__ready">
           <p className="order__ready-label">{etaUI.row2.before}</p>
 
