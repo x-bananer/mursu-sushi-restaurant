@@ -175,7 +175,7 @@ export const updateCartDishBySessionId = async (sessionId, dishId, quantity) => 
         throw createHttpError(400, 'Valid dish_id is required');
     }
 
-    if (!Number(quantity)) {
+    if (Number.isNaN(Number(quantity)) || Number(quantity) < 0) {
         throw createHttpError(400, 'Valid quantity is required');
     }
 
@@ -185,12 +185,22 @@ export const updateCartDishBySessionId = async (sessionId, dishId, quantity) => 
         cart = await cartRepo.getCartBySessionId(sessionId);
     }
 
-    const itemPrice = await getDishItemPrice({ dish_id: Number(dishId) });
     const cartItems = await cartItemsRepo.getCartItemsByCartId(cart.id);
 
     const existingDishItem = cartItems.find((item) => {
         return Number(item.item_type_id) === 1 && Number(item.dish_id) === Number(dishId);
     });
+
+    if (Number(quantity) === 0) {
+        if (existingDishItem) {
+            await cartItemsRepo.deleteCartItem(existingDishItem.id);
+            await cartRepo.updateCartBySessionId(sessionId);
+        }
+
+        return getCartBySessionId(sessionId);
+    }
+
+    const itemPrice = await getDishItemPrice({ dish_id: Number(dishId) });
 
     if (existingDishItem) {
         await cartItemsRepo.updateCartItem({
