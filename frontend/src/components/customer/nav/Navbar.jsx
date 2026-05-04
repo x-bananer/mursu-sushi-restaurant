@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useLocation } from "react-router";
 import NavBase from "../../shared/nav/NavBase";
 import { UserIcon, CartIcon } from "../../shared/nav/icons";
+import { useCartContext } from "../../../hooks/contextHooks/cart";
 
 const Logo = () => (
 	<Link to="/" className="nav__logo">
@@ -23,6 +24,8 @@ const Logo = () => (
 export default function CustomerNavbar() {
 	const location = useLocation();
 	const [language, setLanguage] = React.useState("fi");
+
+	const { cartItemsCount } = useCartContext();
 
 	return (
 		<NavBase
@@ -54,6 +57,7 @@ export default function CustomerNavbar() {
 					🇫🇮 {language.toUpperCase()}
 				</button>
 			}
+			badge={cartItemsCount}
 		/>
 	);
 }
