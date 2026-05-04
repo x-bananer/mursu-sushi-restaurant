@@ -89,3 +89,42 @@ export const useUpdateOrderStatus = () => {
 
   return { updateStatus, statusLoading, statusError };
 };
+
+export const useStatusCount = () => {
+  const [stats, setStats] = useState({});
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [statsError, setStatsError] = useState(null);
+
+  const loadStats = async () => {
+    try {
+      setStatsLoading(true);
+      setStatsError(null);
+
+      const response = await fetchData("/adm/orders/status/count", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const normalized = Object.fromEntries(
+        (response.stats || []).map(({ status, count }) => [
+          status,
+          Number(count),
+        ])
+      );
+
+      setStats(normalized);
+    } catch (err) {
+      setStatsError(err.message);
+    } finally {
+      setStatsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadStats();
+  }, []);
+
+  return { stats, loadStats, statsLoading, statsError };
+};
