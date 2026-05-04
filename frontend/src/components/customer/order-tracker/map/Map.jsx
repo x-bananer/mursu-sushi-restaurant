@@ -1,13 +1,11 @@
 import "./map.css";
-import "leaflet/dist/leaflet.css";
-
-import L from "leaflet";
 import { useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from "react-leaflet";
 
 import { FaLocationCrosshairs } from "react-icons/fa6";
-import { FaMapMarkerAlt } from "react-icons/fa";
-
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
@@ -21,6 +19,28 @@ L.Icon.Default.mergeOptions({
 });
 
 /* ----------------------------
+   Style per transport mode
+----------------------------- */
+const getLegStyle = (mode) => {
+  switch (mode) {
+    case "WALK":
+      return { color: "#666", dashArray: "4 6", weight: 4 };
+
+    case "BUS":
+      return { color: "#007bff", weight: 5 };
+
+    case "TRAM":
+      return { color: "#28a745", weight: 5 };
+
+    case "SUBWAY":
+      return { color: "#dc3545", weight: 5 };
+
+    default:
+      return { color: "#000", weight: 4 };
+  }
+};
+
+/* ----------------------------
    Locate Control
 ----------------------------- */
 function LocateButton({ onLocate }) {
@@ -30,7 +50,7 @@ function LocateButton({ onLocate }) {
     map.locate({ setView: true, maxZoom: 16 });
 
     map.once("locationfound", (e) => {
-      const coords = e.latlng;
+      const coords = [e.latlng.lat, e.latlng.lng];
       map.flyTo(coords, 16);
       onLocate(coords);
     });
@@ -46,10 +66,20 @@ function LocateButton({ onLocate }) {
 /* ----------------------------
    Map
 ----------------------------- */
-export default function Map() {
-  const orderPosition = [59.437, 24.7536];
+export default function Map({mode, restaurantCoords, userCoords, geometry, legs}) {
+  // Convert coords - leaflet format
+  const orderPosition = restaurantCoords
+    ? [restaurantCoords.lat, restaurantCoords.lon]
+    : null;
 
-  const [userPosition, setUserPosition] = useState(null);
+  const [userPosition, setUserPosition] = useState(
+    userCoords?.lat != null && userCoords?.lon != null
+      ? [userCoords.lat, userCoords.lon]
+      : null
+  );
+
+  // Prevent rendering before data is ready
+  if (!orderPosition) return null;
 
   return (
     <div className="order__map">
@@ -64,19 +94,34 @@ export default function Map() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {/* ORDER LOCATION */}
+        {/* Restaurant Marker */}
         <Marker position={orderPosition}>
-          <Popup>Order location</Popup>
+          <Popup>Restaurant</Popup>
         </Marker>
 
-        {/* USER LOCATION (ONLY AFTER CLICK) */}
+        {/* User Marker */}
         {userPosition && (
           <Marker position={userPosition}>
             <Popup>You are here</Popup>
           </Marker>
         )}
 
-        <LocateButton onLocate={setUserPosition} />
+        <LocateButton onLocate={(coords) => setUserPosition(coords)} />
+
+        {/* TRANSIT: render legs */}
+        {mode === "transit" &&
+          legs?.map((leg, index) => (
+            <Polyline
+              key={index}
+              positions={leg.geometry}
+              pathOptions={getLegStyle(leg.mode)}
+            />
+          ))}
+
+        {/* NON-TRANSIT: render single geometry */}
+        {mode !== "transit" && geometry && (
+          <Polyline positions={geometry} pathOptions={{ color: "#007bff", weight: 5 }} />
+        )}
       </MapContainer>
     </div>
   );

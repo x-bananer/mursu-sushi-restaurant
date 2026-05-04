@@ -120,3 +120,83 @@ export const useOrderTracking = (orderId) => {
 
   return { history, loadTracking, loading, error };
 };
+
+export const useEtaEstimation = (orderId, userCoordsLat, userCoordsLong) => {
+  const [etaEstimation, setEtaEstimation] = useState(null);
+  const [etaLoading, setEtaLoading] = useState(true);
+  const [etaError, setEtaError] = useState(null);
+
+  const loadEtaEstimation = async () => {
+  if (!orderId || userCoordsLat == null || userCoordsLong == null) return;
+
+	try {
+      setEtaLoading(true);
+      setEtaError(null);
+
+      const response = await fetchData(
+        `/orders/${orderId}/estimate/${userCoordsLat}/${userCoordsLong}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      setEtaEstimation(response.estimate || {});
+    } catch (err) {
+      setEtaError(err.message);
+    } finally {
+      setEtaLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadEtaEstimation();
+  }, [orderId, userCoordsLat, userCoordsLong]);
+
+  return { etaEstimation, loadEtaEstimation, etaLoading, etaError  };
+
+}
+
+export const useRouteByMode = (
+  orderId,
+  lat,
+  lon,
+  mode
+) => {
+  const [route, setRoute] = useState(null);
+  const [routeLoading, setRouteLoading] = useState(false);
+  const [routeError, setRouteError] = useState(null);
+
+  const loadRoute = async () => {
+    if (!orderId || lat == null || lon == null || !mode) return;
+
+    try {
+      setRouteLoading(true);
+      setRouteError(null);
+
+      const response = await fetchData(
+        `/orders/${orderId}/route/${mode}/${lat}/${lon}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      setRoute(response.route || null);
+    } catch (err) {
+      setRouteError(err.message);
+    } finally {
+      setRouteLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadRoute();
+  }, [orderId, lat, lon, mode]);
+
+  return { route, routeLoading, routeError, loadRoute };
+};
