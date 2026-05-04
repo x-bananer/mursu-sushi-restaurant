@@ -98,6 +98,7 @@ export default function OrderTracker() {
           />
 
           <JourneyPlanner
+            serviceType={order.delivery_type.type}
             recommendedMode={etaEstimation?.recommendedMode}
             selectedMode={selectedMode}
             onSelectMode={setSelectedMode}

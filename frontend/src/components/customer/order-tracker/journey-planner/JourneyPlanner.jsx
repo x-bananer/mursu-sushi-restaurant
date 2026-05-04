@@ -12,10 +12,12 @@ const MODES = [
 ];
 
 export default function JourneyPlanner({
+  serviceType,
   recommendedMode,
   selectedMode,
   onSelectMode,
 }) {
+  if (serviceType === "delivery") return null;
   const activeMode = selectedMode ?? recommendedMode;
 
   return (
