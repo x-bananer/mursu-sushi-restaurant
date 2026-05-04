@@ -1,10 +1,11 @@
 import "./order-tracker.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { FiClock } from "react-icons/fi";
 
 import OrderSteps from "../../../components/customer/order-tracker/order-steps/OrderSteps";
 import JourneyPlanner from "../../../components/customer/order-tracker/journey-planner/JourneyPlanner";
+import OrderETA from "../../../components/customer/order-tracker/eta/OrderEta";
 import Map from "../../../components/customer/order-tracker/map/Map";
 import OrderDestination from "../../../components/customer/order-tracker/order-destination/OrderDestination";
 import OrderSummary from "../../../components/customer/order-tracker/order-summary/OrderSummary";
@@ -12,7 +13,9 @@ import OrderSummary from "../../../components/customer/order-tracker/order-summa
 import {
   useActiveOrder,
   useOrderStream,
-  useOrderTracking
+  useOrderTracking,
+  useEtaEstimation,
+  useRouteByMode,
 } from "../../../hooks/apiHooks/orderTracker";
 
 import { useGeolocation } from "../../../hooks/apiHooks/geolocation";
@@ -25,13 +28,12 @@ export default function OrderTracker() {
   const { order, loading, error } = useActiveOrder();
   const status = useOrderStream(order?.id);
   const { history, loadTracking } = useOrderTracking(order?.id);
-
+  const { lat, lon, loading: geoLoading, error: geoError} = useGeolocation();
+  const {etaEstimation, etaLoading, etaError} = useEtaEstimation(order?.id, lat, lon);
+  const [selectedMode, setSelectedMode] = useState(null);
   const {
-    lat,
-    lon,
-    loading: geoLoading,
-    error: geoError
-  } = useGeolocation();
+    route, routeLoading, routeError
+  } = useRouteByMode(order?.id, lat, lon, selectedMode);
 
   useEffect(() => {
     if (!status?.status?.type) return;
@@ -42,6 +44,8 @@ export default function OrderTracker() {
   console.log("Order:", order);
   console.log("Status:", status);
   console.log("Geolocation ", { lat, lon, geoLoading, geoError });
+  console.log("ETA:", {etaEstimation, etaLoading, etaError});
+  console.log("ROUTE BY MODE:", {route, routeLoading, routeError});
   console.groupEnd();
 
   if (loading) {
@@ -93,26 +97,29 @@ export default function OrderTracker() {
             serviceType={order.delivery_type.type}
           />
 
-          <JourneyPlanner />
+          <JourneyPlanner
+            serviceType={order.delivery_type.type}
+            recommendedMode={etaEstimation?.recommendedMode}
+            selectedMode={selectedMode}
+            onSelectMode={setSelectedMode}
+          />
 
           {/* ETA */}
-          <p className="order__estimation">Estimation: </p>
-
-          <div className="order__ready-wrapper">
-            <div className="order__ready">
-              <p className="order__ready-label">Ready at</p>
-              <p className="order__ready-time">11:20</p>
-            </div>
-
-            <div className="order__ready">
-              <p className="order__ready-label">Leave at</p>
-              <p className="order__ready-time">11:00</p>
-            </div>
-          </div>
+          <OrderETA
+            eta={etaEstimation}
+            serviceType={order.delivery_type.type}
+            durationMins={route?.durationMins}
+          />
         </aside>
 
         <div className="order__right">
-          <Map />
+          <Map
+            mode={selectedMode}
+            restaurantCoords={etaEstimation?.restaurantCoords}
+            userCoords={{ lat, lon }}
+            geometry={route?.geometry || etaEstimation?.travel?.geometry}
+            legs={route?.legs || etaEstimation?.travel?.legs}
+          />
 
           <OrderDestination
             address={order.address}
