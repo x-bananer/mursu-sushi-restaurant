@@ -9,8 +9,12 @@
 }
 
 .error-state__message {
-  color: #b00020;
+  color: var(--color-danger);
   font-size: 16px;
+}
+
+.error-state--light .error-state__message {
+  color: var(--color-light-light-gray);
 }
 
 .error-state__retry {

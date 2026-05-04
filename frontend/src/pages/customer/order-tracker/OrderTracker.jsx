@@ -21,8 +21,8 @@ import {
 import { useGeolocation } from "../../../hooks/apiHooks/geolocation";
 
 import Loader from "../../../components/shared/loader/Loader";
-import ErrorState from "../../../components/shared/error-state/errorState";
-import EmptyState from "../../../components/shared/empty-state/emptyState";
+import ErrorState from "../../../components/shared/error-state/ErrorState";
+import EmptyState from "../../../components/shared/empty-state/EmptyState";
 
 export default function OrderTracker() {
   const { order, loading, error } = useActiveOrder();
