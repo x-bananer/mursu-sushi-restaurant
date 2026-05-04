@@ -14,7 +14,7 @@ const CartProvider = ({ children }) => {
         cartActionLoading,
         cartActionError,
     } = useCartActions();
-
+    
     useEffect(() => {
         let sessionId = localStorage.getItem('session_id');
 
