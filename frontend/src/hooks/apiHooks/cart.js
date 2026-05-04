@@ -111,6 +111,37 @@ const useCartActions = () => {
     return { addDishToCart, addComboToCart, updateCartItems, cartActionLoading, cartActionError };
 };
 
+const usePayment = () => {
+    const [paymentLoading, setPaymentLoading] = useState(false);
+    const [paymentError, setPaymentError] = useState(null);
+
+    const createPayment = async ({ deliveryTypeId, address, paymentMethodId }) => {
+        try {
+            setPaymentLoading(true);
+            setPaymentError(null);
+
+            return await fetchData('/payments/stripe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    delivery_type_id: deliveryTypeId,
+                    address,
+                    payment_method_id: paymentMethodId,
+                }),
+            });
+        } catch (err) {
+            setPaymentError(err.message);
+            return null;
+        } finally {
+            setPaymentLoading(false);
+        }
+    };
+
+    return { createPayment, paymentLoading, paymentError };
+};
+
 const useDeliveryTypes = () => {
     const [deliveryTypes, setDeliveryTypes] = useState([]);
     const [deliveryTypesLoading, setDeliveryTypesLoading] = useState(false);
@@ -137,4 +168,4 @@ const useDeliveryTypes = () => {
     return { deliveryTypes, deliveryTypesLoading, deliveryTypesError };
 };
 
-export { useCart, useCartActions, useDeliveryTypes };
+export { useCart, useCartActions, usePayment, useDeliveryTypes };
