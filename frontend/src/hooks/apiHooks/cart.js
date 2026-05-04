@@ -46,6 +46,9 @@ const useCartActions = () => {
 
             const response = await fetchData('/cart', {
                 method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify({
                     dish_id: dishId,
                     quantity,
@@ -83,7 +86,29 @@ const useCartActions = () => {
         }
     };
 
-    return { addDishToCart, addComboToCart, cartActionLoading, cartActionError };
+    const updateCartItems = async (items) => {
+        try {
+            setCartActionLoading(true);
+            setCartActionError(null);
+
+            const response = await fetchData('/cart', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ items }),
+            });
+
+            return response?.cart ?? null;
+        } catch (err) {
+            setCartActionError(err.message);
+            return null;
+        } finally {
+            setCartActionLoading(false);
+        }
+    };
+
+    return { addDishToCart, addComboToCart, updateCartItems, cartActionLoading, cartActionError };
 };
 
 export { useCart, useCartActions };

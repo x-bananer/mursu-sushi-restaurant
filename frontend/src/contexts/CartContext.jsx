@@ -10,6 +10,7 @@ const CartProvider = ({ children }) => {
     const {
         addDishToCart: addDishToCartApi,
         addComboToCart: addComboToCartApi,
+        updateCartItems,
         cartActionLoading,
         cartActionError,
     } = useCartActions();
@@ -41,6 +42,33 @@ const CartProvider = ({ children }) => {
         return updatedCart;
     };
 
+    const removeCartItem = async (itemId) => {
+        const currentItems = cart?.items || [];
+        const updateItems = currentItems
+            .filter((item) => item.id !== itemId)
+            .map((item) => ({
+                id: item.id,
+                dish_id: item?.dish?.id ?? null,
+                quantity: item.quantity,
+                item_type_id: item?.type?.id,
+                ingredients: Array.isArray(item.ingredients)
+                    ? item.ingredients.map((ingredient) => ({
+                        ingredient_id: ingredient.ingredient.id,
+                        quantity: ingredient.quantity,
+                        position: ingredient.position,
+                    }))
+                    : null,
+            }));
+
+        const updatedCart = await updateCartItems(updateItems);
+
+        if (updatedCart) {
+            setCart(updatedCart);
+        }
+
+        return updatedCart;
+    };
+
     const cartItemsCount = (cart?.items || []).reduce((sum, item) => {
         return sum + (item?.quantity || 0);
     }, 0);
@@ -58,6 +86,7 @@ const CartProvider = ({ children }) => {
                 cartItemsCount,
                 addDishToCart,
                 addComboToCart,
+                removeCartItem,
             }}
         >
             {children}

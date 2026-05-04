@@ -2,7 +2,7 @@ import React from 'react'
 
 import './cart-summary.css';
 
-import Button from '../../shared/button/Button';
+import Button from '../../../shared/button/Button';
 
 export default function CartSummary() {
     return (

@@ -2,7 +2,7 @@ import {useState} from 'react'
 
 import './cart-delivery.css'
 
-import InputField from '../../shared/input-field/InputField';
+import InputField from '../../../shared/input-field/InputField';
 
 export default function CartDelivery() {
     const [address, setAddress] = useState("Testikatu 12 A 4, Helsinki");
