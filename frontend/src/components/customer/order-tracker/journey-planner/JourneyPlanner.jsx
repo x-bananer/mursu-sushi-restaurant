@@ -2,10 +2,24 @@ import "./journey-planner.css";
 
 import { FiChevronDown } from "react-icons/fi";
 import { FaWalking, FaBicycle, FaCar, FaBus } from "react-icons/fa";
+import { Icon } from "leaflet";
 
-export default function JourneyPlanner() {
+const MODES = [
+  { key: "walk", label: "Walk", icon: FaWalking },
+  { key: "bike", label: "Bike", icon: FaBicycle },
+  { key: "car", label: "Car", icon: FaCar },
+  { key: "transit", label: "Transit", icon: FaBus },
+];
+
+export default function JourneyPlanner({
+  recommendedMode,
+  selectedMode,
+  onSelectMode,
+}) {
+  const activeMode = selectedMode ?? recommendedMode;
+
   return (
-    <details className="accordion">
+    <details className="accordion" open>
       <summary className="accordion__header">
         <span className="accordion__title">Plan Journey</span>
 
@@ -17,45 +31,25 @@ export default function JourneyPlanner() {
       <div className="accordion__body accordion__body--journey journey">
         <div className="journey__modes" role="tablist">
 
-          {/* WALK */}
-          <button
-            className="journey__mode-btn journey__mode-btn--active"
-            type="button"
-            aria-label="Walk"
-          >
-            <FaWalking className="journey__mode-icon" />
-            <span className="journey__mode-label">Walk</span>
-          </button>
+          {MODES.map(({ key, label, icon: Icon }) => {
+            const isActive = activeMode === key;
 
-          {/* BIKE */}
-          <button
-            className="journey__mode-btn"
-            type="button"
-            aria-label="Bike"
-          >
-            <FaBicycle className="journey__mode-icon" />
-            <span className="journey__mode-label">Bike</span>
-          </button>
-
-          {/* CAR */}
-          <button
-            className="journey__mode-btn"
-            type="button"
-            aria-label="Car"
-          >
-            <FaCar className="journey__mode-icon" />
-            <span className="journey__mode-label">Car</span>
-          </button>
-
-          {/* TRANSIT */}
-          <button
-            className="journey__mode-btn"
-            type="button"
-            aria-label="Transit"
-          >
-            <FaBus className="journey__mode-icon" />
-            <span className="journey__mode-label">Transit</span>
-          </button>
+            return (
+              <button
+                key={key}
+                className={`journey__mode-btn ${
+                  isActive ? "journey__mode-btn--active" : ""
+                }`}
+                type="button"
+                onClick={() => onSelectMode?.(key)}
+                aria-pressed={isActive}
+                aria-label={label}
+              >
+                <Icon className="journey__mode-icon" />
+                <span className="journey__mode-label">{label}</span>
+              </button>
+            );
+          })}
 
         </div>
       </div>
