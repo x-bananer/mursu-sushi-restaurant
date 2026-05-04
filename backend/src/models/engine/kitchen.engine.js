@@ -66,8 +66,8 @@ function getItemPrepTime(item) {
  */
 function estimateOrderPrepTime(order) {
   const items = order.order_items;
-  console.log('kitchen engine order: ' + JSON.stringify(order, null, 2));
-  console.log('kitchen engine items: ' + JSON.stringify(items, null, 2));
+  //console.log('kitchen engine order: ' + JSON.stringify(order, null, 2));
+  //console.log('kitchen engine items: ' + JSON.stringify(items, null, 2));
   if (!items.length) throw new Error('item quantity must be > 0');;
 
   const maxItemTime = Math.max(...items.map(getItemPrepTime));
