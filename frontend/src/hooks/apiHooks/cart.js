@@ -124,6 +124,7 @@ const usePayment = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
                 body: JSON.stringify({
                     delivery_type_id: deliveryTypeId,

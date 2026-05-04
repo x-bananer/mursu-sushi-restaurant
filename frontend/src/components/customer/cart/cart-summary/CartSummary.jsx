@@ -5,17 +5,25 @@ import './cart-summary.css';
 import '../../../shared/error-state/error-state.css';
 
 import Button from '../../../shared/button/Button';
-export default function CartSummary({ totalPrice, discount, onPay, payLoading, payError, selectedDeliveryType }) {
+export default function CartSummary({
+    totalPrice,
+    discount,
+    onPay,
+    payLoading,
+    payError,
+    selectedDeliveryType,
+    canPay,
+}) {
     const navigate = useNavigate();
+
     const showDiscount = Boolean(discount);
     const showDelivery = selectedDeliveryType?.type === 'delivery';
-    const showRows = showDiscount || showDelivery;
 
     return (
         <div className="cart-summary">
             <div className="cart-summary__container">
                 <h2 className="cart-summary__title">Order Summary</h2>
-                {showRows && (
+                {(showDiscount || showDelivery) && (
                     <div className="cart-summary__rows">
                     {showDiscount &&
                         <div className="cart-summary__row">
@@ -44,7 +52,7 @@ export default function CartSummary({ totalPrice, discount, onPay, payLoading, p
                     className="cart-summary__button"
                     variant="dark"
                     onClick={onPay}
-                    disabled
+                    disabled={!canPay || payLoading}
                 >
                     {payLoading ? 'Processing...' : `Pay €${totalPrice}`}
                 </Button>
@@ -60,7 +68,7 @@ export default function CartSummary({ totalPrice, discount, onPay, payLoading, p
                     <Button className="cart-summary__auth-link" variant="link" onClick={() => navigate('/login')}>create an account</Button>
                     <br></br>{' '}to continue to checkout
                 </div>
-                
+
                 <p className="cart-summary__caption">
                     By proceeding, you agree to Mursu’s terms of service and
                     privacy policy.

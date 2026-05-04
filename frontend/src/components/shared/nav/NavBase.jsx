@@ -15,7 +15,7 @@ export default function NavBase({ left = [], center, right = [], extraRight, bad
 						>
 							{item.content}
 						</button>
-						{badge && 
+						{Number(badge) > 0 && 
 							<div className="nav__link-badge">
 								{badge}
 							</div>}
@@ -44,7 +44,7 @@ export default function NavBase({ left = [], center, right = [], extraRight, bad
 							className={`nav__link${item.isIcon ? " nav__icon-link" : ""}`}
 						>
 							{item.content}
-							{item.to === "/cart" && badge && (
+							{item.to === "/cart" && showBadge && (
 								<div className="nav__link-badge">{badge}</div>
 							)}
 						</button>
@@ -55,7 +55,7 @@ export default function NavBase({ left = [], center, right = [], extraRight, bad
 							className={`nav__link${item.isIcon ? " nav__icon-link" : ""}`}
 						>
 							{item.content}
-							{item.to === "/cart" && badge && (
+							{item.to === "/cart" && showBadge && (
 								<div className="nav__link-badge">{badge}</div>
 							)}
 						</Link>
