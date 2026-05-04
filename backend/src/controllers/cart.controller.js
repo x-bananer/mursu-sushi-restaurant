@@ -38,3 +38,17 @@ export async function update(req, res, next) {
 		next(err);
 	}
 }
+
+/**
+ * GET /cart/delivery-types
+ * Return available delivery types for checkout.
+ *
+ */
+export async function getDeliveryTypes(req, res, next) {
+	try {
+		const deliveryTypes = await cartService.getDeliveryTypes();
+		return res.json({ deliveryTypes });
+	} catch (err) {
+		next(err);
+	}
+}

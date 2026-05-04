@@ -111,4 +111,30 @@ const useCartActions = () => {
     return { addDishToCart, addComboToCart, updateCartItems, cartActionLoading, cartActionError };
 };
 
-export { useCart, useCartActions };
+const useDeliveryTypes = () => {
+    const [deliveryTypes, setDeliveryTypes] = useState([]);
+    const [deliveryTypesLoading, setDeliveryTypesLoading] = useState(false);
+    const [deliveryTypesError, setDeliveryTypesError] = useState(null);
+
+    useEffect(() => {
+        const loadDeliveryTypes = async () => {
+            try {
+                setDeliveryTypesLoading(true);
+                setDeliveryTypesError(null);
+
+                const response = await fetchData('/cart/delivery-types');
+                setDeliveryTypes(response?.deliveryTypes ?? []);
+            } catch (err) {
+                setDeliveryTypesError(err.message);
+            } finally {
+                setDeliveryTypesLoading(false);
+            }
+        };
+
+        loadDeliveryTypes();
+    }, []);
+
+    return { deliveryTypes, deliveryTypesLoading, deliveryTypesError };
+};
+
+export { useCart, useCartActions, useDeliveryTypes };

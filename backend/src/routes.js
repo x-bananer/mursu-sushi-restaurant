@@ -92,6 +92,7 @@ router.post('/adm/orders', orderController.create);
 // CART
 // ─────────────────────────────────────────────────────────────────────────────
 router.get('/cart', cartController.get);
+router.get('/cart/delivery-types', cartController.getDeliveryTypes);
 router.patch('/cart', cartController.update);
 
 /* PAYMENTS */

@@ -353,6 +353,10 @@ export const checkoutCartBySessionId = async (sessionId, userId, checkoutData) =
     return order;
 }
 
+export const getDeliveryTypes = async () => {
+    return cartRepo.getDeliveryTypes();
+}
+
 // Get item price
 // item: { dish_id: 1, quantity: 2, item_type_id: 1 }
 const getItemPrice = async (item) => {
