@@ -1,6 +1,8 @@
 import * as cartRepo from '../../models/db/repositories/cart/cart.repository.js';
 import * as cartItemsRepo from '../../models/db/repositories/cart/cartItems.repository.js';
 import * as cartItemIngredientsRepository from '../../models/db/repositories/cart/cartItemIngredients.repository.js';
+import * as userRepo from '../../models/db/repositories/user/user.repository.js';
+import * as dailySpecialRepo from '../../models/db/repositories/dish/dailySpecial.repository.js';
 import * as orderService from '../order/order.service.js';
 import * as cartMapper from './cart.mapper.js';
 import * as cartEngine from '../../models/engine/cart.engine.js';
@@ -64,9 +66,15 @@ export const getCartBySessionId = async (sessionId) => {
 
     const items = await cartItemsRepo.getCartItemsByCartId(cart.id);
     const ingredients = await getCartIngredients(items);
-    const totalPrice = getCartTotalPrice(items);
+    const {totalPrice, discount} = await getCartTotalPrice(cart, items);
 
-    return cartMapper.toCartDTO(cart, items, ingredients, totalPrice);
+    return cartMapper.toCartDTO(
+        cart,
+        items,
+        ingredients,
+        totalPrice,
+        discount
+    );
 }
 
 // Update cart for session
@@ -175,6 +183,43 @@ export const clearCartBySessionId = async (sessionId) => {
     return true;
 }
 
+export const addUserIdToCart = async (sessionId, userId) => {
+    if (!sessionId) {
+        throw createHttpError(400, 'Missing session_id');
+    }
+
+    if (!userId) {
+        throw createHttpError(400, 'Missing user_id');
+    }
+
+    let cart = await cartRepo.getCartBySessionId(sessionId);
+    if (!cart) {
+        await cartRepo.createCartBySessionId(sessionId);
+        cart = await cartRepo.getCartBySessionId(sessionId);
+    }
+
+    const sessionCartItems = await cartItemsRepo.getCartItemsByCartId(cart.id);
+
+    if (sessionCartItems.length === 0) {
+        await cartRepo.deleteCartById(cart.id);
+        await cartRepo.updateCartSessionIdByUserId(userId, sessionId);
+        const userCartInSession = await cartRepo.getCartBySessionId(sessionId);
+
+        if (!userCartInSession) {
+            await cartRepo.createCartBySessionId(sessionId);
+        }
+
+        const refreshedCart = await cartRepo.getCartBySessionId(sessionId);
+        if (refreshedCart && !refreshedCart.user_id) {
+            await cartRepo.addUserIdToCart(sessionId, userId);
+        }
+
+        return;
+    }
+
+    await cartRepo.addUserIdToCart(sessionId, userId);
+}
+
 export const checkoutCartBySessionId = async (sessionId, userId, checkoutData) => {
     if (!sessionId) {
         throw createHttpError(400, 'Missing session_id');
@@ -231,6 +276,20 @@ export const checkoutCartBySessionId = async (sessionId, userId, checkoutData) =
         total_price: Number(cart.total_price),
         order_items: orderItems,
     });
+
+    const userDiscountData = await userRepo.getUserDiscountStateById(userId);
+
+    if (userDiscountData.is_stamp_discount_active) {
+        await userRepo.updateIsStampDiscountActive(userId, false);
+        await userRepo.updateStampCount(userId, 0);
+    } else {
+        const nextStampCount = userDiscountData.stamp_count + 1;
+        await userRepo.updateStampCount(userId, nextStampCount);
+
+        if (nextStampCount >= 5) {
+            await userRepo.updateIsStampDiscountActive(userId, true);
+        }
+    }
 
     return order;
 }
@@ -335,9 +394,18 @@ const deleteCartItemIngredients = async (ingredients) => {
 
 // Calculate final cart total price from cart items
 // items: [{ id: 1, price: 12, quantity: 2 }]
-const getCartTotalPrice = (items) => {
+const getCartTotalPrice = async (cart, items) => {
     try {
-        return cartEngine.calculateCartTotalPrice(items);
+        let hasStampDiscount = false;
+        if (cart?.user_id) {
+            const userDiscountData = await userRepo.getUserDiscountStateById(cart.user_id);
+            hasStampDiscount = userDiscountData?.is_stamp_discount_active;
+        }
+
+        const dailySpecials = await dailySpecialRepo.getDailySpecial();
+        const dailySpecialsIds = dailySpecials.map((dish) => Number(dish.id));
+
+        return cartEngine.calculateCartTotalPrice(items, hasStampDiscount, dailySpecialsIds);
 
     } catch (error) {
         throw toInvalidCartDataError(error);

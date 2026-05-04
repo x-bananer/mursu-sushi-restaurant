@@ -6,7 +6,7 @@
 // cart: { id, user_id, session_id, created_at, updated_at }
 // items: [{ id, cart_id, dish_id, quantity, price, item_type_id, item_type_type, item_type_name, ... }]
 // ingredients: [{ id, cart_item_id, ingredient_id, quantity, position, ingredient_name, ingredient_price }]
-export const toCartDTO = (cart, items, ingredients, totalPrice) => {
+export const toCartDTO = (cart, items, ingredients, totalPrice, discount) => {
 	if (!cart) {
 		throw new Error('Cart is required');
 	}
@@ -76,7 +76,8 @@ export const toCartDTO = (cart, items, ingredients, totalPrice) => {
 		id: cart.id,
 		user_id: cart.user_id,
 		session_id: cart.session_id,
-		total_price: Number(totalPrice),
+		total_price: totalPrice,
+		discount: discount,
 		created_at: cart.created_at,
 		updated_at: cart.updated_at,
 		items: cartDtoItems,
