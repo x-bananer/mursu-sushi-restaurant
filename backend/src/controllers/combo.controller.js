@@ -1,4 +1,3 @@
-import { placeholder } from '../utils/paceholder.js';
 import * as comboService from '../services/dish/combo.service.js';
 
 /**
@@ -41,6 +40,31 @@ export async function listComboIngredients(req, res, next) {
 }
 
 /* ADM only */
-export const createIngredient = placeholder('adm.createIngredient');
-export const updateIngredient = placeholder('adm.updateIngredient');
-export const deleteIngredient = placeholder('adm.deleteIngredient');
+export async function createIngredient(req, res, next) {
+    try {
+        const ingredient = await comboService.createIngredient(req.body || {});
+        return res.status(201).json({ ingredient });
+    } catch (err) {
+        next(err);
+    }
+}
+
+export async function updateIngredient(req, res, next) {
+    try {
+        const ingredientId = Number(req.params.id);
+        const ingredient = await comboService.updateIngredient(ingredientId, req.body || {});
+        return res.json({ ingredient });
+    } catch (err) {
+        next(err);
+    }
+}
+
+export async function deleteIngredient(req, res, next) {
+    try {
+        const ingredientId = Number(req.params.id);
+        await comboService.deleteIngredient(ingredientId);
+        return res.status(204).send();
+    } catch (err) {
+        next(err);
+    }
+}
