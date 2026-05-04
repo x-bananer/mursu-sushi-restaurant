@@ -1,4 +1,6 @@
-/* ── order board ─────────────────────────────── */
+/* ───────────────────────────────────────────────
+   ORDER BOARD
+────────────────────────────────────────────── */
 
 .order-board {
     display: grid;
@@ -6,8 +8,13 @@
     border: 1px solid var(--color-dark-gray);
 }
 
-.order-col { border-right: 1px solid var(--color-dark-gray); }
-.order-col:last-child { border-right: none; }
+.order-col {
+    border-right: 1px solid var(--color-dark-gray);
+}
+
+.order-col:last-child {
+    border-right: none;
+}
 
 .order-col__header {
     display: flex;
@@ -23,9 +30,18 @@
     flex-shrink: 0;
 }
 
-.order-col__dot--pending   { background: var(--color-dark-gray); border: 1px solid var(--color-gray); }
-.order-col__dot--preparing { background: var(--color-white); }
-.order-col__dot--ready     { background: var(--color-white); }
+.order-col__dot--pending {
+    background: var(--color-dark-gray);
+    border: 1px solid var(--color-gray);
+}
+
+.order-col__dot--preparing {
+    background: var(--color-white);
+}
+
+.order-col__dot--ready {
+    background: var(--color-white);
+}
 
 .order-col__label {
     font-family: var(--font-button);
@@ -50,7 +66,9 @@
     gap: 12px;
 }
 
-/* ── order card ──────────────────────────────── */
+/* ───────────────────────────────────────────────
+   ORDER CARD
+────────────────────────────────────────────── */
 
 .order-card {
     border: 1px solid var(--color-dark-gray);
@@ -60,6 +78,8 @@
     gap: 8px;
     background: var(--color-black);
 }
+
+/* HEADER */
 
 .order-card__top {
     display: flex;
@@ -75,6 +95,8 @@
     color: var(--color-gray);
 }
 
+/* CUSTOMER / ADDRESS */
+
 .order-card__name {
     font-family: var(--font-title);
     font-size: 26px;
@@ -83,26 +105,42 @@
     line-height: 1;
 }
 
+/* ───────────────────────────────────────────────
+   ITEMS (KDS STYLE)
+────────────────────────────────────────────── */
+
 .order-card__items {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
     border-top: 1px solid var(--color-dark-gray);
     padding-top: 8px;
 }
 
+/* MAIN ITEM ROW (dish or combo) */
+
 .order-card__item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* top line: name + qty */
+
+.order-card__item-row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    gap: 8px;
+    gap: 12px;
 }
 
-.order-card__item span:first-child {
+.order-card__item-name {
     font-family: var(--font-text);
     font-size: 12px;
     color: var(--color-light-gray);
 }
+
+/* quantity aligned right */
 
 .order-card__qty {
     font-family: var(--font-button);
@@ -110,6 +148,36 @@
     color: var(--color-gray);
     white-space: nowrap;
 }
+
+/* ───────────────────────────────────────────────
+   COMBO INGREDIENTS
+────────────────────────────────────────────── */
+
+.order-card__ingredients {
+    margin-top: 2px;
+    padding-left: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* each ingredient line */
+
+.order-card__ingredient {
+    font-family: var(--font-text);
+    font-size: 11px;
+    color: var(--color-gray);
+    opacity: 0.9;
+}
+
+/* prefix pipe styling consistency */
+.order-card__ingredient::before {
+    color: var(--color-gray);
+}
+
+/* ───────────────────────────────────────────────
+   FOOTER
+────────────────────────────────────────────── */
 
 .order-card__footer {
     display: flex;
@@ -132,16 +200,19 @@
 /* ═══════════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════════ */
+
 @media (max-width: 1024px) {
     .admin-stats {
         grid-template-columns: repeat(2, 1fr);
     }
+
     .stat-card:nth-child(2) { border-right: none; }
     .stat-card:nth-child(3) { border-top: 1px solid var(--color-dark-gray); }
     .stat-card:nth-child(4) { border-top: 1px solid var(--color-dark-gray); border-right: none; }
 }
 
-/* Mobile */
+/* MOBILE */
+
 @media (max-width: 768px) {
     .order-board {
         grid-template-columns: 1fr;
@@ -163,5 +234,7 @@
         border-bottom: 1px solid var(--color-dark-gray);
     }
 
-    .order-col:last-child { border-bottom: none; }
+    .order-col:last-child {
+        border-bottom: none;
+    }
 }
