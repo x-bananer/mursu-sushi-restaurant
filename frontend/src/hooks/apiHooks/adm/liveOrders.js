@@ -41,3 +41,51 @@ export const useAdmOrders = () => {
 
   return { orders, loadOrders, ordersLoading, ordersError };
 };
+
+export const useAdmOrderStream = (onEvent) => {
+  useEffect(() => {
+    const url = `${import.meta.env.VITE_API_BASE_URL}/adm/orders/stream`;
+
+    const eventSource = new EventSource(url);
+
+    eventSource.addEventListener("order_created", (e) => {
+      onEvent(JSON.parse(e.data));
+    });
+
+    eventSource.addEventListener("order_status_updated", (e) => {
+      onEvent(JSON.parse(e.data));
+    });
+
+    return () => eventSource.close();
+  }, [onEvent]);
+};
+
+export const useUpdateOrderStatus = () => {
+  const [statusLoading, setStatusLoading] = useState(false);
+  const [statusError, setStatusError] = useState(null);
+
+  const updateStatus = async (orderId, status) => {
+    if (!orderId || !status) return;
+
+    try {
+      setStatusLoading(true);
+      setStatusError(null);
+
+      await fetchData(`/adm/orders/${orderId}/status`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ status }),
+      });
+
+    } catch (err) {
+      setStatusError(err.message);
+    } finally {
+      setStatusLoading(false);
+    }
+  };
+
+  return { updateStatus, statusLoading, statusError };
+};

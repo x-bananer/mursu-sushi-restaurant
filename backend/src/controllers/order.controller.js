@@ -94,7 +94,7 @@ export async function statusCount(req, res, next) {
 }
 
 /**
- * GET orders/stream
+ * GET adm/orders/stream
  * Real-time order updates using Server-Sent Events (SSE)
  * Used when order is created.
  */
