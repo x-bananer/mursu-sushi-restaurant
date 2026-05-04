@@ -77,7 +77,7 @@ export const getCartBySessionId = async (sessionId) => {
     );
 }
 
-// Update cart for session
+// Update/create the whole cart for session
 export const updateCartBySessionId = async (sessionId, items = []) => {
     if (!sessionId) {
         throw createHttpError(400, 'Missing session_id');
@@ -162,6 +162,55 @@ export const updateCartBySessionId = async (sessionId, items = []) => {
 
     await cartRepo.updateCartBySessionId(sessionId);
 
+    return getCartBySessionId(sessionId);
+}
+
+// Update/create ona cart dish for session
+export const updateCartDishBySessionId = async (sessionId, dishId, quantity) => {
+    if (!sessionId) {
+        throw createHttpError(400, 'Missing session_id');
+    }
+
+    if (!Number(dishId)) {
+        throw createHttpError(400, 'Valid dish_id is required');
+    }
+
+    if (!Number(quantity)) {
+        throw createHttpError(400, 'Valid quantity is required');
+    }
+
+    let cart = await cartRepo.getCartBySessionId(sessionId);
+    if (!cart) {
+        await cartRepo.createCartBySessionId(sessionId);
+        cart = await cartRepo.getCartBySessionId(sessionId);
+    }
+
+    const itemPrice = await getDishItemPrice({ dish_id: Number(dishId) });
+    const cartItems = await cartItemsRepo.getCartItemsByCartId(cart.id);
+
+    const existingDishItem = cartItems.find((item) => {
+        return Number(item.item_type_id) === 1 && Number(item.dish_id) === Number(dishId);
+    });
+
+    if (existingDishItem) {
+        await cartItemsRepo.updateCartItem({
+            id: existingDishItem.id,
+            dish_id: Number(dishId),
+            quantity: Number(quantity),
+            price: itemPrice,
+            item_type_id: 1,
+        });
+    } else {
+        await cartItemsRepo.createCartItem({
+            cart_id: cart.id,
+            dish_id: Number(dishId),
+            quantity: Number(quantity),
+            price: itemPrice,
+            item_type_id: 1,
+        });
+    }
+
+    await cartRepo.updateCartBySessionId(sessionId);
     return getCartBySessionId(sessionId);
 }
 

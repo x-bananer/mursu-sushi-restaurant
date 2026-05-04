@@ -24,9 +24,8 @@ export async function get(req, res, next) {
 export async function update(req, res, next) {
 	try {
 		const sessionId = String(req.headers["x-session-id"] ?? "").trim();
-
-		const { items } = req.body;
-		const cart = await cartService.updateCartBySessionId(sessionId, items);
+		const { dish_id, quantity } = req.body || {};
+		const cart = await cartService.updateCartDishBySessionId(sessionId, dish_id, quantity);
 
 		return res.json({ cart });
 	} catch (err) {
