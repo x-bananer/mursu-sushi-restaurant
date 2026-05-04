@@ -1,49 +1,23 @@
 import LiveOrdersColumn from "./LiveOrdersColumn";
 import "./live-orders.css";
 
+import { useAdmOrders } from "../../../hooks/apiHooks/adm/liveOrders";
+
 export default function LiveOrders() {
-	const pendingOrders = [
-		{
-			id: 1042,
-			time: "12:34",
-			name: "Matti K.",
-			total: "27.21",
-			items: [
-				{ name: "Sake sashimi", qty: 1 },
-				{ name: "Maguro nigiri", qty: 2 },
-			],
-		},
-		{
-			id: 1045,
-			time: "12:38",
-			name: "Guest",
-			total: "14.50",
-			items: [{ name: "Ebi Tempura Roll", qty: 1 }],
-		},
-	];
+	const { orders, loadOrders, ordersLoading, ordersError } = useAdmOrders();
 
-	const preparingOrders = [
-		{
-			id: 1040,
-			time: "12:20",
-			name: "Anna S.",
-			total: "32.00",
-			items: [
-				{ name: "Unagi Kabayaki", qty: 1 },
-				{ name: "Miso Soup", qty: 2 },
-			],
-		},
-	];
+	console.log('orders: ', orders)
 
-	const readyOrders = [
-		{
-			id: 1038,
-			time: "12:15",
-			name: "Guest",
-			total: "12.80",
-			items: [{ name: "California Roll", qty: 1 }],
-		},
-	];
+	const pendingOrders = orders.filter(
+  		o => o.status?.type === "pending" || o.status?.type === "confirmed"
+	);
+	const preparingOrders = orders.filter(o => o.status?.type === "preparing");
+	const readyOrders = orders.filter(o => o.status?.type === "ready");
+
+	console.log('pending and confirmed orders: ', pendingOrders)
+
+	console.log('preparingOrders: ', preparingOrders)
+	console.log('readyOrders: ', readyOrders)
 
 	const handleAction = (orderId) => {
 		console.log("Action clicked for order:", orderId);
@@ -55,7 +29,6 @@ export default function LiveOrders() {
 				title="Pending"
 				status="pending"
 				orders={pendingOrders}
-				actionLabel="Mark Preparing"
 				onAction={handleAction}
 			/>
 
@@ -63,7 +36,6 @@ export default function LiveOrders() {
 				title="Preparing"
 				status="preparing"
 				orders={preparingOrders}
-				actionLabel="Mark Ready"
 				onAction={handleAction}
 			/>
 
@@ -71,7 +43,6 @@ export default function LiveOrders() {
 				title="Ready"
 				status="ready"
 				orders={readyOrders}
-				actionLabel="Complete"
 				onAction={handleAction}
 			/>
 		</div>

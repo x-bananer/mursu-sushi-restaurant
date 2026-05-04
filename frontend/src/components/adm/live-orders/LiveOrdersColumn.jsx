@@ -4,7 +4,6 @@ export default function LiveOrdersColumn({
 	title,
 	status,
 	orders,
-	actionLabel,
 	onAction,
 }) {
 	return (
@@ -18,9 +17,7 @@ export default function LiveOrdersColumn({
 			<div className="order-col__cards">
 				{orders.map((order) => (
 					<LiveOrdersCard
-						key={order.id}
 						order={order}
-						actionLabel={actionLabel}
 						onAction={onAction}
 					/>
 				))}
