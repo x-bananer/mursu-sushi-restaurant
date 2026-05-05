@@ -75,6 +75,22 @@ export async function getUserById(userId) {
 }
 
 /**
+ * Returns users list.
+ * @returns {Promise<Users[]>}
+ */
+export async function listUsers() {
+	const rows = await select(
+		`
+			SELECT *
+			FROM users
+			ORDER BY id DESC
+		`,
+	);
+
+	return /** @type {Users[]} */ (rows);
+}
+
+/**
  * Checks whether a user exists by id.
  * @param {number} userId
  * @returns {Promise<boolean>}
@@ -194,4 +210,77 @@ export async function updateIsStampDiscountActive(userId, isActive) {
 		`,
 		[isActive, userId],
 	);
+}
+
+/**
+ * Updates editable user fields by id.
+ * @param {number} userId
+ * @param {{ name?: string, email?: string, photo_url?: string | null, role_id?: number, stamp_count?: number, is_stamp_discount_active?: boolean }} data
+ * @returns {Promise<void>}
+ */
+export async function updateUserById(userId, data) {
+	const fields = [];
+	const params = [];
+
+	if (data.name !== undefined) {
+		fields.push("name = ?");
+		params.push(data.name);
+	}
+
+	if (data.email !== undefined) {
+		fields.push("email = ?");
+		params.push(data.email);
+	}
+
+	if (data.photo_url !== undefined) {
+		fields.push("photo_url = ?");
+		params.push(data.photo_url);
+	}
+
+	if (data.role_id !== undefined) {
+		fields.push("role_id = ?");
+		params.push(data.role_id);
+	}
+
+	if (data.stamp_count !== undefined) {
+		fields.push("stamp_count = ?");
+		params.push(data.stamp_count);
+	}
+
+	if (data.is_stamp_discount_active !== undefined) {
+		fields.push("is_stamp_discount_active = ?");
+		params.push(data.is_stamp_discount_active);
+	}
+
+	if (fields.length === 0) {
+		return;
+	}
+
+	params.push(userId);
+
+	await execute(
+		`
+			UPDATE users
+			SET ${fields.join(", ")}
+			WHERE id = ?
+		`,
+		params,
+	);
+}
+
+/**
+ * Deletes user by id.
+ * @param {number} userId
+ * @returns {Promise<number>} affected rows
+ */
+export async function deleteUserById(userId) {
+	const result = await execute(
+		`
+			DELETE FROM users
+			WHERE id = ?
+		`,
+		[userId],
+	);
+
+	return Number(result?.affectedRows || 0);
 }
