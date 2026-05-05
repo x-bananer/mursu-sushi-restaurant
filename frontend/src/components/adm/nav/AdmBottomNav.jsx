@@ -6,7 +6,6 @@ import {
 	DailySpecialIcon,
 	CustomersIcon,
 	ReviewsIcon,
-	SettingsIcon,
 } from "../../shared/nav/icons";
 import "../../shared/nav/nav.css";
 
@@ -35,11 +34,6 @@ const bottomItems = [
 		to: "/adm/customers",
 		label: "Customers",
 		icon: <CustomersIcon className="admin-nav__icon" />,
-	},
-	{
-		to: "/adm/settings",
-		label: "Settings",
-		icon: <SettingsIcon className="admin-nav__icon" />,
 	},
 ];
 

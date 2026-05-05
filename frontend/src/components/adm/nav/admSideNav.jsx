@@ -7,7 +7,6 @@ import {
 	MenuEditorIcon,
 	DailySpecialIcon,
 	CustomersIcon,
-	SettingsIcon,
 } from "../../shared/nav/icons";
 
 const sidebarItems = [
@@ -16,7 +15,6 @@ const sidebarItems = [
 	{ to: "/adm/menu", label: "Menu Editor", icon: <MenuEditorIcon className="admin-nav__icon" /> },
 	{ to: "/adm/special", label: "Daily Special", icon: <DailySpecialIcon className="admin-nav__icon" /> },
 	{ to: "/adm/customers", label: "Customers", icon: <CustomersIcon className="admin-nav__icon" /> },
-	{ to: "/adm/settings", label: "Settings", icon: <SettingsIcon className="admin-nav__icon" /> },
 ];
 
 export default function AdminSideNav({ collapsed, setCollapsed }) {
