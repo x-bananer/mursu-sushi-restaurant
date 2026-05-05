@@ -11,7 +11,7 @@ import ComboBuilder from "./pages/customer/combo/ComboBuilder";
 import Cart from "./pages/customer/cart/Cart";
 import OrderTracker from "./pages/customer/order-tracker/OrderTracker";
 import UserProfile from "./pages/customer/user-profile/UserProfile";
-import Login from "./pages/customer/login/Login";
+import AuthShell from "./pages/customer/auth-shell/authShell";
 
 // Admin pages
 import Admin from "./pages/adm/AdmPanel";
@@ -32,7 +32,7 @@ function App() {
 					<Route path="/menu" element={<Menu />} />
 					<Route path="/combo-builder" element={<ComboBuilder />} />
 					<Route path="/cart" element={<Cart />} />
-					<Route path="/login" element={<Login />} />
+					<Route path="/auth" element={<AuthShell />} />
 					<Route path="/order-tracker" element={<OrderTracker />} />
 					<Route path="/user-profile" element={<UserProfile />} />
 				</Route>
