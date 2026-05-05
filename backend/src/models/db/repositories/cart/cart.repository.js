@@ -5,24 +5,6 @@ import { select, execute } from '../../db.js';
  */
 
 /**
- * CREATE CART BY USER ID
- * @param {number} userId
- * @returns {Promise<number>}
- */
-export const createCartByUserId = async (userId) => {
-	const result = await execute(
-		`
-    INSERT INTO cart
-    (user_id, session_id)
-    VALUES (?, ?)
-    `,
-		[userId, null]
-	);
-
-	return result.insertId;
-}
-
-/**
  * CREATE CART BY SESSION ID
  * @param {string} sessionId
  * @returns {Promise<number>}
@@ -38,25 +20,6 @@ export const createCartBySessionId = async (sessionId) => {
 	);
 
 	return result.insertId;
-}
-
-/**
- * GET CART BY USER ID
- * @param {number} userId
- * @returns {Promise<Cart|null>}
- */
-export const getCartByUserId = async (userId) => {
-	const rows = await select(
-		`
-    SELECT *
-    FROM cart
-    WHERE user_id = ?
-    LIMIT 1
-    `,
-		[userId]
-	);
-
-	return /** @type {Cart|null} */ (rows[0] ?? null);
 }
 
 /**
@@ -79,22 +42,6 @@ export const getCartBySessionId = async (sessionId) => {
 }
 
 /**
- * UPDATE CART BY USER ID
- * @param {number} userId
- * @returns {Promise<void>}
- */
-export const updateCartByUserId = async (userId) => {
-	await execute(
-		`
-    UPDATE cart
-    SET updated_at = CURRENT_TIMESTAMP
-    WHERE user_id = ?
-    `,
-		[userId]
-	);
-}
-
-/**
  * UPDATE CART BY SESSION ID
  * @param {string} sessionId
  * @returns {Promise<void>}
@@ -108,4 +55,68 @@ export const updateCartBySessionId = async (sessionId) => {
     `,
 		[sessionId]
 	);
+}
+
+/**
+ * ATTACH USER ID TO CART BY SESSION ID
+ * @param {string} sessionId
+ * @param {number} userId
+ * @returns {Promise<void>}
+ */
+export const addUserIdToCart = async (sessionId, userId) => {
+	await execute(
+		`
+    UPDATE cart
+    SET user_id = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE session_id = ?
+    `,
+		[userId, sessionId]
+	);
+}
+
+/**
+ * UPDATE CART SESSION ID BY USER ID
+ * @param {number} userId
+ * @param {string} sessionId
+ * @returns {Promise<void>}
+ */
+export const updateCartSessionIdByUserId = async (userId, sessionId) => {
+	await execute(
+		`
+    UPDATE cart
+    SET session_id = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE user_id = ?
+    `,
+		[sessionId, userId]
+	);
+}
+
+/**
+ * DELETE CART BY ID
+ * @param {number} cartId
+ * @returns {Promise<void>}
+ */
+export const deleteCartById = async (cartId) => {
+	await execute(
+		`
+    DELETE FROM cart
+    WHERE id = ?
+    `,
+		[cartId]
+	);
+}
+
+/**
+ * GET DELIVERY TYPES
+ */
+export const getDeliveryTypes = async () => {
+	const rows = await select(
+		`
+    SELECT id, type, name
+    FROM delivery_type
+    ORDER BY id ASC
+    `
+	);
+
+	return rows;
 }

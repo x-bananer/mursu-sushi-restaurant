@@ -1,9 +1,7 @@
 /**
  * TODO
  * Add payment request and response types for:
- * - POST /orders/:id/payments/mobilepay
- * - POST /orders/:id/payments/mobilepay/confirm
- * - GET /orders/:id/payments/status
+ * - POST /payments/stripe
  */
 
 
@@ -108,4 +106,3 @@
  * @property {import('../dto/order.type.js').OrderDTO} order
  * @property {Array<import('../dto/order.type.js').OrderStatusHistoryDTO>} history
  */
-

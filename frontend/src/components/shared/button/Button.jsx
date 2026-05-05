@@ -7,6 +7,7 @@ import "./button.css";
 export default function Button({
 	variant,
 	size,
+	disabled = false,
 	className = "",
 	type = "button",
 	children,
@@ -26,8 +27,12 @@ export default function Button({
 		classes += ` ${className}`;
 	}
 
+	if (disabled) {
+		classes += " btn--disabled";
+	}
+
 	return (
-		<button className={classes} type={type} {...props}>
+		<button className={classes} type={type} disabled={disabled} {...props}>
 			{children}
 		</button>
 	);

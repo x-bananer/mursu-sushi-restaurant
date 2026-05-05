@@ -4,6 +4,7 @@
  * @property {number | null} user_id
  * @property {string | null} session_id
  * @property {number} total_price
+ * @property {number} discount
  * @property {Date} created_at
  * @property {Date} updated_at
  * @property {Array<DishCartItemDTO | CustomCartItemDTO>} items

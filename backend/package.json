@@ -7,20 +7,23 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "db:setup": "node src/models/db/schemas/setup.db.js",
-    "test:user-flow": "node tests/user.test.js"
+    "test:user-flow": "node tests/user.test.js",
+    "test:combo-flow": "node tests/combo.test.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@mapbox/polyline": "^1.2.1",
     "argon2": "^0.44.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.1",
-    "mysql2": "^3.22.0"
+    "mysql2": "^3.22.0",
+    "stripe": "^22.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

@@ -7,8 +7,6 @@
  * @typedef {import('../../types/controllers/order.type.js').OrderTrackingResponse} OrderTrackingResponse
  */
 
-import { placeholder } from '../utils/paceholder.js';
-
 import * as tracker from '../services/order/order.tracker.js';
 import * as orderService from '../services/order/order.service.js';
 
@@ -99,7 +97,7 @@ export async function get(req, res, next) {
  * pending -> preparing -> ready -> etc.
  *
  * DATA IN:
- * - statusId (new status)
+ * - status (new status)
  *
  * SIDE EFFECT:
  * - updates order.status_id
@@ -108,12 +106,12 @@ export async function get(req, res, next) {
 export async function updateStatus(req, res, next) {
   try {
     const orderId = Number(req.params.id);
-    const { statusId } = req.body;
+    const { status } = req.body;
 	if (Number.isNaN(orderId)) {
       return res.status(400).json({ message: 'Invalid order id' });
     }
 
-    await orderService.updateOrderStatus(orderId, statusId);
+    await orderService.updateOrderStatus(orderId, status);
 
     res.json({ success: true });
   } catch (err) {
@@ -157,7 +155,7 @@ export async function getActive(req, res, next) {
 
 /**
  * =========================================================
- * TRACKING (IN ORDER-TRACKER PAGE) and for USERS NOT LOGGED IN
+ * TRACKING (IN ORDER-TRACKER PAGE)
  * =========================================================
  */
 
@@ -186,15 +184,9 @@ export async function tracking(req, res, next) {
       return res.status(400).json({ message: 'Invalid order id' });
     }
 
-    const order = await orderService.getOrder(orderId);
-
-    if (!order) {
-      return res.status(404).json({ message: 'Order not found' });
-    }
-
     const history = await orderService.getOrderHistory(orderId);
 
-    res.json({ order, history });
+    res.json({ history });
   } catch (err) {
     next(err);
   }
@@ -207,7 +199,7 @@ export async function tracking(req, res, next) {
  */
 
 /**
- * GET /orders/:id/stream
+ * GET adm/orders/:id/stream
  *
  * PURPOSE:
  * Real-time updates using Server-Sent Events (SSE)
@@ -283,6 +275,73 @@ export async function create(req, res, next) {
   try {
     const order = await orderService.createOrder(req.body);
     res.status(201).json({ order });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * GET /orders/:id/estimate/:lat/:lon
+ *
+ * PURPOSE:
+ * Returns ETA + routing + kitchen timing for an order
+ */
+export async function estimate(req, res, next) {
+  try {
+    const orderId = Number(req.params.id);
+
+    const lat = Number(req.params.lat);
+    const lon = Number(req.params.lon);
+
+    if (Number.isNaN(orderId)) {
+      return res.status(400).json({ message: 'Invalid order id' });
+    }
+
+    let userCoords = null;
+    if (!Number.isNaN(lat) && !Number.isNaN(lon)) {
+      userCoords = { lat, lon };
+    }
+
+    const result = await orderService.getOrderRoute(orderId, userCoords);
+
+    res.json({ estimate: result });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * GET /orders/:id/route/:mode/:lat/:lon
+ */
+export async function routeByMode(req, res, next) {
+  try {
+    const orderId = Number(req.params.id);
+    const mode = req.params.mode;
+
+    const lat = Number(req.params.lat);
+    const lon = Number(req.params.lon);
+
+    if (Number.isNaN(orderId)) {
+      return res.status(400).json({ message: 'Invalid order id' });
+    }
+
+    if (!mode) {
+      return res.status(400).json({ message: 'Mode required' });
+    }
+
+    const userCoords =
+      !Number.isNaN(lat) && !Number.isNaN(lon)
+        ? { lat, lon }
+        : null;
+
+    const result = await orderService.getOrderRouteByMode(
+      orderId,
+      userCoords,
+      mode
+    );
+
+    res.json({ route: result });
+
   } catch (err) {
     next(err);
   }

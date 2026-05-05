@@ -125,36 +125,6 @@ details[open] > .accordion__header .accordion__icon {
   padding: 2px 20px 20px;
 }
 
-/* ── ready at — bottom of white card ──────── */
-
-.order__ready {
-  margin-top: auto;
-  padding: 0 20px 24px;
-}
-
-.order__ready-divider {
-  height: 1px;
-  margin-top: 20px;
-}
-
-.order__ready-label {
-  font-family: var(--font-button);
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #909090;
-  margin-bottom: 4px;
-}
-
-.order__ready-time {
-  font-family: var(--font-title);
-  font-size: 56px;
-  font-weight: 700;
-  color: #131313;
-  line-height: 1;
-}
-
 /* ── right panel: map + location ─────────── */
 
 .order__right {

@@ -2,12 +2,13 @@ import { Router } from "express";
 import auth from "./middleware/auth.js";
 import adminOnly from "./middleware/adminOnly.js";
 
-import * as authController from "./controllers/auth.controller.js";
-import * as dishController from "./controllers/dish.controller.js";
-import * as comboController from "./controllers/combo.controller.js";
-import * as orderController from "./controllers/order.controller.js";
-import * as userController from "./controllers/user.controller.js";
-import * as cartController from "./controllers/cart.controller.js";
+import * as authController  from './controllers/auth.controller.js';
+import * as dishController  from './controllers/dish.controller.js';
+import * as comboController from './controllers/combo.controller.js';
+import * as orderController from './controllers/order.controller.js';
+import * as userController  from './controllers/user.controller.js';
+import * as cartController  from './controllers/cart.controller.js';
+import * as paymentController from './controllers/payment.controller.js';
 
 const router = Router();
 
@@ -72,9 +73,10 @@ router.delete(
 // ─────────────────────────────────────────────────────────────────────────────
 // DISHES COMBO BUILDER  (used by custom orders)
 // ─────────────────────────────────────────────────────────────────────────────
-router.get("/dishes/ingredients", comboController.listIngredients);
-router.post("/dishes/combo/validate", comboController.validateCombo);
-router.post("/dishes/combo/price", comboController.priceCombo);
+router.get('/dishes/combo/ingredients', comboController.listComboIngredients);
+router.get('/dishes/combo/ingredients/types', comboController.listIngredientTypes);
+router.post('/dishes/combo/preview', comboController.previewCombo);
+router.post('/dishes/combo/create', comboController.createCombo);
 
 /* ADMIN only */
 router.post(
@@ -99,53 +101,31 @@ router.delete(
 // ─────────────────────────────────────────────────────────────────────────────
 // ORDERS
 // ─────────────────────────────────────────────────────────────────────────────
-
+/* ETA + ROUTING (USER TRACKING UI) */
+router.get('/orders/:id/estimate/:lat/:lon', orderController.estimate);
+router.get('/orders/:id/route/:mode/:lat/:lon', orderController.routeByMode);
 /* LOGGED USER */
-router.get("/orders/active", auth, orderController.getActive);
+router.get('/orders/active', auth, orderController.getActive);
+router.get('/orders/:id/tracking', orderController.tracking);
 /* REAL TIME ORDER TRACKER STREAMER */
-router.get("/orders/:id/stream", auth, orderController.streamOrders);
+router.get('/orders/:id/stream', orderController.streamOrders);
 
 /* ADMIN only */
-router.get(
-	"/adm/orders/status/count",
-	auth,
-	adminOnly,
-	orderController.statusCount,
-);
-router.patch(
-	"/adm/orders/:id/status",
-	auth,
-	adminOnly,
-	orderController.updateStatus,
-);
-router.get("/adm/orders/:id", auth, adminOnly, orderController.get);
-router.get("/adm/orders", auth, adminOnly, orderController.list);
+router.get('/adm/orders/status/count', auth, adminOnly, orderController.statusCount);
+router.patch('/adm/orders/:id/status', orderController.updateStatus);
+router.get('/adm/orders/:id', auth, adminOnly, orderController.get);
+router.get('/adm/orders', auth, adminOnly, orderController.list);
 // remove create from front end access once cart is implemented:
 router.post("/adm/orders", orderController.create);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CART
 // ─────────────────────────────────────────────────────────────────────────────
-router.get("/cart", cartController.get);
-router.post("/cart", cartController.create);
-router.patch("/cart", cartController.update);
-router.post("/cart/checkout", cartController.checkout);
+router.get('/cart', cartController.get);
+router.get('/cart/delivery-types', cartController.getDeliveryTypes);
+router.patch('/cart', cartController.update);
 
 /* PAYMENTS */
-router.post(
-	"/cart/:id/checkout/payments/mobilepay",
-	auth,
-	cartController.initiatePayment,
-);
-router.post(
-	"/cart/:id/checkout/payments/mobilepay/confirm",
-	auth,
-	cartController.confirmPayment,
-);
-router.get(
-	"/cart/:id/checkout/payments/status",
-	auth,
-	cartController.paymentStatus,
-);
+router.post('/payments/stripe', auth, paymentController.initiate);
 
 export default router;
