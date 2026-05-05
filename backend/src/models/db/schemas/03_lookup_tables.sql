@@ -57,3 +57,13 @@ INSERT INTO ingredient_type (id, type, name) VALUES
 (1, 'base', 'Base'),
 (2, 'filling', 'Filling'),
 (3, 'topping', 'Topping');
+
+-- ── DISHES CATEGORIES ───────────────────────────
+
+INSERT INTO dish_categories (id, name, sort_order) VALUES
+(1, 'Sashimi', 1),
+(2, 'Nigiri', 2),
+(3, 'Maki', 3),
+(4, 'Temaki', 4),
+(5, 'Small Plates', 5),
+(6, 'Sake', 6);

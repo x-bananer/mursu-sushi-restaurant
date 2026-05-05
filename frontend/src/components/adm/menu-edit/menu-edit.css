@@ -1,46 +1,13 @@
-/* ── admin table ─────────────────────────────── */
-
-.admin-table {
-    border: 1px solid var(--color-dark-gray);
+/* ── Admin Edit ─────────────────────────────── */
+.menu-page__title {
+  margin-bottom: 80px;
 }
 
-.admin-table__head {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--color-dark-gray);
-    gap: 16px;
+.table__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: nowrap;
 }
 
-.admin-table__head span {
-    font-family: var(--font-button);
-    font-size: 8px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--color-gray);
-}
-
-.admin-table__row {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--color-dark-gray);
-    gap: 16px;
-    align-items: center;
-    transition: background 0.12s ease;
-}
-
-.admin-table__row:last-child {
-    border-bottom: none;
-}
-
-.admin-table__row:hover {
-    background: rgba(255,255,255,0.03);
-}
-
-.admin-table__row span {
-    font-family: var(--font-text);
-    font-size: 12px;
-    color: var(--color-light-gray);
-}
