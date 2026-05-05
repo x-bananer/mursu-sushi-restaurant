@@ -9,6 +9,7 @@ export async function getDailySpecial() {
 		SELECT
   			dishes.id,
   			dishes.name,
+  			dishes.category_id,
   			dishes.description,
   			dishes.price,
   			dishes.is_available,

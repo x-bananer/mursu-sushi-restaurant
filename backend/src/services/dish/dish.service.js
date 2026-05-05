@@ -23,6 +23,10 @@ export async function getDishes() {
 	});
 }
 
+export async function getDishCategories() {
+	return dishRepo.getDishCategories();
+}
+
 export async function getDish(dishId) {
 	if (!Number.isInteger(dishId) || dishId <= 0) {
 		throw createHttpError(400, "Valid dish id is required");
@@ -107,6 +111,7 @@ export async function createDish(payload = {}) {
 	const description = body.description ? String(body.description).trim() : null;
 	const price = Number(body.price);
 	const isAvailable = body.is_available ?? true;
+	const categoryId = body.category_id == null ? null : Number(body.category_id);
 
 	if (!name) {
 		throw createHttpError(400, "Dish name is required");
@@ -114,9 +119,13 @@ export async function createDish(payload = {}) {
 	if (Number.isNaN(price) || price < 0) {
 		throw createHttpError(400, "Valid dish price is required");
 	}
+	if (categoryId !== null && (!Number.isInteger(categoryId) || categoryId <= 0)) {
+		throw createHttpError(400, "Valid category_id is required");
+	}
 
 	const dishId = await dishRepo.createDish({
 		name,
+		category_id: categoryId,
 		description,
 		price,
 		is_available: isAvailable === true || isAvailable === 1,
@@ -155,6 +164,18 @@ export async function updateDish(dishId, payload = {}) {
 
 	if (payload.is_available !== undefined) {
 		updates.is_available = payload.is_available === true || payload.is_available === 1;
+	}
+
+	if (payload.category_id !== undefined) {
+		if (payload.category_id === null) {
+			updates.category_id = null;
+		} else {
+			const categoryId = Number(payload.category_id);
+			if (!Number.isInteger(categoryId) || categoryId <= 0) {
+				throw createHttpError(400, "Valid category_id is required");
+			}
+			updates.category_id = categoryId;
+		}
 	}
 
 	if (!Object.keys(updates).length) {

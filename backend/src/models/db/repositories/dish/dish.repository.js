@@ -9,6 +9,7 @@ export async function getDishes() {
 	SELECT
 		dishes.id,
 		dishes.name,
+		dishes.category_id,
 		dishes.description,
 		dishes.price,
 		dishes.is_available,
@@ -28,12 +29,24 @@ export async function getDishes() {
 	return rows;
 }
 
+export async function getDishCategories() {
+	const rows = await select(
+		`
+		SELECT id, name, sort_order
+		FROM dish_categories
+		`,
+	);
+
+	return rows;
+}
+
 export async function getDish(dishId) {
 	const rows = await select(
 		`
 			SELECT
   			dishes.id,
   			dishes.name,
+  			dishes.category_id,
   			dishes.description,
   			dishes.price,
   			dishes.is_available,
@@ -55,13 +68,13 @@ export async function getDish(dishId) {
 	return rows;
 }
 
-export async function createDish({ name, description, price, is_available = true }) {
+export async function createDish({ name, category_id = null, description, price, is_available = true }) {
 	const result = await execute(
 		`
-		INSERT INTO dishes (name, description, price, is_available)
-		VALUES (?, ?, ?, ?);
+		INSERT INTO dishes (name, category_id, description, price, is_available)
+		VALUES (?, ?, ?, ?, ?);
 		`,
-		[name, description ?? null, price, Boolean(is_available)],
+		[name, category_id, description ?? null, price, Boolean(is_available)],
 	);
 
 	return result.insertId;

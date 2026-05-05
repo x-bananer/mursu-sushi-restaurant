@@ -38,6 +38,7 @@ router.get("/adm/customers", auth, adminOnly, userController.listCustomers);
 // ─────────────────────────────────────────────────────────────────────────────
 
 router.get("/dishes", dishController.list); // returns DishDTO[]
+router.get("/dishes/categories", dishController.categories); // returns categories list
 router.get("/dishes/daily-special", dishController.specials); // returns DishDTO
 
 /* FAVORITES (cutomer logged) */

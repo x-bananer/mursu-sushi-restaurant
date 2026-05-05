@@ -18,6 +18,15 @@ export async function specials(req, res, next) {
 	}
 }
 
+export async function categories(req, res, next) {
+	try {
+		const categories = await dishService.getDishCategories();
+		res.json({ categories });
+	} catch (err) {
+		next(err);
+	}
+}
+
 export async function get(req, res, next) {
 	try {
 		const dishId = Number(req.params.dish_id);
