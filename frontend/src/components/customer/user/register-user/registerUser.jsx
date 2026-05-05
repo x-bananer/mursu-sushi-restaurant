@@ -49,9 +49,7 @@ export default function RegisterUser() {
         	navigate("/user-profile");
       	}
 	} catch (err) {
-		<ErrorState
-      message={err}
-    />
+	  console.err(err);
 	}
 };
 

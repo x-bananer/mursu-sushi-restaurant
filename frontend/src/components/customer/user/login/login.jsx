@@ -28,16 +28,18 @@ export default function Login({ onForgot, onAdminRegister }) {
 		e.preventDefault();
 
 		try {
-      console.log('form: ', form);
-			await login(form);
-      if (localStorage.token) {
-        navigate("/user-profile");
-      }
-		} catch (err) {
-			<ErrorState
-					message={err}
-				/>
-		}
+		  const res = await login(form);
+
+		  const role = res?.user?.role_id;
+
+		  if (role === 2) {
+			  navigate("/admin");
+		  } else {
+			  navigate("/user-profile");
+		  }
+	  } catch (err) {
+		console.err(err);
+	}
 	};
 
 	// LOADING STATE
