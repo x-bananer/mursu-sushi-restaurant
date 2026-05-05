@@ -1,25 +1,87 @@
-import './daily-special.css';
+import "./daily-special.css";
+import { useState } from "react";
+
+import InputField from "../../shared/input-field/InputField";
+import Button from "../../shared/button/Button";
 
 export default function DailySpecial() {
-	return (
-		<section class="admin-main" id="page-daily-special">
-                    <h2 class="admin-section-title">Daily Special</h2>
-                    <p class="admin-placeholder-text">Set today's featured dish and promotional pricing.</p>
-                    <div class="admin-form-group">
-                        <label class="input-field">
-                            <span class="input-field__label">Special Name</span>
-                            <input class="input-field__input" type="text" placeholder="E.g. Dragon Roll Omakase"/>
-                        </label>
-                        <label class="input-field">
-                            <span class="input-field__label">Description</span>
-                            <input class="input-field__input" type="text" placeholder="Short description of the special"/>
-                        </label>
-                        <label class="input-field">
-                            <span class="input-field__label">Price (€)</span>
-                            <input class="input-field__input" type="text" placeholder="0.00"/>
-                        </label>
-                        <button class="btn" type="button">Save Special</button>
-                    </div>
-                </section>
-	);
+  const [form, setForm] = useState({
+    name: "",
+    description: "",
+    price: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (field) => (e) => {
+    const value = e.target.value;
+
+    setForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleSave = async () => {
+    const name = form.name.trim();
+    const description = form.description.trim();
+    const price = parseFloat(form.price);
+
+    if (!name || !description || isNaN(price)) {
+      alert("Please fill all fields correctly");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      console.log("Saving special:", {
+        name,
+        description,
+        price,
+      });
+
+      // await api.post("/daily-special", { name, description, price });
+
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <section className="admin-main" id="page-daily-special">
+      <h2 className="admin-section-title">Daily Special</h2>
+
+      <div className="admin-form-group">
+        <InputField
+          label="Name"
+          value={form.name}
+          onChange={handleChange("name")}
+          placeholder="E.g. Dragon Roll Omakase"
+        />
+
+        <InputField
+          label="Description"
+          value={form.description}
+          onChange={handleChange("description")}
+          placeholder="Short description of the special"
+        />
+
+        <InputField
+          label="Price (€)"
+          value={form.price}
+          onChange={handleChange("price")}
+          placeholder="0.00"
+        />
+
+        <Button
+          variant="accent"
+          onClick={handleSave}
+          disabled={loading}
+        >
+          {loading ? "Saving..." : "Save Special"}
+        </Button>
+      </div>
+    </section>
+  );
 }
