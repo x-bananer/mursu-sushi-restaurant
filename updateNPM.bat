@@ -5,7 +5,7 @@ REM To also update the npm itself: "npm update -g npm"
 
 echo Updating frontend
 cd frontend
-call npm install vite@latest
+REM call npm install vite@latest
 call npm install
 call npm audit fix
 cd ..
