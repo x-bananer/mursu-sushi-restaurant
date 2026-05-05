@@ -84,6 +84,14 @@ export function useDishFavorites() {
 
 	useEffect(() => {
 		const loadFavorites = async () => {
+			const token = localStorage.getItem("token");
+			if (!token) {
+				setFavoriteDishIds([]);
+				setLoading(false);
+				setError(null);
+				return;
+			}
+
 			try {
 				setLoading(true);
 				setError(null);
