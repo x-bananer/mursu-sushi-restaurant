@@ -12,7 +12,7 @@ const items = [
 	{ to: "/menu", icon: <MenuIcon /> },
 	{ to: "/combo-builder", icon: <ComboIcon /> },
 	{ to: "/", icon: <HomeIcon /> },
-	{ to: "/login", icon: <UserIcon /> },
+	{ to: "/auth", icon: <UserIcon /> },
 	{ to: "/cart", icon: <CartIcon /> },
 ];
 
