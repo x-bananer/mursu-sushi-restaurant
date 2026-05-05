@@ -1,50 +1,250 @@
-# Converting HTML Pages to React Components
+# Mursu Sushi Restaurant
 
-### Use existing pages
+**Mursu Sushi Restaurant** is a fullstack student project for the course **Web‑projekti TX00EY24-3012**.
+This is a web application for a sushi restaurant: a client-facing site where users can browse the menu and place orders, with an admin panel for managing menu items, orders, and restaurant data.
 
-Go to the project folder:
+## Maintainers and contributors
 
+Team #8
+
+- Ksenia Shlenskaia
+- Veikka Liukkonen
+- Unna Postila
+- Luara Moreira Da Silva
+
+## Application idea and target audience
+
+The application is a sushi restaurant website where a user can browse the menu, select dishes, build an order, pay online for it, and track its status. The main scenario is a fast and simple food ordering flow.
+
+The system also includes an admin panel where restaurant staff can manage menu items, ingredients, orders, and their statuses.
+
+Target audience:
+
+* restaurant customers who want to order food online;
+* restaurant staff managing orders and content via the admin interface.
+
+## Application features
+
+### Key features:
+
+* for customers: browsing the menu, adding dishes to the cart (including custom sets), marking favorites, placing and paying for orders, tracking order status, building a route to the restaurant, managing a personal profile, and using a discount system;
+* for restaurant staff: managing menu items and ingredients, setting a daily special, processing orders and updating their statuses in real time, managing customer data.
+
+### Detailed functionality description by pages:
+
+
+**Home page**
+
+- short restaurant description;
+- contacts;
+- address and map;
+- links to main sections (menu, combo-builder).
+
+**Menu page**
+
+- list of dishes from API;
+- daily special with 10% discount;
+- dish price and dietary badges;
+- search and category filters;
+- add to cart, update quantity, remove;
+- mark as favorite (for authenticated users).
+
+**Combo Builder page**
+
+- list of ingredients from API;
+- building a custom set;
+- adding combo to cart.
+
+**Login page**
+
+- registration;
+- login;
+- login as user or admin.
+
+**Cart page**
+
+- cart persistence for guests and authenticated users;
+- view, update quantity, and remove items;
+- select delivery type and enter address;
+- display total price and discounts;
+- payment and checkout (for authenticated users only).
+
+**Order tracker page**
+
+- access only for authenticated users;
+- real-time order status tracking;
+- estimated preparation time;
+- route building to the restaurant for different transport types.
+
+**User profile page**
+
+- access only for authenticated users;
+- view and update user data (name, email, photo, password);
+- view registration date;
+- view number of stamps;
+- view stamp rules (10% discount on every 6th order).
+
+**Admin panel**
+
+- manage dishes (create/update/delete);
+- manage ingredients (create/update/delete);
+- set daily special;
+- manage orders and statuses;
+- real-time status updates;
+- view users.
+
+## External API integrations
+
+- **HSL / Digitransit**: public transport routing in the order tracker.
+- **OpenRouteService**: car routing in the order tracker.
+- **Stripe**: payment at checkout.
+
+## Why this project is useful
+
+- **For customers:**
+  - clear menu with prices and dietary labels;
+  - simple ordering flow with discount support (daily special, stamps);
+  - real-time order tracking and route building.
+- **For the restaurant:**
+  - admin panel for managing menu, ingredients, and orders;
+  - real-time status updates synced with the client;
+  - tool for daily promotions (daily special).
+- **For the development team:**
+  - hands-on experience with fullstack architecture (React + Express.js + MySQL + REST);
+  - working with real-time updates (SSE) and external APIs;
+  - implementation of role-based logic and business rules.
+
+## Evaluation and Support
+
+If you are a developer and want to evaluate the project, please use the evaluation form:
+
+https://forms.gle/3uTGABkuHVZcW7h2A
+
+If you want to provide feedback, have questions or need help, please use this support form:
+
+https://forms.gle/kPwvDc3ysCv5uBqy5
+
+## Application architecture and tech stack
+
+- `frontend/` — SPA including user interface and admin panel
+- `backend/` — REST API, business logic, integrations, SQL layer
+
+### Frontend
+
+- Node.js v24.14.0
+- React 19
+- React Router
+- React Icons
+- Vite
+- CSS
+- Leaflet / react-leaflet
+- Stripe client SDK
+
+### Backend
+
+- Node.js v24.14.0
+- Express
+- MySQL (`mysql2`)
+- JWT auth
+
+## Demo
+
+A short demo video showing the main user flows (menu, cart, checkout, order tracking, admin panel) will be added here.
+
+TODO: add demo video link (YouTube).
+
+## Testing guide
+
+You can test the application using the deployed version or by running it locally.
+
+### Deployed version (recommended)
+
+Open the deployed site:
+
+TODO add a link here
+
+After that, follow the instructions in [Testing](#testing).
+
+### Local version (for developers)
+
+Clone the repository and run the app in **two separate terminals**.
+
+#### Environment variables
+
+Create `.env` files from examples:
+
+```bash
+cd backend
+cp .env.example .env
+
+cd ../frontend
+cp .env.example .env
 ```
-frontend/src/customer
+
+Adjust values if needed (API keys, DB settings).
+
+#### Backend
+
+```bash
+cd backend
+nvm use
+npm install
+npm run db:setup
+npm run dev
 ```
 
-Pre-created pages are already available there. Use them as a base.
+Backend runs at http://localhost:3000
 
-Example structure:
-```
-login/
-  Login.jsx
-  login.css
-```
+#### Frontend
 
-### Convert your HTML to JSX
-
-- take your html page
-- delete header, footer, bottom nav, meta, head, body (everything besides actual inner content you were writing there)
-- convert it to react code using an HTML → JSX converter https://transform.tools/html-to-jsx
-- paste the result into your .jsx file
-
-```
-export default function Login() {
-  return (
-    <>
-        // paste converted JSX here
-    </>
-  );
-};
+```bash
+cd frontend
+nvm use
+npm install
+npm run dev
 ```
 
-### Add your styles
+Frontend runs at http://localhost:5173
 
-Use the .css file located next to your .jsx file. Add your styles directly into this file, it is already imported in the page component.
-Remove `page` and `layout` classes from your pages wrappers. These wrappers are no longer needed because layout classes are now applied in the main layout component by default.
+After startup, continue with [Testing](#testing).
 
----
+### Testing
 
-**Nota bene**
+#### Core functionality
 
-Page components are already connected in the router. Do not rename files arbitrarily. If you rename a file, make sure to update all related imports accordingly.
+1. Open the home page and check description, contacts, and address.
+2. Open `/menu` and verify dishes are loaded from API.
+3. Check daily special and 10% discount when adding it to cart.
+4. Verify price, dietary badges, search, and filters in menu.
+5. Open `/combo-builder`, build a combo using drag-and-drop (or mobile selection), change ingredient order, verify that a combo cannot be added without required structure (base/filling/topping), and then add it to cart.
+6. Open `/login`, register or login (`user@test.com` / `User12345!`).
+7. Open `/cart`, select delivery type, enter address if needed, and test checkout:
+   - successful payment: use `4242 4242 4242 4242` and verify order is created;
+   - failed payment: use `4000 0000 0000 0002` and verify error is shown and order is not created.
+8. After checkout, verify automatic redirect to `/order-tracker`. Open `/adm` in another window, login (`admin@test.com` / `Admin123!`), change order status and verify it updates in real time in the tracker. Also verify route display.
+9. Open `/user-profile`, update user data, and verify stamps increase after order.
+10. Open `/adm` and verify CRUD operations for menu, ingredients, and order status updates.
 
-**Post scriptum**
+#### Responsiveness
 
-After doing this, you can start breaking your page into smaller reusable components. (If you’ve completed the React homework and understand what I mean :D)
+11. Check all pages on desktop and mobile.
+
+#### Localization
+
+12. Switch the app language using the button in the header of the application and verify localization end-to-end:
+   - frontend UI texts are shown in the selected language;
+   - data coming from backend is displayed in the selected language where localization is supported;
+   - backend error messages are shown in the selected language.
+
+
+### Test accounts
+
+- Admin: `admin@test.com` / `Admin123!`
+- User: `user@test.com` / `User12345!`
+
+### Stripe test cards
+
+- Successful payment: `4242 4242 4242 4242`
+- Failed payment: `4000 0000 0000 0002`
+
+Use any future date and any CVC.

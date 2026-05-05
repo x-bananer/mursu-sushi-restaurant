@@ -4,8 +4,8 @@
 
 INSERT INTO users (id, photo_url, name, email, password_hash, role_id, stamp_count, is_stamp_discount_active)
 VALUES
-(1, NULL, 'Admin User', 'admin@test.com', '$2b$10$hashedpassword', 2, 0, FALSE),
-(2, NULL, 'Test User',  'user@test.com',  '$2b$10$hashedpassword', 1, 3, FALSE);
+(1, NULL, 'Admin User', 'admin@test.com', '$argon2id$v=19$m=65536,t=3,p=1$ShR+aFFPsposvqiHiiLZ7Q$DYwOHPcKwqxN2i0eouZfAAUNSenyPXtdnWX7dyqYLUs', 2, 0, FALSE),
+(2, NULL, 'Test User',  'user@test.com',  '$argon2id$v=19$m=65536,t=3,p=1$Io/Sr3hWj+4WiEYoO/9CEw$Ov3EhJEaTwkMzReSLXdsoXARG0Ux/WKDuOqZzRUKX70', 1, 3, FALSE);
 
 
 -- ─────────────────────────────────────────────
