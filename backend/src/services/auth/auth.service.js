@@ -69,6 +69,14 @@ export async function register(payload) {
 	const password =
 		typeof payload?.password === "string" ? payload.password : "";
 
+	let roleId = 1;
+	if (Number(payload?.role_id) === 2) {
+		if (payload?.adminSecret !== process.env.ADMIN_SECRET) {
+			throw createHttpError(403, "Unauthorized to create admin");
+		}
+		roleId = 2;
+	}
+
 	if (!name) {
 		throw createHttpError(400, "Name is required");
 	}
@@ -92,6 +100,7 @@ export async function register(payload) {
 		name,
 		email,
 		passwordHash,
+		role_id: roleId,
 	});
 
 	if (!userId) {
