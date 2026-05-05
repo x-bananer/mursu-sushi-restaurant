@@ -55,6 +55,9 @@ router.delete("/adm/dishes/:id", auth, adminOnly, dishController.deleteDish);
 router.post("/adm/dishes/:id/special", auth, adminOnly, dishController.createDailySpecial);
 router.patch("/adm/dishes/:id/special", auth, adminOnly, dishController.updateDailySpecial);
 router.delete("/adm/dishes/:id/special", auth, adminOnly, dishController.deleteDailySpecial);
+router.post("/adm/dishes/categories", auth, adminOnly, dishController.createCategory);
+router.patch("/adm/dishes/categories/:id", auth, adminOnly, dishController.updateCategory);
+router.delete("/adm/dishes/categories/:id", auth, adminOnly, dishController.deleteCategory);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DISHES COMBO BUILDER  (used by custom orders)

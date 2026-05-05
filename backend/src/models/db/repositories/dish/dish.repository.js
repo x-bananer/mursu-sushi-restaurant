@@ -34,10 +34,76 @@ export async function getDishCategories() {
 		`
 		SELECT id, name, sort_order
 		FROM dish_categories
+		ORDER BY sort_order ASC, id ASC
 		`,
 	);
 
 	return rows;
+}
+
+export async function createDishCategory({ name, sort_order = 0 }) {
+	const result = await execute(
+		`
+		INSERT INTO dish_categories (name, sort_order)
+		VALUES (?, ?);
+		`,
+		[name, sort_order],
+	);
+
+	return result.insertId;
+}
+
+export async function getDishCategoryById(categoryId) {
+	const rows = await select(
+		`
+		SELECT id, name, sort_order
+		FROM dish_categories
+		WHERE id = ?
+		LIMIT 1;
+		`,
+		[categoryId],
+	);
+
+	return rows[0] ?? null;
+}
+
+export async function updateDishCategoryById(categoryId, updates) {
+	const fields = [];
+	const values = [];
+
+	for (const [key, value] of Object.entries(updates)) {
+		fields.push(`${key} = ?`);
+		values.push(value);
+	}
+
+	if (!fields.length) {
+		return 0;
+	}
+
+	values.push(categoryId);
+
+	const result = await execute(
+		`
+		UPDATE dish_categories
+		SET ${fields.join(", ")}
+		WHERE id = ?;
+		`,
+		values,
+	);
+
+	return result.affectedRows;
+}
+
+export async function deleteDishCategoryById(categoryId) {
+	const result = await execute(
+		`
+		DELETE FROM dish_categories
+		WHERE id = ?;
+		`,
+		[categoryId],
+	);
+
+	return result.affectedRows;
 }
 
 export async function getDish(dishId) {

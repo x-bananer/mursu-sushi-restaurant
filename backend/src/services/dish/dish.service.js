@@ -27,6 +27,69 @@ export async function getDishCategories() {
 	return dishRepo.getDishCategories();
 }
 
+export async function createDishCategory(payload = {}) {
+	const name = String(payload.name || "").trim();
+	const sortOrder = payload.sort_order === undefined ? 0 : Number(payload.sort_order);
+
+	if (!name) {
+		throw createHttpError(400, "Category name is required");
+	}
+	if (!Number.isInteger(sortOrder)) {
+		throw createHttpError(400, "sort_order must be an integer");
+	}
+
+	const categoryId = await dishRepo.createDishCategory({ name, sort_order: sortOrder });
+	return dishRepo.getDishCategoryById(categoryId);
+}
+
+export async function updateDishCategory(categoryId, payload = {}) {
+	if (!Number.isInteger(categoryId) || categoryId <= 0) {
+		throw createHttpError(400, "Valid category id is required");
+	}
+
+	const updates = {};
+
+	if (payload.name !== undefined) {
+		const name = String(payload.name).trim();
+		if (!name) {
+			throw createHttpError(400, "Category name cannot be empty");
+		}
+		updates.name = name;
+	}
+
+	if (payload.sort_order !== undefined) {
+		const sortOrder = Number(payload.sort_order);
+		if (!Number.isInteger(sortOrder)) {
+			throw createHttpError(400, "sort_order must be an integer");
+		}
+		updates.sort_order = sortOrder;
+	}
+
+	if (!Object.keys(updates).length) {
+		throw createHttpError(400, "No fields provided for update");
+	}
+
+	const updatedFields = await dishRepo.updateDishCategoryById(categoryId, updates);
+	if (updatedFields === 0) {
+		throw createHttpError(404, "Category not found");
+	}
+
+	return dishRepo.getDishCategoryById(categoryId);
+}
+
+export async function deleteDishCategory(categoryId) {
+	if (!Number.isInteger(categoryId) || categoryId <= 0) {
+		throw createHttpError(400, "Valid category id is required");
+	}
+
+	const deletedFields = await dishRepo.deleteDishCategoryById(categoryId);
+	if (deletedFields === 0) {
+		throw createHttpError(404, "Category not found");
+	}
+
+	return true;
+}
+
 export async function getDish(dishId) {
 	if (!Number.isInteger(dishId) || dishId <= 0) {
 		throw createHttpError(400, "Valid dish id is required");
