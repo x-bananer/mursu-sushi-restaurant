@@ -153,6 +153,9 @@ export async function addFavorite(userId, dishId) {
 		if (err && err.code === "ER_DUP_ENTRY") {
 			throw createHttpError(409, "Dish already in favorites");
 		}
+		if (err && err.code === "ER_NO_REFERENCED_ROW_2") {
+			throw createHttpError(400, "Cannot add favorite: user or dish does not exist");
+		}
 		throw err;
 	}
 
@@ -160,6 +163,10 @@ export async function addFavorite(userId, dishId) {
 }
 
 export async function removeFavorite(userId, dishId) {
+	if (!Number.isInteger(userId) || userId <= 0) {
+		throw createHttpError(401, "Unauthorized");
+	}
+
 	if (!Number.isInteger(dishId) || dishId <= 0) {
 		throw createHttpError(400, "Valid dish id is required");
 	}

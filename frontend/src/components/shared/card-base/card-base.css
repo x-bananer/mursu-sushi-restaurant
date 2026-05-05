@@ -29,6 +29,11 @@
   color: var(--color-black);
 }
 
+.card-base--accent .btn--accent {
+  background-color: var(--color-danger);
+  color: var(--color-white);
+}
+
 .card-base__head {
   display: flex;
   align-items: flex-start;
