@@ -41,8 +41,15 @@
   .category-tabs__list {
     flex-wrap: nowrap;
     overflow-x: auto;
+    overflow-y: hidden;
     gap: 24px;
     white-space: nowrap;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .category-tabs__list::-webkit-scrollbar {
+    display: none;
   }
 
   .category-tabs__button {

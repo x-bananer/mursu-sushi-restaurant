@@ -6,8 +6,11 @@ import CategoryTabs from "../../shared/category-tabs/categoryTabs";
 import CardBase from "../../shared/card-base/cardBase";
 import Button from "../../shared/button/Button";
 import InputField from "../../shared/input-field/InputField";
+import Loader from "../../shared/loader/Loader";
+import ErrorState from "../../shared/error-state/errorState";
 
 import { useFilters } from "../../../hooks/useFilters";
+import { useDishes, useDishCategories } from "../../../hooks/apiHooks/dish";
 
 const ingredientTypeMap = {
   1: "Base",
@@ -24,6 +27,11 @@ export default function MenuEdit() {
   // ───────── INGREDIENT STATE ─────────
   const [ingredientCategory, setIngredientCategory] = useState("all");
   const [ingredientSearch, setIngredientSearch] = useState("");
+
+  const { dishes: menuItems, loading: dishesLoading, error: dishesError } = useDishes();
+  const { categories: menuCategories, loading: categoriesLoading, error: categoriesError } = useDishCategories();
+  const menuLoading = dishesLoading || categoriesLoading;
+  const menuError = dishesError || categoriesError;
 
   // ───────── FILTERED DATA ─────────
   const filteredMenu = useFilters({
@@ -45,15 +53,6 @@ export default function MenuEdit() {
 });
 
   // ───────── CONFIG ─────────
-  const menuCategories = [
-    { id: 1, name: "Sashimi" },
-    { id: 2, name: "Nigiri" },
-    { id: 3, name: "Maki" },
-    { id: 4, name: "Temaki" },
-    { id: 5, name: "Small Plates" },
-    { id: 6, name: "Sake" },
-  ];
-
   const ingredientCategories = [
     { id: 1, name: "Bases" },
     { id: 2, name: "Proteins" },
@@ -75,7 +74,7 @@ export default function MenuEdit() {
 
   return (
     <main className="menu-edit">
-      <h2 className="menu-page__title">Menu Editor</h2>
+      <h2 className="menu-page__title menu-page__title--margin">Menu Editor</h2>
 
       {/* ───────── INGREDIENTS ───────── */}
       <section className="menu-edit__section">
@@ -165,35 +164,40 @@ export default function MenuEdit() {
           onChange={setActiveCategory}
         />
 
-        <section className="menu-grid menu-edit__grid">
-          {filteredMenu.map((item, index) => (
-            <CardBase
-              key={item.id}
-              title={item.name}
-              price={item.price}
-              description={item.description}
-              variant={index % 2 === 0 ? "light" : "dark"}
-              controllers={
-                <>
-                  <Button size="small" variant="accent">
-                    Edit
-                  </Button>
+        {menuLoading && <Loader isLight text="Loading dishes..." />}
+        {menuError && <ErrorState isLight message={menuError} />}
 
-                  <Button
-                    size="small"
-                    variant={item.is_available ? "dark" : "gray"}
-                  >
-                    {item.is_available ? "Disable" : "Enable"}
-                  </Button>
-                </>
-              }
-            />
-          ))}
+        {!menuLoading && !menuError && (
+          <section className="menu-grid menu-edit__grid">
+            {filteredMenu.map((item, index) => (
+              <CardBase
+                key={item.id}
+                title={item.name}
+                price={item.price}
+                description={item.description}
+                variant={index % 2 === 0 ? "light" : "dark"}
+                controllers={
+                  <>
+                    <Button size="small" variant="accent">
+                      Edit
+                    </Button>
 
-          {filteredMenu.length === 0 && (
-            <p className="menu-edit__empty">No dishes found</p>
-          )}
-        </section>
+                    <Button
+                      size="small"
+                      variant={item.is_available ? "dark" : "gray"}
+                    >
+                      {item.is_available ? "Disable" : "Enable"}
+                    </Button>
+                  </>
+                }
+              />
+            ))}
+
+            {filteredMenu.length === 0 && (
+              <p className="menu-edit__empty">No dishes found</p>
+            )}
+          </section>
+        )}
       </section>
     </main>
   );
@@ -212,162 +216,4 @@ const ingredients = [
   { id: 21, name: "Yuzu Zest", price: 6.0, is_available: true, ingredient_type_id: 3 },
   { id: 22, name: "Daikon Lace", price: 5.0, is_available: true, ingredient_type_id: 3 },
   { id: 23, name: "Shiso Leaf", price: 5.0, is_available: true, ingredient_type_id: 3 },
-];
-
-const menuItems = [
-  // SASHIMI
-  {
-    id: 1,
-    name: "Sake Sashimi",
-    description:
-      "8 slices salmon sashimi with wasabi, ginger, soy sauce and seaweed salad.",
-    price: 24.0,
-    is_available: true,
-    category_id: 1,
-  },
-  {
-    id: 2,
-    name: "Maguro Sashimi",
-    description:
-      "6 slices tuna sashimi with pickled ginger and soy sauce.",
-    price: 24.0,
-    is_available: true,
-    category_id: 1,
-  },
-  {
-    id: 3,
-    name: "Hamachi Sashimi",
-    description:
-      "Yellowtail sashimi with ponzu and citrus zest.",
-    price: 26.0,
-    is_available: true,
-    category_id: 1,
-  },
-
-  // NIGIRI
-  {
-    id: 4,
-    name: "Salmon Nigiri",
-    description:
-      "Fresh salmon over pressed sushi rice.",
-    price: 18.0,
-    is_available: true,
-    category_id: 2,
-  },
-  {
-    id: 5,
-    name: "Tuna Nigiri",
-    description:
-      "Lean tuna nigiri with wasabi accent.",
-    price: 19.0,
-    is_available: true,
-    category_id: 2,
-  },
-  {
-    id: 6,
-    name: "Ebi Nigiri",
-    description:
-      "Sweet shrimp nigiri with light soy glaze.",
-    price: 17.0,
-    is_available: true,
-    category_id: 2,
-  },
-
-  // MAKI
-  {
-    id: 7,
-    name: "Spicy Tuna Roll",
-    description:
-      "Tuna, chili mayo, cucumber and sesame.",
-    price: 16.0,
-    is_available: true,
-    category_id: 3,
-  },
-  {
-    id: 8,
-    name: "California Roll",
-    description:
-      "Crab, avocado, cucumber and tobiko.",
-    price: 15.0,
-    is_available: true,
-    category_id: 3,
-  },
-  {
-    id: 9,
-    name: "Avocado Maki",
-    description:
-      "Fresh avocado roll with sesame.",
-    price: 12.0,
-    is_available: true,
-    category_id: 3,
-  },
-
-  // TEMAKI
-  {
-    id: 10,
-    name: "Salmon Temaki",
-    description:
-      "Hand roll with salmon, rice and nori.",
-    price: 14.0,
-    is_available: true,
-    category_id: 4,
-  },
-  {
-    id: 11,
-    name: "Spicy Tuna Temaki",
-    description:
-      "Cone hand roll with spicy tuna mix.",
-    price: 15.0,
-    is_available: true,
-    category_id: 4,
-  },
-
-  // SMALL PLATES
-  {
-    id: 12,
-    name: "Edamame",
-    description:
-      "Sea salt edamame beans.",
-    price: 6.0,
-    is_available: true,
-    category_id: 5,
-  },
-  {
-    id: 13,
-    name: "Miso Soup",
-    description:
-      "Traditional miso with tofu and seaweed.",
-    price: 5.0,
-    is_available: true,
-    category_id: 5,
-  },
-  {
-    id: 14,
-    name: "Gyoza",
-    description:
-      "Pan-fried pork dumplings with dipping sauce.",
-    price: 9.0,
-    is_available: true,
-    category_id: 5,
-  },
-
-  // SAKE
-  {
-    id: 15,
-    name: "Junmai Sake",
-    description:
-      "Smooth rice sake with clean finish.",
-    price: 10.0,
-    is_available: true,
-    category_id: 6,
-  },
-  {
-    id: 16,
-    name: "Nigori Sake",
-    description:
-      "Unfiltered sweet sake with creamy texture.",
-    price: 11.0,
-    is_available: true,
-    category_id: 6,
-  },
 ];

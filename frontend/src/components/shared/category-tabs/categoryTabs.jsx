@@ -32,9 +32,9 @@ export default function CategoryTabs({
             key={cat.id}
             type="button"
             className={`category-tabs__button ${
-              active === cat.id ? "category-tabs__button--active" : ""
+              String(active) === String(cat.id) ? "category-tabs__button--active" : ""
             }`}
-            onClick={() => onChange(cat.id)}
+            onClick={() => onChange(String(cat.id))}
           >
             {cat.name}
           </button>
