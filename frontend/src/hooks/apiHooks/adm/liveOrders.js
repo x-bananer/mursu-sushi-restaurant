@@ -1,15 +1,6 @@
 import { useEffect, useState} from "react";
 import { fetchData } from "../../../utils/fetchData";
 
-/**
- * Temporary manual login till our auth dev is done
- */
-import devLogin from "../../../utils/devLogin";
-
-if (!localStorage.getItem("token")) {
- devLogin();
-};
-
 export const useAdmOrders = () => {
   const [orders, setOrders] = useState([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
