@@ -12,15 +12,35 @@ VALUES
 -- DISHES
 -- ─────────────────────────────────────────────
 
-INSERT INTO dishes (id, name, description, price, is_available, created_at)
+INSERT INTO dishes (id, name, description, price, is_available, created_at, category_id)
 VALUES
-(1, 'Sake Sashimi', '8 slices salmon sashimi with wasabi, ginger, soy sauce and seaweed salad.', 24.00, 1, NOW()),
-(2, 'Moguro', '6 slices tuna sashimi with wasabi, ginger and marinated cucumber.', 24.00, 1, NOW()),
-(3, 'Hamachi', '8 slices yellowtail sashimi with ponzu, pickled daikon and herb salad.', 26.00, 1, NOW()),
-(4, 'Hotate', '6 slices scallop sashimi with yuzu salt, ponzu and cucumber salad.', 22.00, 1, NOW()),
-(5, 'Yasai Mori', 'Vegetable selection with avocado, tofu, pickles, rice and miso soup.', 18.00, 1, NOW()),
-(6, 'Tako', 'Poached octopus with ponzu, cucumber, rice and miso soup.', 20.00, 1, NOW());
+-- ── SASHIMI ─────────────────────────────
+(1, 'Sake Sashimi', '8 slices salmon sashimi with wasabi, ginger, soy sauce and seaweed salad.', 24.00, 1, NOW(), 1),
+(2, 'Maguro Sashimi', '6 slices tuna sashimi with pickled ginger and soy sauce.', 24.00, 1, NOW(), 1),
+(3, 'Hamachi Sashimi', 'Yellowtail sashimi with ponzu and citrus zest.', 26.00, 1, NOW(), 1),
 
+-- ── NIGIRI ──────────────────────────────
+(4, 'Salmon Nigiri', 'Fresh salmon over pressed sushi rice.', 18.00, 1, NOW(), 2),
+(5, 'Tuna Nigiri', 'Lean tuna nigiri with wasabi accent.', 19.00, 1, NOW(), 2),
+(6, 'Ebi Nigiri', 'Sweet shrimp nigiri with light soy glaze.', 17.00, 1, NOW(), 2),
+
+-- ── MAKI ────────────────────────────────
+(7, 'Spicy Tuna Roll', 'Tuna, chili mayo, cucumber and sesame.', 16.00, 1, NOW(), 3),
+(8, 'California Roll', 'Crab, avocado, cucumber and tobiko.', 15.00, 1, NOW(), 3),
+(9, 'Avocado Maki', 'Fresh avocado roll with sesame.', 12.00, 1, NOW(), 3),
+
+-- ── TEMAKI ──────────────────────────────
+(10, 'Salmon Temaki', 'Hand roll with salmon, rice and nori.', 14.00, 1, NOW(), 4),
+(11, 'Spicy Tuna Temaki', 'Cone hand roll with spicy tuna mix.', 15.00, 1, NOW(), 4),
+
+-- ── SMALL PLATES ────────────────────────
+(12, 'Edamame', 'Sea salt edamame beans.', 6.00, 1, NOW(), 5),
+(13, 'Miso Soup', 'Traditional miso with tofu and seaweed.', 5.00, 1, NOW(), 5),
+(14, 'Gyoza', 'Pan-fried pork dumplings with dipping sauce.', 9.00, 1, NOW(), 5),
+
+-- ── SAKE (DRINK CATEGORY) ───────────────
+(15, 'Junmai Sake', 'Smooth rice sake with clean finish.', 10.00, 1, NOW(), 6),
+(16, 'Nigori Sake', 'Unfiltered sweet sake with creamy texture.', 11.00, 1, NOW(), 6);
 
 -- ─────────────────────────────────────────────
 -- DAILY SPECIAL
@@ -35,24 +55,23 @@ VALUES
 -- INGREDIENTS (FOR COMBO BUILDER + DIETARY ENGINE)
 -- ─────────────────────────────────────────────
 
-INSERT INTO ingredients (id, name, price, ingredient_type_id)
+INSERT INTO ingredients (id, name, price, ingredient_type_id, is_available)
 VALUES
 -- bases
-(1, 'Shari Rice', 5.00, 1),
-(2, 'Udon Silk', 9.00, 1),
-(3, 'Soba Earth', 8.00, 1),
+(1, 'Shari Rice', 5.00, 1, TRUE),
+(2, 'Udon Silk', 9.00, 1, TRUE),
+(3, 'Soba Earth', 8.00, 1, TRUE),
 
 -- proteins
-(10, 'Seared Wagyu', 34.00, 2),
-(11, 'Bluefin Toro', 28.00, 2),
-(12, 'Smoked Tofu', 12.00, 2),
+(10, 'Seared Wagyu', 34.00, 2, TRUE),
+(11, 'Bluefin Toro', 28.00, 2, TRUE),
+(12, 'Smoked Tofu', 12.00, 2, FALSE),
 
 -- toppings
-(20, 'Nori Dust', 4.00, 3),
-(21, 'Yuzu Zest', 6.00, 3),
-(22, 'Daikon Lace', 5.00, 3),
-(23, 'Shiso Leaf', 5.00, 3);
-
+(20, 'Nori Dust', 4.00, 3, TRUE),
+(21, 'Yuzu Zest', 6.00, 3, TRUE),
+(22, 'Daikon Lace', 5.00, 3, TRUE),
+(23, 'Shiso Leaf', 5.00, 3, TRUE);
 -- ─────────────────────────────────────────────
 -- DISH BADGES
 -- ─────────────────────────────────────────────
@@ -136,7 +155,7 @@ VALUES
 
 INSERT INTO orders (id, user_id, status_id, delivery_type_id, is_paid, address, total_price)
 VALUES
-(1, 2, 1, 3, FALSE, 'Test Street 123', 74.00);
+(1, 2, 1, 3, TRUE, 'Test Street 123', 74.00);
 
 
 -- ─────────────────────────────────────────────
