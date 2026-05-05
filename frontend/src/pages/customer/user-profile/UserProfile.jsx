@@ -3,12 +3,16 @@ import { useNavigate } from "react-router";
 import InputField from "../../../components/shared/input-field/InputField";
 import Button from "../../../components/shared/button/Button";
 import { fetchData } from "../../../utils/fetchData";
-import { clearAuth } from "../../../utils/authStorage";
+import { useAuth } from "../../../contexts/AuthContext";
 import "./user-profile.css";
 
 export default function UserProfile() {
-	const [profile, setProfile] = useState(null);
-	const [form, setForm] = useState({ name: "", email: "" });
+	const { user, updateUser, logout } = useAuth();
+	const [profile, setProfile] = useState(user);
+	const [form, setForm] = useState({ 
+		name: user?.name || "", 
+		email: user?.email || "" 
+	});
 	const [photoFile, setPhotoFile] = useState(null);
 	const [isEditing, setIsEditing] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
@@ -18,14 +22,12 @@ export default function UserProfile() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		const token = localStorage.getItem("token");
-		if (!token) {
+		if (!user) {
 			navigate("/auth", { replace: true });
 			return;
 		}
-
 		loadProfile();
-	}, [navigate]);
+	}, [user, navigate]);
 
 	async function loadProfile() {
 		setError("");
@@ -33,6 +35,7 @@ export default function UserProfile() {
 			const data = await fetchData("/users/me");
 			if (data && data.user) {
 				setProfile(data.user);
+				updateUser(data.user);
 				setForm({
 					name: data.user.name || "",
 					email: data.user.email || "",
@@ -123,6 +126,7 @@ export default function UserProfile() {
 
 			if (data && data.user) {
 				setProfile(data.user);
+				updateUser(data.user);
 				setForm({
 					name: data.user.name || "",
 					email: data.user.email || "",
@@ -156,7 +160,7 @@ export default function UserProfile() {
 		setIsDeleting(true);
 		try {
 			await fetchData("/users/me", { method: "DELETE" });
-			clearAuth();
+			logout();
 			setProfile(null);
 			setForm({ name: "", email: "" });
 			setPhotoFile(null);
@@ -229,32 +233,40 @@ export default function UserProfile() {
 				<section className="profile__header">
 					<div className="profile__user">
 						<div className="profile__avatar">
-							<svg
-								viewBox="0 0 48 48"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<circle
-									cx="24"
-									cy="24"
-									r="18"
-									stroke="currentColor"
-									strokeWidth="2"
+							{profile?.photo_url ? (
+								<img 
+									src={profile.photo_url} 
+									alt={displayName} 
+									className="profile__avatar-img"
 								/>
-								<circle
-									cx="24"
-									cy="18"
-									r="5"
-									stroke="currentColor"
-									strokeWidth="2"
-								/>
-								<path
-									d="M14 34C14 29 18 26 24 26C30 26 34 29 34 34"
-									stroke="currentColor"
-									strokeWidth="2"
-									strokeLinecap="round"
-								/>
-							</svg>
+							) : (
+								<svg
+									viewBox="0 0 48 48"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<circle
+										cx="24"
+										cy="24"
+										r="18"
+										stroke="currentColor"
+										strokeWidth="2"
+									/>
+									<circle
+										cx="24"
+										cy="18"
+										r="5"
+										stroke="currentColor"
+										strokeWidth="2"
+									/>
+									<path
+										d="M14 34C14 29 18 26 24 26C30 26 34 29 34 34"
+										stroke="currentColor"
+										strokeWidth="2"
+										strokeLinecap="round"
+									/>
+								</svg>
+							)}
 						</div>
 						<div className="profile__identity">
 							<h1 className="profile__name">{displayName}</h1>

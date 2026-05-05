@@ -3,9 +3,10 @@ import { useNavigate } from "react-router";
 import InputField from "../../../shared/input-field/InputField";
 import Button from "../../../shared/button/Button";
 import { fetchData } from "../../../../utils/fetchData";
-import { saveAuth } from "../../../../utils/authStorage";
+import { useAuth } from "../../../../contexts/AuthContext";
 
 export default function Login({ onForgot, onAdminRegister }) {
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -41,7 +42,7 @@ export default function Login({ onForgot, onAdminRegister }) {
       });
 
       if (data && data.token) {
-        saveAuth({ token: data.token, user: data.user });
+        login(data.user, data.token);
         navigate("/user-profile", { replace: true });
       }
     } catch (err) {

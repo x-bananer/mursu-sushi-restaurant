@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router";
 import NavBase from "../../shared/nav/NavBase";
 import { UserIcon, CartIcon } from "../../shared/nav/icons";
 import { useCartContext } from "../../../hooks/contextHooks/cart";
+import { useAuth } from "../../../contexts/AuthContext";
 
 const Logo = () => (
 	<Link to="/" className="nav__logo">
@@ -26,6 +27,15 @@ export default function CustomerNavbar() {
 	const [language, setLanguage] = React.useState("fi");
 
 	const { cartItemsCount } = useCartContext();
+	const { user } = useAuth();
+
+	const userLinkContent = user?.photo_url ? (
+		<img 
+			src={user.photo_url} 
+			alt="User Profile" 
+			className="nav__avatar-img"
+		/>
+	) : <UserIcon />;
 
 	return (
 		<NavBase
@@ -43,7 +53,7 @@ export default function CustomerNavbar() {
 			]}
 			center={<Logo />}
 			right={[
-				{ to: "/user-profile", content: <UserIcon />, isIcon: true },
+				{ to: "/user-profile", content: userLinkContent, isIcon: !user?.photo_url },
 				{ to: "/cart", content: <CartIcon />, isIcon: true },
 			]}
 			extraRight={
