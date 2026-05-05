@@ -1,19 +1,15 @@
 import "./special-card.css";
-import CardBase from "../../../shared/card-base/cardBase";
 
 export default function SpecialCard({ item }) {
   return (
-    <div className="sticker">
-      <div  className="sticker__card">
-        <p className="sticker__label">Today's special</p>
-        <CardBase
-          title={item.title}
-          description={item.description}
-          variant="accent"
-          controllers={
-            <span className="sticker__benefit">15% off today</span>
-          }
-        />
+    <div className="special-card">
+      <div className="special-card__card">
+        <p className="special-card__label">Today's special</p>
+        <h3 className="special-card__title">{item?.title}</h3>
+        <p className="special-card__description">{item?.description}</p>
+        <div className="special-card__footer">
+          <span className="special-card__benefit">10% off today</span>
+        </div>
       </div>
     </div>
   );

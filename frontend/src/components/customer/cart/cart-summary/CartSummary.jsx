@@ -15,6 +15,7 @@ export default function CartSummary({
     canPay,
 }) {
     const navigate = useNavigate();
+    const isAuthorized = Boolean(localStorage.getItem('token'));
 
     const showDiscount = Boolean(discount);
     const showDelivery = selectedDeliveryType?.type === 'delivery';
@@ -68,6 +69,14 @@ export default function CartSummary({
                     <Button className="cart-summary__auth-link" variant="link" onClick={() => navigate('/auth')}>create an account</Button>
                     <br></br>{' '}to continue to checkout
                 </div>
+                {!isAuthorized && (
+                    <div className="cart-summary__plate">
+                        <Button className="cart-summary__auth-link" variant="link" onClick={() => navigate('/login')}>Sign in</Button>
+                        {' '}or{' '}
+                        <Button className="cart-summary__auth-link" variant="link" onClick={() => navigate('/login')}>create an account</Button>
+                        <br></br>{' '}to continue to checkout
+                    </div>
+                )}
 
                 <p className="cart-summary__caption">
                     By proceeding, you agree to Mursu’s terms of service and

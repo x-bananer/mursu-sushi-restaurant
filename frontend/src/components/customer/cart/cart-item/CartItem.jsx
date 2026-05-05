@@ -3,8 +3,9 @@ import './cart-item.css';
 import ButtonCounter from '../../../shared/button-counter/ButtonCounter';
 import Button from '../../../shared/button/Button';
 
-export default function CartItem({ item, onIncrease, onDecrease, onRemove }) {
-    const totalItemPrice = item.price * item.quantity;
+export default function CartItem({ item, quantity, onIncrease, onDecrease, onRemove }) {
+    const visibleQuantity = quantity ?? item.quantity;
+    const totalItemPrice = item.price * visibleQuantity;
     const isDish = item?.type?.type === 'dish';
 
     return (
@@ -31,7 +32,7 @@ export default function CartItem({ item, onIncrease, onDecrease, onRemove }) {
                     <p className="cart-item__price">€{totalItemPrice}</p>
                     {isDish &&
                         <ButtonCounter
-                            value={item.quantity}
+                            value={visibleQuantity}
                             onPlus={onIncrease}
                             onMinus={onDecrease}
                         />

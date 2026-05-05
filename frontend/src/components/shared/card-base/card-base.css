@@ -1,5 +1,3 @@
-
-/* BASE */
 .card-base {
   position: relative;
   display: flex;
@@ -11,74 +9,107 @@
   color: var(--text-color);
 }
 
-/* DARK (default) */
 .card-base--dark {
   background: var(--background-color);
   color: var(--text-color);
 }
 
-/* LIGHT */
 .card-base--light {
   background: var(--color-white);
   color: var(--color-black);
 }
 
-/* TRANSPARENT */
 .card-base--transparent {
   background: transparent;
   color: var(--text-color);
 }
 
-/* ACCENT */
 .card-base--accent {
-  border-color: var(--color-accent);
   background: var(--color-accent);
   color: var(--color-black);
 }
 
+.card-base--accent .btn--accent {
+  background-color: var(--color-danger);
+  color: var(--color-white);
+}
 
-
-/* HEAD */
 .card-base__head {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 20px;
 }
 
-/* TITLE */
 .card-base__title {
   font-family: var(--font-title);
   font-size: 48px;
+  font-weight: 700;
+  line-height: 48px;
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 
-/* PRICE */
 .card-base__price {
+  flex: 0 0 auto;
   font-family: var(--font-title);
   font-size: 26px;
+  letter-spacing: 1px;
 }
 
-/* TAGS */
 .card-base__badges {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 14px;
+  align-self: flex-start;
 }
 
-/* DESCRIPTION */
 .card-base__description {
   margin-top: 18px;
+  color: var(--color-gray);
   font-family: var(--font-button);
   font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 0;
+}
+
+.card-base--light .card-base__description {
   color: var(--color-gray);
 }
 
-/* FOOTER */
 .card-base__footer {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   margin-top: auto;
   padding-top: 24px;
+}
+
+.card-base__footer--end {
+  justify-content: flex-end;
+}
+
+@media (max-width: 480px) {
+  .card-base {
+    padding: 20px;
+  }
+
+  .card-base__title {
+    font-size: 34px;
+  }
+
+  .card-base__price {
+    font-size: 22px;
+  }
+
+  .card-base__description {
+    max-width: none;
+  }
+
+  .card-base__footer {
+    gap: 12px;
+    padding-top: 20px;
+  }
 }
