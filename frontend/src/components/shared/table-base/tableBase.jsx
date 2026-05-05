@@ -9,7 +9,7 @@ export default function TableBase({
 }) {
   return (
     <section className="table-wrapper">
-      {title && <h3 className="section-title">{title}</h3>}
+      {title && <h3 className="menu-page__title">{title}</h3>}
       {description && (
         <p className="placeholder-text">{description}</p>
       )}
