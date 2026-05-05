@@ -1,8 +1,9 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { useCartContext } from "../../../../hooks/contextHooks/cart";
 import { usePayment } from "../../../../hooks/apiHooks/cart";
+import { debounce } from "../../../../utils/debounce";
 
 import CartItem from '../cart-item/CartItem';
 import CartDelivery from '../cart-delivery/CartDelivery';
@@ -13,6 +14,8 @@ import ErrorState from '../../../shared/error-state/errorState';
 import EmptyState from '../../../shared/empty-state/EmptyState';
 
 import './cart-content.css';
+
+const EMPTY_ITEMS = [];
 
 export default function CartContent() {
 	const stripe = useStripe();
@@ -29,14 +32,49 @@ export default function CartContent() {
 	} = useCartContext();
 
 	const { createPayment, paymentLoading, paymentError } = usePayment();
-	const [deliveryTypeId, setDeliveryTypeId] = useState(null);
+	const [deliveryTypeId, setDeliveryTypeId] = useState(1);
 	const [selectedDeliveryType, setSelectedDeliveryType] = useState(null);
 	const [address, setAddress] = useState('');
 	const [payError, setPayError] = useState(null);
+	const [visibleQuantities, setVisibleQuantities] = useState({});
+	const debouncedByItemRef = useRef({});
+	const debouncedRemoveRef = useRef(null);
 
 	// TODO Fix after auth is done
 	const isAuthorized = Boolean(localStorage.getItem('token'));
-	const items = cart?.items || [];
+	const items = cart?.items ?? EMPTY_ITEMS;
+
+	useEffect(() => {
+		const next = {};
+		items.forEach((item) => {
+			next[item.id] = item.quantity;
+		});
+		setVisibleQuantities(next);
+	}, [items]);
+
+	if (!debouncedRemoveRef.current) {
+		debouncedRemoveRef.current = debounce((itemId) => {
+			removeCartItem(itemId);
+		}, 300);
+	}
+
+	const getDebouncedUpdateByItemId = (itemId) => {
+		if (!debouncedByItemRef.current[itemId]) {
+			debouncedByItemRef.current[itemId] = debounce((dishId, newQuantity) => {
+				addDishToCart(dishId, newQuantity);
+			}, 300);
+		}
+		return debouncedByItemRef.current[itemId];
+	};
+
+	useEffect(() => {
+		return () => {
+			Object.values(debouncedByItemRef.current).forEach((fn) => fn.cancel());
+			if (debouncedRemoveRef.current) {
+				debouncedRemoveRef.current.cancel();
+			}
+		};
+	}, []);
 
 	if (loadLoading) {
 		return (
@@ -60,22 +98,33 @@ export default function CartContent() {
 		);
 	}
 
-	const handleIncrease = async (item) => {
-		const newQuantity = item.quantity + 1;
-		await addDishToCart(item.dish.id, newQuantity);
+	const handleIncrease = (item) => {
+		const currentQuantity = visibleQuantities[item.id] ?? item.quantity;
+		const newQuantity = currentQuantity + 1;
+		setVisibleQuantities((prev) => ({ ...prev, [item.id]: newQuantity }));
+		getDebouncedUpdateByItemId(item.id)(item.dish.id, newQuantity);
 	};
 
-	const handleDecrease = async (item) => {
-		const newQuantity = item.quantity - 1;
-		if (item.quantity > 0) {
-			await addDishToCart(item.dish.id, newQuantity);
+	const handleDecrease = (item) => {
+		const currentQuantity = visibleQuantities[item.id] ?? item.quantity;
+		const newQuantity = currentQuantity - 1;
+
+		if (currentQuantity <= 0) {
+			return;
+		}
+
+		setVisibleQuantities((prev) => ({ ...prev, [item.id]: Math.max(0, newQuantity) }));
+
+		if (newQuantity > 0) {
+			getDebouncedUpdateByItemId(item.id)(item.dish.id, newQuantity);
 		} else {
-			await removeCartItem(item.id);
+			debouncedRemoveRef.current(item.id);
 		}
 	};
 
-	const handleRemove = async (item) => {
-		await removeCartItem(item.id);
+	const handleRemove = (item) => {
+		setVisibleQuantities((prev) => ({ ...prev, [item.id]: 0 }));
+		debouncedRemoveRef.current(item.id);
 	};
 
 	const handlePay = async () => {
@@ -131,6 +180,7 @@ export default function CartContent() {
 									<CartItem
 										key={item.id}
 										item={item}
+										quantity={visibleQuantities[item.id] ?? item.quantity}
 										onIncrease={() => handleIncrease(item)}
 										onDecrease={() => handleDecrease(item)}
 										onRemove={() => handleRemove(item)}

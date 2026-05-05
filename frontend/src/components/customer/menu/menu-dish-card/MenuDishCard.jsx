@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FiHeart } from "react-icons/fi";
 import { useNavigate } from "react-router";
 
 import CardBase from "../../../shared/card-base/cardBase";
 import Button from "../../../shared/button/Button";
 import ButtonCounter from "../../../shared/button-counter/ButtonCounter";
+import { debounce } from "../../../../utils/debounce";
 
 export default function MenuDishCard({
 	item,
@@ -16,6 +17,7 @@ export default function MenuDishCard({
 	isFavoritePending = false,
 }) {
 	const [isPending, setIsPending] = useState(false);
+	const [visibleQuantity, setVisibleQuantity] = useState(0);
 	const navigate = useNavigate();
 
 	const isLightCard = index % 2 === 0;
@@ -25,53 +27,77 @@ export default function MenuDishCard({
 	const addButtonVariant = isLightCard ? "dark" : "light";
 	const counterVariant = isLightCard ? "light" : "dark";
 
-	const cartItem = (cart?.items || []).find((currentItem) => currentItem?.dish?.id === item.id) || null;
-	const quantity = cartItem?.quantity || 0;
+	const cartItem = (cart?.items || []).find((currentItem) => currentItem.dish?.id === item?.id) || null;
+	const quantity = cartItem ? cartItem.quantity : 0;
 
-	const handleAddToCart = async () => {
-		try {
-			setIsPending(true);
-			await addDishToCart(item.id, 1);
-		} finally {
-			setIsPending(false);
-		}
+	useEffect(() => {
+		setVisibleQuantity(quantity);
+	}, [quantity]);
+
+	const debouncedAddToCart = useMemo(
+		() =>
+			debounce(async (newQuantity) => {
+				try {
+					setIsPending(true);
+					await addDishToCart(item.id, newQuantity);
+				} finally {
+					setIsPending(false);
+				}
+			}, 300),
+		[addDishToCart, item.id],
+	);
+
+	const debouncedToggleFavorite = useMemo(
+		() =>
+			debounce(() => {
+				const token = localStorage.getItem("token");
+				if (!token) {
+					navigate("/login");
+					return;
+				}
+				onToggleFavorite();
+			}, 300),
+		[navigate, onToggleFavorite],
+	);
+
+	useEffect(() => {
+		return () => {
+			debouncedAddToCart.cancel();
+			debouncedToggleFavorite.cancel();
+		};
+	}, [debouncedAddToCart, debouncedToggleFavorite]);
+
+	const handleAddToCart = () => {
+		setVisibleQuantity(1);
+		debouncedAddToCart(1);
 	};
 
-	const handleIncrease = async () => {
-		const nextQuantity = (cartItem?.quantity || 0) + 1;
-		try {
-			setIsPending(true);
-			await addDishToCart(item.id, nextQuantity);
-		} finally {
-			setIsPending(false);
-		}
+	const handleIncrease = () => {
+		const newQuantity = visibleQuantity + 1;
+		setVisibleQuantity(newQuantity);
+		debouncedAddToCart(newQuantity);
 	};
 
 	const handleDecrease = async () => {
-		if (!cartItem) {
+		if (visibleQuantity <= 0) return;
+		const newQuantity = visibleQuantity - 1;
+		setVisibleQuantity(newQuantity);
+
+		if (newQuantity <= 0) {
+			try {
+				setIsPending(true);
+				await removeCartItem(cartItem.id);
+			} finally {
+				setIsPending(false);
+			}
 			return;
 		}
 
-		const nextQuantity = cartItem.quantity - 1;
-		try {
-			setIsPending(true);
-			if (nextQuantity <= 0) {
-				await removeCartItem(cartItem.id);
-				return;
-			}
-			await addDishToCart(item.id, nextQuantity);
-		} finally {
-			setIsPending(false);
-		}
+		debouncedAddToCart(newQuantity);
 	};
 
 	const handleFavoriteClick = () => {
-		const token = localStorage.getItem("token");
-		if (!token) {
-			navigate("/login");
-			return;
-		}
-		onToggleFavorite?.();
+		debouncedToggleFavorite();
 	};
 
 	return (
@@ -92,7 +118,7 @@ export default function MenuDishCard({
 						<FiHeart />
 					</Button>
 
-					{!quantity ? (
+					{!visibleQuantity ? (
 						<Button
 							size="small"
 							variant={addButtonVariant}
@@ -103,7 +129,7 @@ export default function MenuDishCard({
 						</Button>
 					) : (
 						<ButtonCounter
-							value={quantity}
+							value={visibleQuantity}
 							variant={counterVariant}
 							onMinus={isPending ? undefined : handleDecrease}
 							onPlus={isPending ? undefined : handleIncrease}

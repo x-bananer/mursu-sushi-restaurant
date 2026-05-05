@@ -34,8 +34,12 @@ export const payWithStripe = async (userId, sessionId, checkoutData) => {
 
 	const cart = await cartService.getCartBySessionId(sessionId);
 
-	if (!checkoutData.delivery_type_id || !checkoutData.address) {
+	if (!checkoutData.delivery_type_id) {
 		throw createHttpError(400, 'Missing checkout data');
+	}
+
+	if (Number(checkoutData.delivery_type_id) === 3 && !String(checkoutData.address ?? '').trim()) {
+		throw createHttpError(400, 'Address is required for delivery');
 	}
 
 	if (!cart || !cart.items.length) {
