@@ -1,34 +1,142 @@
 import "./home.css";
+import { useEffect, useRef, useState } from "react";
 import bonsaiImage from "../../../assets/images/Bonsai.png";
+import mapImage from "../../../assets/images/Map.png";
 
 export default function Home() {
+	const titleList = ["Mursu Sushi", "Sushi, crafted with intent"];
+	const [titleId, setTitleId] = useState(0);
+	const [titleAnim, setTitleAnim] = useState("reveal");
+	const [isMobileTitle, setIsMobileTitle] = useState(false);
+	const systemCoreRef = useRef(null);
+
+	useEffect(() => {
+		const compactMediaQuery = window.matchMedia("(max-width: 960px)");
+		const update = () => {
+			setIsMobileTitle(compactMediaQuery.matches);
+		};
+
+		update();
+		compactMediaQuery.addEventListener("change", update);
+
+		return () => {
+			compactMediaQuery.removeEventListener("change", update);
+		};
+	}, []);
+
+	useEffect(() => {
+		if (isMobileTitle) {
+			setTitleId(0);
+			setTitleAnim("reveal");
+			return undefined;
+		}
+
+		let waiters = [];
+		const timer = setInterval(() => {
+			setTitleAnim("erase");
+
+			const waiter = setTimeout(() => {
+				setTitleId((old) => (old + 1) % titleList.length);
+				setTitleAnim("reveal");
+			}, 1500);
+			waiters.push(waiter);
+		}, 5600);
+
+		return () => {
+			clearInterval(timer);
+			waiters.forEach((timeoutId) => clearTimeout(timeoutId));
+		};
+	}, [isMobileTitle, titleList.length]);
+
+	useEffect(() => {
+		const el = systemCoreRef.current;
+		if (!el) {
+			return undefined;
+		}
+
+		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+			return undefined;
+		}
+
+		const mobile = window.matchMedia("(max-width: 960px)");
+
+		const reset = () => {
+			el.style.setProperty("--parallax-left-y", "0px");
+			el.style.setProperty("--parallax-right-y", "0px");
+			el.style.setProperty("--parallax-right-x", "0px");
+			el.style.setProperty("--parallax-right-rotate", "0deg");
+			el.style.setProperty("--parallax-right-scale", "1");
+		};
+
+		const move = () => {
+			if (mobile.matches) {
+				reset();
+				return;
+			}
+
+			const box = el.getBoundingClientRect();
+			const viewportCenter = window.innerHeight / 2;
+			const sectionCenter = box.top + box.height / 2;
+			const maxOffset = viewportCenter + box.height / 2;
+			const progress = Math.max(
+				-1,
+				Math.min(1, (sectionCenter - viewportCenter) / maxOffset),
+			);
+
+			const depth = 1 - Math.abs(progress);
+
+			el.style.setProperty("--parallax-left-y", `${progress * -180}px`);
+			el.style.setProperty("--parallax-right-y", `${progress * 240}px`);
+			el.style.setProperty("--parallax-right-x", `${progress * -90}px`);
+			el.style.setProperty("--parallax-right-rotate", `${progress * 11}deg`);
+			el.style.setProperty("--parallax-right-scale", `${1 + depth * 0.14}`);
+		};
+
+		const onScroll = () => move();
+
+		move();
+		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("resize", onScroll);
+		mobile.addEventListener("change", onScroll);
+
+		return () => {
+			window.removeEventListener("scroll", onScroll);
+			window.removeEventListener("resize", onScroll);
+			mobile.removeEventListener("change", onScroll);
+		};
+	}, []);
+
 	return (
 		<>
 			<div className="home-hero">
-				<h1 className="home-hero__title">
-					Sushi, crafted with intent.
+				<h1
+					className={
+						isMobileTitle
+							? "home-hero__title"
+							: `home-hero__title home-hero__title--${titleAnim}`
+					}
+				>
+					<span className="home-hero__title-text">{titleList[titleId]}</span>
 				</h1>
-				Mursu Sushi is not just a sushi restaurant. It is a story.
-				<br />
-				<br />
-				When we started our exquisite voyage into the world of the
-				utmost delicate tastes, <br />
-				we did not think it would become something of this magnitude.
-				<br />
-				<br />
-				Be it visiting our restaurant or ordering online, our number one
-				priority is ensuring that <br />
-				our customers get the best dining experience possible.
-				<br />
-				<br />
-				Mursu Sushi, the taste of excellence.
-				<br />
-				<br />
+				<div className="home-hero__description">
+					<p className="home-hero__line home-hero__line--1">
+						Mursu Sushi is not just a sushi restaurant. It is a story.
+					</p>
+					<p className="home-hero__line home-hero__line--2">
+						When we started our exquisite voyage into the world of the utmost delicate tastes, we did not think it would become something of this magnitude.
+					</p>
+					<p className="home-hero__line home-hero__line--4">
+						Be it visiting our restaurant or ordering online, our number one priority is ensuring that our customers get the best dining experience possible.
+					</p>
+					<p className="home-hero__line home-hero__line--6">
+						Mursu Sushi, the taste of excellence.
+					</p>
+				</div>
 				<div className="home-hero__actions">
-					<a href="/menu" className="btn btn--small btn--light">
+					<a href="/menu" className="btn btn--light">
 						View Menu
 					</a>
-					<a href="/combo-builder" className="btn btn--small">
+					<a href="/combo-builder" className="btn">
 						Build A Set
 					</a>
 				</div>
@@ -40,19 +148,19 @@ export default function Home() {
 					className="home-bonsai__image"
 				/>
 			</section>
-			<section className="system-core light-theme">
+			<section ref={systemCoreRef} className="system-core light-theme">
 				<div className="system-core__container">
 					<div className="system-core__content">
-						<h2 className="system-core__header">SYSTEM CORE</h2>
+						<h2 className="system-core__header">THE MURSU EXPERIENCE</h2>
 						<ul className="system-core__list">
 							<li className="system-item">
 								<div className="system-item__number">01</div>
 								<div className="system-item__content">
 									<div className="system-item__title">
-										BUILD YOUR SET
+										BUILD YOUR OWN COMBOS
 									</div>
 									<div className="system-item__subtitle">
-										MODULAR COMPOSITION
+										Create your set with ingredients and extras you actually want.
 									</div>
 								</div>
 							</li>
@@ -60,10 +168,10 @@ export default function Home() {
 								<div className="system-item__number">02</div>
 								<div className="system-item__content">
 									<div className="system-item__title">
-										LIVE TRACKING
+										PICK YOUR FAVORITE DISHES
 									</div>
 									<div className="system-item__subtitle">
-										REAL-TIME TELEMETRY
+										Save favorites and get back to your go-to choices faster.
 									</div>
 								</div>
 							</li>
@@ -71,10 +179,10 @@ export default function Home() {
 								<div className="system-item__number">03</div>
 								<div className="system-item__content">
 									<div className="system-item__title">
-										EARN BADGES
+										APPLY THE LOYALTY PROGRAM
 									</div>
 									<div className="system-item__subtitle">
-										LOYALTY PROTOCOL
+										Collect stamps with each order and unlock discounts.
 									</div>
 								</div>
 							</li>
@@ -82,10 +190,10 @@ export default function Home() {
 								<div className="system-item__number">04</div>
 								<div className="system-item__content">
 									<div className="system-item__title">
-										DIETARY INFO
+										TRACK YOUR ORDER LIVE
 									</div>
 									<div className="system-item__subtitle">
-										NUTRITIONAL ANALYSIS
+										See real-time status updates from kitchen to delivery.
 									</div>
 								</div>
 							</li>
@@ -93,64 +201,7 @@ export default function Home() {
 					</div>
 					<div className="system-preview">
 						<div className="system-preview__box">
-							<div className="system-preview__diamond"></div>
-							<div className="system-preview__text">
-								Your food here
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-			<section className="user-transcripts light-theme">
-				<div>
-					<h2 className="user-transcripts__header">
-						USER TRANSCRIPTS
-					</h2>
-					<div className="user-transcripts__grid">
-						<div className="transcript">
-							<div className="transcript__quote">
-								"The geometric precision of the nigiri assembly
-								is unmatched. A true feast for the senses."
-							</div>
-							<div>
-								<div className="transcript__divider"></div>
-								<div className="transcript__author-name">
-									E. VANDERBILT
-								</div>
-								<div className="transcript__author-role">
-									STRUCTURAL ENGINEER
-								</div>
-							</div>
-						</div>
-						<div className="transcript">
-							<div className="transcript__quote">
-								"A UI that understands the rhythm of high-end
-								dining. No friction, only flavor."
-							</div>
-							<div>
-								<div className="transcript__divider"></div>
-								<div className="transcript__author-name">
-									M. SATO
-								</div>
-								<div className="transcript__author-role">
-									PRODUCT DESIGNER
-								</div>
-							</div>
-						</div>
-						<div className="transcript">
-							<div className="transcript__quote">
-								"The tracking protocol allowed me to time my
-								arrival within a 30-second window. Efficient."
-							</div>
-							<div>
-								<div className="transcript__divider"></div>
-								<div className="transcript__author-name">
-									J. ARNAULT
-								</div>
-								<div className="transcript__author-role">
-									OPERATIONS LEAD
-								</div>
-							</div>
+							<img src={mapImage} alt="Mursu map" className="system-preview__map" />
 						</div>
 					</div>
 				</div>
@@ -161,18 +212,23 @@ export default function Home() {
 					<address className="home-info-card__text home-info-card__address">
 						MURSU SUSHI
 						<br />
-						EIRANRANTA 7<br />
-						HELSINKI, FIN 00150
-						<br />
-						<br />
-						STREET LEVEL 01
+						Unioninkatu<br />
+						HELSINKI, FIN 00170
 					</address>
 				</div>
 				<div className="home-info-card home-info-card--with-divider">
 					<h2 className="home-info-card__title">SCHEDULE</h2>
 					<div className="home-info-card__text home-info-card__schedule">
 						<div className="home-info-card__schedule-row">
-							<span>MON—WED</span>
+							<span>MON</span>
+							<span>11:00—21:00</span>
+						</div>
+						<div className="home-info-card__schedule-row">
+							<span>TUE</span>
+							<span>11:00—21:00</span>
+						</div>
+						<div className="home-info-card__schedule-row">
+							<span>WED</span>
 							<span>11:00—21:00</span>
 						</div>
 						<div className="home-info-card__schedule-row">
@@ -191,28 +247,24 @@ export default function Home() {
 							<span>SUN</span>
 							<span>CLOSED</span>
 						</div>
-						<div className="home-info-card__note">
-							LATE ADMISSION PERMITTED
-						</div>
 					</div>
 				</div>
 				<div className="home-info-card home-info-card--with-divider">
 					<h2 className="home-info-card__title">CONTACT</h2>
 					<div className="home-info-card__text">
-						MURSU@MURSUSUSHI.ZEN
+						<a href="mailto:mursu@mursusushi.zen" className="home-info-card__link">
+							MURSU@MURSUSUSHI@FMAIL.COM
+						</a>
 						<br />
-						<br />
-						+358 10 515 0143
+						<a href="tel:+358105150143" className="home-info-card__link">
+							+358 10 515 0143
+						</a>
 					</div>
 				</div>
 				<div className="home-info-card">
 					<h2 className="home-info-card__title">TRANSPORT</h2>
 					<div className="home-info-card__text">
-						Tram from Central Railway Station <br />
-						+10 MIN WALK
-						<br />
-						<br />
-						PARKING: STREET LEVEL
+						10 MIN WALK from Central Railway Station <br />
 					</div>
 				</div>
 			</section>
