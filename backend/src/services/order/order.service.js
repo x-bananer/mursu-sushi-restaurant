@@ -236,19 +236,6 @@ export async function createOrder(data) {
       payload: orderDTO
     });
 
-    // USER EVENT (minimal)
-    tracker.emit({
-      scope: 'user',
-      userId: orderDTO.user?.id || orderDTO.user_id || null,
-  	  orderId: orderDTO.id,
-      type: 'order_created',
-      payload: {
-        orderId: orderDTO.id,
-        status: orderDTO.status,
-        createdAt: orderDTO.created_at
-      }
-    });
-
     return orderDTO;
 }
 

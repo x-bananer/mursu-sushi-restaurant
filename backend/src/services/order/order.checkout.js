@@ -27,7 +27,7 @@ function createHttpError(statusCode, message) {
 export const SERVICE_TYPE = {
   DELIVERY: 'delivery',
   PICKUP: 'pickup',
-  DINE_IN: 'dine_in',
+  DINE_IN: 'restaurant',
 };
 
 const DELIVERY_BUFFER_MIN = 5;

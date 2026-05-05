@@ -59,7 +59,7 @@ const ETA = {
 
   default: {
     row1: {
-      before: "Estimated time:",
+      before: "Estimated time in min:",
       value: (eta) => `${eta?.travel?.durationMins ?? "--"}`,
       unit: "min",
       after: "",
@@ -73,6 +73,7 @@ const ETA = {
 export default function OrderETA({ eta, serviceType, durationMins }) {
   console.log('serviceType: ', serviceType);
   console.log('eta?.leaveAt: ', eta?.deliveredAt );
+  if (serviceType === 'restaurant') serviceType = 'dine_in';
   const etaUI = ETA[serviceType] || ETA.default;
 
   if (!eta) {
@@ -87,48 +88,48 @@ export default function OrderETA({ eta, serviceType, durationMins }) {
     <div className="order__ready-wrapper">
       {/* Row 1 */}
       <div className="order__ready">
-        <p className="order__ready-label">{etaUI.row1.before}</p>
+        <p className="order__ready-label">{etaUI?.row1?.before}</p>
 
         <p className="order__ready-time">
-          {etaUI.row1.value?.(eta)}
+          {etaUI?.row1?.value?.(eta)}
         </p>
 
-        {etaUI.row1.after && (
-          <p className="order__ready-label">{etaUI.row1.after}</p>
+        {etaUI?.row1?.after && (
+          <p className="order__ready-label">{etaUI?.row1?.after}</p>
         )}
       </div>
 
       {/* Row 2 */}
       {serviceType === "delivery" ? (
         <div className="order__ready">
-        <p className="order__ready-label">{etaUI.row2.before}</p>
+        <p className="order__ready-label">{etaUI?.row2?.before}</p>
 
         <p className="order__ready-time">
-          {etaUI.row2.value?.(eta)}
+          {etaUI?.row2?.value?.(eta)}
         </p>
 
-        {etaUI.row2.after && (
-          <p className="order__ready-label">{etaUI.row2.after}</p>
+        {etaUI?.row2?.after && (
+          <p className="order__ready-label">{etaUI?.row2?.after}</p>
         )}
       </div>
 
       ) : (
 
         <div className="order__ready">
-          <p className="order__ready-label">{etaUI.row2.before}</p>
+          <p className="order__ready-label">{etaUI?.row2?.before}</p>
 
           <span className="order__ready-time">
-            {etaUI.row2.value?.(eta, durationMins)}
+            {etaUI?.row2?.value?.(eta, durationMins)}
           </span>
 
-          {etaUI.row2.unit && (
+          {etaUI?.row2?.unit && (
             <span className="order__ready-label">
-              {" "}{etaUI.row2.unit}
+              {" "}{etaUI?.row2?.unit}
             </span>
           )}
 
-          {etaUI.row2.after && (
-            <p className="order__ready-label">{etaUI.row2.after}</p>
+          {etaUI?.row2?.after && (
+            <p className="order__ready-label">{etaUI?.row2?.after}</p>
           )}
         </div>
       )}

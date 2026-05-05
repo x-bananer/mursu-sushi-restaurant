@@ -1,79 +1,136 @@
+import { useEffect, useState, useCallback } from "react";
 import LiveOrdersColumn from "./LiveOrdersColumn";
 import "./live-orders.css";
 
+import {
+  useAdmOrders,
+  useAdmOrderStream,
+  useUpdateOrderStatus,
+} from "../../../hooks/apiHooks/adm/liveOrders";
+
+const getNextStatus = (status) => {
+  if (status === "pending") return "confirmed";
+  if (status === "confirmed") return "preparing";
+  if (status === "preparing") return "ready";
+  if (status === "ready") return "delivered";
+  return null;
+};
+
 export default function LiveOrders() {
-	const pendingOrders = [
-		{
-			id: 1042,
-			time: "12:34",
-			name: "Matti K.",
-			total: "27.21",
-			items: [
-				{ name: "Sake sashimi", qty: 1 },
-				{ name: "Maguro nigiri", qty: 2 },
-			],
-		},
-		{
-			id: 1045,
-			time: "12:38",
-			name: "Guest",
-			total: "14.50",
-			items: [{ name: "Ebi Tempura Roll", qty: 1 }],
-		},
-	];
+  const { orders: initialOrders } = useAdmOrders();
+  const [orders, setOrders] = useState([]);
+  const { updateStatus } = useUpdateOrderStatus();
 
-	const preparingOrders = [
-		{
-			id: 1040,
-			time: "12:20",
-			name: "Anna S.",
-			total: "32.00",
-			items: [
-				{ name: "Unagi Kabayaki", qty: 1 },
-				{ name: "Miso Soup", qty: 2 },
-			],
-		},
-	];
+  useEffect(() => {
+    setOrders(initialOrders);
+  }, [initialOrders]);
 
-	const readyOrders = [
-		{
-			id: 1038,
-			time: "12:15",
-			name: "Guest",
-			total: "12.80",
-			items: [{ name: "California Roll", qty: 1 }],
-		},
-	];
+  /**
+   * SSE updater
+   */
+  const handleStreamEvent = useCallback((event) => {
+    setOrders((prev) => {
+      const type = event.type;
+      const payload = event.payload;
 
-	const handleAction = (orderId) => {
-		console.log("Action clicked for order:", orderId);
-	};
+      // ─────────────────────────────────────────
+      // ORDER CREATED
+      // ─────────────────────────────────────────
+      if (type === "order_created") {
+        return [payload, ...prev];
+      }
 
-	return (
-		<div className="order-board">
-			<LiveOrdersColumn
-				title="Pending"
-				status="pending"
-				orders={pendingOrders}
-				actionLabel="Mark Preparing"
-				onAction={handleAction}
-			/>
+      // ─────────────────────────────────────────
+      // STATUS UPDATED
+      // ─────────────────────────────────────────
+      if (type === "order_status_updated") {
+        return prev.map((order) =>
+          order.id === payload.id ? payload : order
+        );
+      }
 
-			<LiveOrdersColumn
-				title="Preparing"
-				status="preparing"
-				orders={preparingOrders}
-				actionLabel="Mark Ready"
-				onAction={handleAction}
-			/>
+      return prev;
+    });
+  }, []);
 
-			<LiveOrdersColumn
-				title="Ready"
-				status="ready"
-				orders={readyOrders}
-				actionLabel="Complete"
-				onAction={handleAction}
-			/>
-		</div>
-	);
+  useAdmOrderStream(handleStreamEvent);
+
+  // ─────────────────────────────────────────
+  // GROUPING
+  // ─────────────────────────────────────────
+  const pendingOrders = orders.filter(
+    (o) => o.status?.type === "pending" || o.status?.type === "confirmed"
+  );
+  const preparingOrders = orders.filter((o) => o.status?.type === "preparing");
+  const readyOrders = orders.filter((o) => o.status?.type === "ready");
+
+  // ─────────────────────────────────────────
+  // HANDLE UPDATE
+  // ─────────────────────────────────────────
+  const handleAction = async (orderId) => {
+  	const order = orders.find((o) => o.id === orderId);
+  	if (!order) return;
+
+  	const currentStatus = order.status?.type;
+  	const nextStatus = getNextStatus(currentStatus);
+
+  	if (!nextStatus) return;
+
+  	/**
+   	* ─────────────────────────────────────────
+   	* OPTIMISTIC UPDATE (instant UI)
+   	* ─────────────────────────────────────────
+   	*/
+  	setOrders((prev) =>
+      prev.map((o) =>
+        o.id === orderId
+          ? {...o, status: {...o.status, type: nextStatus,},} : o
+      )
+  	);
+
+    /**
+     * ─────────────────────────────────────────
+     * API CALL
+     * ─────────────────────────────────────────
+     */
+    try {
+      await updateStatus(orderId, nextStatus);
+    } catch (err) {
+      console.error("Failed to update order:", err);
+
+      /**
+       * ─────────────────────────────────────────
+       * ROLLBACK (if API fails)
+       * ─────────────────────────────────────────
+       */
+      setOrders((prev) =>
+      	prev.map((o) => o.id === orderId ? order : o)
+      );
+  	}
+  };
+
+  return (
+    <div className="order-board">
+      <LiveOrdersColumn
+        title="Pending"
+        status="pending"
+        orders={pendingOrders}
+        onAction={handleAction}
+      />
+
+      <LiveOrdersColumn
+        title="Preparing"
+        status="preparing"
+        orders={preparingOrders}
+        onAction={handleAction}
+      />
+
+      <LiveOrdersColumn
+        title="Ready"
+        status="ready"
+        orders={readyOrders}
+        onAction={handleAction}
+      />
+    </div>
+  );
 }

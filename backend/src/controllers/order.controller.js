@@ -18,20 +18,7 @@ import * as orderService from '../services/order/order.service.js';
 
 /**
  * GET /adm/orders
- *
- * PURPOSE:
  * Returns ALL ACTIVE orders for the kitchen dashboard.
- *
- * WHY:
- * Kitchen needs to see what to prepare in real-time.
- *
- * DATA:
- * - order metadata (id, address, total, timestamps)
- * - status (type + name -> used for filtering & UI labels)
- * - delivery type (for logistics)
- *
- * NOTE:
- * Only returns active orders (pending -> ready)
  *
  * @param {import('express').Request<OrdersRequest>} req
  * @param {import('express').Response<OrdersResponse>} res
@@ -48,20 +35,7 @@ export async function list(req, res, next) {
 
 /**
  * GET /adm/orders/:id
- *
- * PURPOSE:
  * Get FULL details of a single order (admin or user view)
- *
- * WHY:
- * Used when opening an order (details modal / page)
- *
- * DATA:
- * - order metadata
- * - items (what was ordered)
- * - ingredients (customizations)
- *
- * NOTE:
- * This is your "full order view"
  *
  * @param {import('express').Request<OrderRequest>} req
  * @param {import('express').Response<OrderResponse>} res
@@ -88,20 +62,7 @@ export async function get(req, res, next) {
 
 /**
  * PATCH /adm/orders/:id/status
- *
- * PURPOSE:
  * Update order status (kitchen workflow)
- *
- * WHY:
- * Moves order through lifecycle:
- * pending -> preparing -> ready -> etc.
- *
- * DATA IN:
- * - status (new status)
- *
- * SIDE EFFECT:
- * - updates order.status_id
- * - inserts status history (timeline)
  */
 export async function updateStatus(req, res, next) {
   try {
@@ -120,6 +81,57 @@ export async function updateStatus(req, res, next) {
 }
 
 /**
+ * GET /adm/orders/status/count
+ * Get counts of orders per status
+ */
+export async function statusCount(req, res, next) {
+  try {
+    const stats = await orderService.getOrderCountsByStatus();
+    res.json({ stats });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * GET adm/orders/stream
+ * Real-time order updates using Server-Sent Events (SSE)
+ * Used when order is created.
+ */
+export function streamAdmOrders(req, res) {
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    Connection: 'keep-alive',
+  });
+
+  res.write('\n');
+
+  // ADMIN scope subscription (NO orderId needed)
+  tracker.subscribe(res, {
+    scope: 'admin',
+    userId: req.user?.id ?? null,
+  });
+}
+
+/**
+ * ONCE CART IS IMPLEMENTED POST /orders WILL BE REMOVES AS ENDPOINT:
+ */
+
+/**
+ * POST /adm/orders
+ * Create a new order (called by cart AFTER payment)
+ */
+export async function create(req, res, next) {
+  try {
+    const order = await orderService.createOrder(req.body);
+    res.status(201).json({ order });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
  * =========================================================
  * USER LOGGED IN
  * =========================================================
@@ -127,16 +139,7 @@ export async function updateStatus(req, res, next) {
 
 /**
  * GET /orders/active
- *
- * PURPOSE:
  * Get the user's current active order
- *
- * WHY:
- * User typically has ONE ongoing order at a time.
- * Used for tracking page entry.
- *
- * DATA:
- * - latest active order (pending - ready)
  */
 export async function getActive(req, res, next) {
   try {
@@ -154,28 +157,8 @@ export async function getActive(req, res, next) {
 }
 
 /**
- * =========================================================
- * TRACKING (IN ORDER-TRACKER PAGE)
- * =========================================================
- */
-
-/**
  * GET /orders/:id/tracking
- *
- * PURPOSE:
- * Get tracking data for timeline UI
- *
- * WHY:
- * Frontend shows:
- * "Order placed -> Preparing -> Ready"
- *
- * DATA:
- * - order (current state)
- * - history (all past status changes)
- *
- * THIS POWERS:
- * timeline UI
- *
+ * Get history tracking data for timeline UI
  */
 export async function tracking(req, res, next) {
   try {
@@ -193,23 +176,9 @@ export async function tracking(req, res, next) {
 }
 
 /**
- * =========================================================
- * REAL-TIME (SSE STREAM)
- * =========================================================
- */
-
-/**
- * GET adm/orders/:id/stream
- *
- * PURPOSE:
- * Real-time updates using Server-Sent Events (SSE)
- *
- * WHY:
- * Push updates to kitchen dashboard instantly
- * (new orders, status changes)
- *
- * DATA:
- * - streamed events (order updates)
+ * GET orders/:id/stream
+ * Real-time order updates using Server-Sent Events (SSE)
+ * Used when an order is updated by id
  */
 
 export function streamOrders(req, res) {
@@ -235,55 +204,7 @@ export function streamOrders(req, res) {
 }
 
 /**
- * GET /adm/orders/status/count
- *
- * PURPOSE:
- * Get counts of orders per status
- *
- * WHY:
- * Dashboard indicators:
- * - "3 pending"
- * - "5 preparing"
- *
- * DATA:
- * - [{ status: 'pending', count: 3 }, ...]
- */
-export async function statusCount(req, res, next) {
-  try {
-    const stats = await orderService.getOrderCountsByStatus();
-    res.json({ stats });
-  } catch (err) {
-    next(err);
-  }
-}
-
-/**
- * ONCE CART IS IMPLEMENTED POST /orders WILL BE REMOVES AS ENDPOINT:
- */
-
-/**
- * POST /adm/orders
- *
- * PURPOSE:
- * Create a new order (called by cart AFTER payment)
- *
- * WHY:
- * Cart owns payment - Orders only store confirmed orders
- *
- */
-export async function create(req, res, next) {
-  try {
-    const order = await orderService.createOrder(req.body);
-    res.status(201).json({ order });
-  } catch (err) {
-    next(err);
-  }
-}
-
-/**
  * GET /orders/:id/estimate/:lat/:lon
- *
- * PURPOSE:
  * Returns ETA + routing + kitchen timing for an order
  */
 export async function estimate(req, res, next) {
