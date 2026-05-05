@@ -24,11 +24,30 @@ export async function get(req, res, next) {
 export async function update(req, res, next) {
 	try {
 		const sessionId = String(req.headers["x-session-id"] ?? "").trim();
+		const { dish_id, quantity, items } = req.body || {};
+		let cart = null;
 
-		const { items } = req.body;
-		const cart = await cartService.updateCartBySessionId(sessionId, items);
+		if (Array.isArray(items)) {
+			cart = await cartService.updateCartBySessionId(sessionId, items);
+		} else {
+			cart = await cartService.updateCartDishBySessionId(sessionId, dish_id, quantity);
+		}
 
 		return res.json({ cart });
+	} catch (err) {
+		next(err);
+	}
+}
+
+/**
+ * GET /cart/delivery-types
+ * Return available delivery types for checkout.
+ *
+ */
+export async function getDeliveryTypes(req, res, next) {
+	try {
+		const deliveryTypes = await cartService.getDeliveryTypes();
+		return res.json({ deliveryTypes });
 	} catch (err) {
 		next(err);
 	}

@@ -32,3 +32,25 @@ export async function getUserFavorites(userId) {
 
 	return rows;
 }
+
+export async function addFavorite(userId, dishId) {
+	await execute(
+		`
+		INSERT INTO user_favorite_dishes (user_id, dish_id)
+		VALUES (?, ?);
+		`,
+		[userId, dishId],
+	);
+}
+
+export async function removeFavorite(userId, dishId) {
+	const result = await execute(
+		`
+		DELETE FROM user_favorite_dishes
+		WHERE user_id = ? AND dish_id = ?;
+		`,
+		[userId, dishId],
+	);
+
+	return result.affectedRows > 0;
+}

@@ -105,3 +105,18 @@ export const deleteCartById = async (cartId) => {
 		[cartId]
 	);
 }
+
+/**
+ * GET DELIVERY TYPES
+ */
+export const getDeliveryTypes = async () => {
+	const rows = await select(
+		`
+    SELECT id, type, name
+    FROM delivery_type
+    ORDER BY id ASC
+    `
+	);
+
+	return rows;
+}

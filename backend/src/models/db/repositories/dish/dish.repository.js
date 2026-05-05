@@ -27,3 +27,81 @@ export async function getDishes() {
 
 	return rows;
 }
+
+export async function getDish(dishId) {
+	const rows = await select(
+		`
+			SELECT
+  			dishes.id,
+  			dishes.name,
+  			dishes.description,
+  			dishes.price,
+  			dishes.is_available,
+  			dishes.created_at,
+			JSON_ARRAYAGG(
+				JSON_OBJECT(
+					"id", badge.id,
+					"name", badge.name
+				)
+			) AS badges
+		FROM dishes
+		LEFT JOIN dish_badges ON dish_badges.dish_id = dishes.id
+		LEFT JOIN badge ON badge.id = dish_badges.badge_id
+		WHERE dishes.id = ?;
+		`,
+		[dishId],
+	);
+
+	return rows;
+}
+
+export async function createDish({ name, description, price, is_available = true }) {
+	const result = await execute(
+		`
+		INSERT INTO dishes (name, description, price, is_available)
+		VALUES (?, ?, ?, ?);
+		`,
+		[name, description ?? null, price, Boolean(is_available)],
+	);
+
+	return result.insertId;
+}
+
+export async function updateDishById(dishId, updates) {
+	const fields = [];
+	const values = [];
+
+	for (const [key, value] of Object.entries(updates)) {
+		fields.push(`${key} = ?`);
+		values.push(value);
+	}
+
+	if (!fields.length) {
+		return 0;
+	}
+
+	values.push(dishId);
+
+	const result = await execute(
+		`
+		UPDATE dishes
+		SET ${fields.join(", ")}
+		WHERE id = ?;
+		`,
+		values,
+	);
+
+	return result.affectedRows;
+}
+
+export async function deleteDishById(dishId) {
+	const result = await execute(
+		`
+		DELETE FROM dishes
+		WHERE id = ?;
+		`,
+		[dishId],
+	);
+
+	return result.affectedRows;
+}

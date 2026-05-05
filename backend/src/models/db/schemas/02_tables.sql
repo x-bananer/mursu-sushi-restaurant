@@ -41,6 +41,11 @@ CREATE TABLE ingredient_type (
   name VARCHAR(50) NOT NULL
 );
 
+CREATE TABLE dish_categories (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(50) NOT NULL UNIQUE,
+  sort_order INT DEFAULT 0
+);
 -- ── USER DOMAIN ─────────────────────────────────────────────
 
 CREATE TABLE users (
@@ -62,10 +67,13 @@ CREATE TABLE users (
 CREATE TABLE dishes (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
+  category_id INT,
   description TEXT,
   price DECIMAL(10,2) NOT NULL,
   is_available BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (category_id)
+  REFERENCES dish_categories(id)
 );
 
 CREATE TABLE dish_badges (
@@ -80,6 +88,7 @@ CREATE TABLE ingredients (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   price DECIMAL(10,2) NOT NULL,
+  is_available BOOLEAN DEFAULT TRUE,
   ingredient_type_id INT NOT NULL,
   FOREIGN KEY (ingredient_type_id) REFERENCES ingredient_type(id)
 );

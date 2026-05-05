@@ -47,7 +47,7 @@ function validateIngredientsExist(ingredientsFromClient, ingredientsFromDb) {
 }
 
 function validateItemsQuantity(sortedIngredientsFromClient, ingredientsFromDb) {
-    const comboOrderError = 'Invalid combo order: base must be at the bottom (exactly 1 required), fillings in the middle (max 3), toppings on top (max 3).';
+    const comboOrderError = 'Invalid combo order: base must be at the bottom (exactly 1 required), fillings in the middle (max 3), toppings on top (max 1).';
     let baseCount = 0;
     let fillingCount = 0;
     let toppingCount = 0;
@@ -73,7 +73,7 @@ function validateItemsQuantity(sortedIngredientsFromClient, ingredientsFromDb) {
             throw new Error(comboOrderError);
         }
 
-        if (toppingCount > 3) {
+        if (toppingCount > 1) {
             throw new Error(comboOrderError);
         }
     }
@@ -84,7 +84,7 @@ function validateItemsQuantity(sortedIngredientsFromClient, ingredientsFromDb) {
 }
 
 function validateItemsOrder(sortedIngredientsFromClient, ingredientsFromDb) {
-    const comboOrderError = 'Invalid combo order: base must be at the bottom (exactly 1 required), fillings in the middle (max 3), toppings on top (max 3).';
+    const comboOrderError = 'Invalid combo order: base must be at the bottom (exactly 1 required), fillings in the middle (max 3), toppings on top (max 1).';
     const firstIngredient = sortedIngredientsFromClient[0];
     const lastIngredient = sortedIngredientsFromClient[sortedIngredientsFromClient.length - 1];
 
