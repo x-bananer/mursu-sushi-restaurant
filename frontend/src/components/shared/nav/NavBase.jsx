@@ -44,7 +44,7 @@ export default function NavBase({ left = [], center, right = [], extraRight, bad
 							className={`nav__link${item.isIcon ? " nav__icon-link" : ""}`}
 						>
 							{item.content}
-							{item.to === "/cart" && showBadge && (
+							{item.to === "/cart" && Boolean(badge) && (
 								<div className="nav__link-badge">{badge}</div>
 							)}
 						</button>
@@ -55,7 +55,7 @@ export default function NavBase({ left = [], center, right = [], extraRight, bad
 							className={`nav__link${item.isIcon ? " nav__icon-link" : ""}`}
 						>
 							{item.content}
-							{item.to === "/cart" && showBadge && (
+							{item.to === "/cart" && Boolean(badge) && (
 								<div className="nav__link-badge">{badge}</div>
 							)}
 						</Link>
