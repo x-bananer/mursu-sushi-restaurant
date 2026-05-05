@@ -30,3 +30,54 @@ export async function getDailySpecial() {
 
 	return rows;
 }
+
+export async function createDailySpecial({ dishId, validOn }) {
+	const result = await execute(
+		`
+		INSERT INTO daily_specials (dish_id, valid_on)
+		VALUES (?, ?);
+		`,
+		[dishId, validOn],
+	);
+
+	return result.insertId;
+}
+
+export async function getDailySpecialById(id) {
+	const rows = await select(
+		`
+		SELECT id, dish_id, valid_on
+		FROM daily_specials
+		WHERE id = ?
+		LIMIT 1;
+		`,
+		[id],
+	);
+
+	return rows[0] ?? null;
+}
+
+export async function updateDailySpecialByDishId(dishId, validOn) {
+	const result = await execute(
+		`
+		UPDATE daily_specials
+		SET valid_on = ?
+		WHERE dish_id = ?;
+		`,
+		[validOn, dishId],
+	);
+
+	return result.affectedRows;
+}
+
+export async function deleteDailySpecialByDishId(dishId) {
+	const result = await execute(
+		`
+		DELETE FROM daily_specials
+		WHERE dish_id = ?;
+		`,
+		[dishId],
+	);
+
+	return result.affectedRows;
+}

@@ -2,6 +2,12 @@ import * as dishRepo from "../../models/db/repositories/dish/dish.repository.js"
 import * as dailySpecialRepo from "../../models/db/repositories/dish/dailySpecial.repository.js";
 import * as userFavoriteRepo from "../../models/db/repositories/dish/favorite.repository.js";
 
+function createHttpError(statusCode, message) {
+	const error = /** @type {Error & { statusCode: number }} */ (new Error(message));
+	error.statusCode = statusCode;
+	return error;
+}
+
 export async function getDishes() {
 	const dishes = await dishRepo.getDishes();
 
@@ -11,13 +17,21 @@ export async function getDishes() {
 		return {
 			...d,
 			price: Number(d.price),
+			is_available: Boolean(d.is_available),
 			badges: Array.isArray(badges) ? badges : [],
 		};
 	});
 }
 
 export async function getDish(dishId) {
+	if (!Number.isInteger(dishId) || dishId <= 0) {
+		throw createHttpError(400, "Valid dish id is required");
+	}
+
 	const dish = await dishRepo.getDish(dishId);
+	if (!dish.length) {
+		throw createHttpError(404, "Dish not found");
+	}
 
 	return dish.map((d) => {
 		const badges = JSON.parse(d.badges || "[]");
@@ -25,6 +39,7 @@ export async function getDish(dishId) {
 		return {
 			...d,
 			price: Number(d.price),
+			is_available: Boolean(d.is_available),
 			badges: Array.isArray(badges) ? badges : [],
 		};
 	});
@@ -39,6 +54,7 @@ export async function getDailySpecial() {
 		return {
 			...d,
 			price: Number(d.price),
+			is_available: Boolean(d.is_available),
 			badges: Array.isArray(badges) ? badges : [],
 		};
 	});
@@ -53,7 +69,161 @@ export async function getUserFavorites(userId) {
 		return {
 			...d,
 			price: Number(d.price),
+			is_available: Boolean(d.is_available),
 			badges: Array.isArray(badges) ? badges : [],
 		};
 	});
+}
+
+export async function addFavorite(userId, dishId) {
+	if (!Number.isInteger(dishId) || dishId <= 0) {
+		throw createHttpError(400, "Valid dish id is required");
+	}
+
+	try {
+		await userFavoriteRepo.addFavorite(userId, dishId);
+	} catch (err) {
+		if (err && err.code === "ER_DUP_ENTRY") {
+			throw createHttpError(409, "Dish already in favorites");
+		}
+		throw err;
+	}
+
+	return true;
+}
+
+export async function removeFavorite(userId, dishId) {
+	if (!Number.isInteger(dishId) || dishId <= 0) {
+		throw createHttpError(400, "Valid dish id is required");
+	}
+
+	await userFavoriteRepo.removeFavorite(userId, dishId);
+	return true;
+}
+
+export async function createDish(payload = {}) {
+	const body = payload || {};
+	const name = String(body.name || "").trim();
+	const description = body.description ? String(body.description).trim() : null;
+	const price = Number(body.price);
+	const isAvailable = body.is_available ?? true;
+
+	if (!name) {
+		throw createHttpError(400, "Dish name is required");
+	}
+	if (Number.isNaN(price) || price < 0) {
+		throw createHttpError(400, "Valid dish price is required");
+	}
+
+	const dishId = await dishRepo.createDish({
+		name,
+		description,
+		price,
+		is_available: isAvailable === true || isAvailable === 1,
+	});
+
+	const dish = await dishRepo.getDish(dishId);
+	return dish[0];
+}
+
+export async function updateDish(dishId, payload = {}) {
+	if (!Number.isInteger(dishId) || dishId <= 0) {
+		throw createHttpError(400, "Valid dish id is required");
+	}
+
+	const updates = {};
+
+	if (payload.name !== undefined) {
+		const name = String(payload.name).trim();
+		if (!name) {
+			throw createHttpError(400, "Dish name cannot be empty");
+		}
+		updates.name = name;
+	}
+
+	if (payload.description !== undefined) {
+		updates.description = payload.description == null ? null : String(payload.description).trim();
+	}
+
+	if (payload.price !== undefined) {
+		const price = Number(payload.price);
+		if (Number.isNaN(price) || price < 0) {
+			throw createHttpError(400, "Valid dish price is required");
+		}
+		updates.price = price;
+	}
+
+	if (payload.is_available !== undefined) {
+		updates.is_available = payload.is_available === true || payload.is_available === 1;
+	}
+
+	if (!Object.keys(updates).length) {
+		throw createHttpError(400, "No fields provided for update");
+	}
+
+	const updatedFields = await dishRepo.updateDishById(dishId, updates);
+	if (updatedFields === 0) {
+		throw createHttpError(404, "Dish not found");
+	}
+
+	const dish = await dishRepo.getDish(dishId);
+	return dish[0];
+}
+
+export async function deleteDish(dishId) {
+	if (!Number.isInteger(dishId) || dishId <= 0) {
+		throw createHttpError(400, "Valid dish id is required");
+	}
+
+	const deletedFields = await dishRepo.deleteDishById(dishId);
+	if (deletedFields === 0) {
+		throw createHttpError(404, "Dish not found");
+	}
+
+	return true;
+}
+
+export async function createDailySpecial(dishId, payload = {}) {
+	if (!Number.isInteger(dishId) || dishId <= 0) {
+		throw createHttpError(400, "Valid dish id is required");
+	}
+
+	const validOn = String(payload?.valid_on ?? "").trim();
+	if (!validOn) {
+		throw createHttpError(400, "valid_on is required");
+	}
+
+	const specialId = await dailySpecialRepo.createDailySpecial({ dishId, validOn });
+	return dailySpecialRepo.getDailySpecialById(specialId);
+}
+
+export async function updateDailySpecial(dishId, payload = {}) {
+	if (!Number.isInteger(dishId) || dishId <= 0) {
+		throw createHttpError(400, "Valid dish id is required");
+	}
+
+	const validOn = String(payload?.valid_on ?? "").trim();
+	if (!validOn) {
+		throw createHttpError(400, "valid_on is required");
+	}
+
+	const updatedFields = await dailySpecialRepo.updateDailySpecialByDishId(dishId, validOn);
+	if (updatedFields === 0) {
+		throw createHttpError(404, "Daily special not found for this dish");
+	}
+
+	return { dish_id: dishId, valid_on: validOn };
+}
+
+export async function deleteDailySpecial(dishId) {
+	if (!Number.isInteger(dishId) || dishId <= 0) {
+		throw createHttpError(400, "Valid dish id is required");
+	}
+
+	const deletedFields = await dailySpecialRepo.deleteDailySpecialByDishId(dishId);
+	if (deletedFields === 0) {
+		throw createHttpError(404, "Daily special not found for this dish");
+	}
+
+	return true;
 }

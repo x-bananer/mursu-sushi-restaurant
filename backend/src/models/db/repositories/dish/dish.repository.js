@@ -54,3 +54,54 @@ export async function getDish(dishId) {
 
 	return rows;
 }
+
+export async function createDish({ name, description, price, is_available = true }) {
+	const result = await execute(
+		`
+		INSERT INTO dishes (name, description, price, is_available)
+		VALUES (?, ?, ?, ?);
+		`,
+		[name, description ?? null, price, Boolean(is_available)],
+	);
+
+	return result.insertId;
+}
+
+export async function updateDishById(dishId, updates) {
+	const fields = [];
+	const values = [];
+
+	for (const [key, value] of Object.entries(updates)) {
+		fields.push(`${key} = ?`);
+		values.push(value);
+	}
+
+	if (!fields.length) {
+		return 0;
+	}
+
+	values.push(dishId);
+
+	const result = await execute(
+		`
+		UPDATE dishes
+		SET ${fields.join(", ")}
+		WHERE id = ?;
+		`,
+		values,
+	);
+
+	return result.affectedRows;
+}
+
+export async function deleteDishById(dishId) {
+	const result = await execute(
+		`
+		DELETE FROM dishes
+		WHERE id = ?;
+		`,
+		[dishId],
+	);
+
+	return result.affectedRows;
+}

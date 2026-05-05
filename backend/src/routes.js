@@ -39,36 +39,21 @@ router.get("/adm/customers", auth, adminOnly, userController.listCustomers);
 
 router.get("/dishes", dishController.list); // returns DishDTO[]
 router.get("/dishes/daily-special", dishController.specials); // returns DishDTO
-router.get("/dishes/:dish_id", dishController.get); // returns DishDTO
 
 /* FAVORITES (cutomer logged) */
 router.post("/dishes/:dish_id/favorite", auth, dishController.addFavorite);
 router.delete("/dishes/:dish_id/favorite", auth, dishController.removeFavorite);
 router.get("/dishes/favorites", auth, dishController.listFavorites);
+router.get("/dishes/:dish_id", dishController.get); // returns DishDTO
 
 /* ADMIN only */
 router.post("/adm/dishes", auth, adminOnly, dishController.createDish);
 router.patch("/adm/dishes/:id", auth, adminOnly, dishController.updateDish);
 router.delete("/adm/dishes/:id", auth, adminOnly, dishController.deleteDish);
 
-router.post(
-	"/adm/dishes/:id/special",
-	auth,
-	adminOnly,
-	dishController.createDailySpecial,
-);
-router.patch(
-	"/adm/dishes/:id/special",
-	auth,
-	adminOnly,
-	dishController.updateDailySpecial,
-);
-router.delete(
-	"/adm/dishes/:id/special",
-	auth,
-	adminOnly,
-	dishController.deleteDailySpecial,
-);
+router.post("/adm/dishes/:id/special", auth, adminOnly, dishController.createDailySpecial);
+router.patch("/adm/dishes/:id/special", auth, adminOnly, dishController.updateDailySpecial);
+router.delete("/adm/dishes/:id/special", auth, adminOnly, dishController.deleteDailySpecial);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DISHES COMBO BUILDER  (used by custom orders)
@@ -79,24 +64,9 @@ router.post('/dishes/combo/preview', comboController.previewCombo);
 router.post('/dishes/combo/create', comboController.createCombo);
 
 /* ADMIN only */
-router.post(
-	"/adm/ingredients",
-	auth,
-	adminOnly,
-	comboController.createIngredient,
-);
-router.patch(
-	"/adm/ingredients/:id",
-	auth,
-	adminOnly,
-	comboController.updateIngredient,
-);
-router.delete(
-	"/adm/ingredients/:id",
-	auth,
-	adminOnly,
-	comboController.deleteIngredient,
-);
+router.post("/adm/ingredients", auth, adminOnly, comboController.createIngredient);
+router.patch("/adm/ingredients/:id", auth, adminOnly, comboController.updateIngredient);
+router.delete("/adm/ingredients/:id", auth, adminOnly, comboController.deleteIngredient);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ORDERS
