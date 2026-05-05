@@ -16,6 +16,20 @@ export async function getDishes() {
 	});
 }
 
+export async function getDish(dishId) {
+	const dish = await dishRepo.getDish(dishId);
+
+	return dish.map((d) => {
+		const badges = JSON.parse(d.badges || "[]");
+
+		return {
+			...d,
+			price: Number(d.price),
+			badges: Array.isArray(badges) ? badges : [],
+		};
+	});
+}
+
 export async function getDailySpecial() {
 	const special = await dailySpecialRepo.getDailySpecial();
 
