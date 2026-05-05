@@ -4,14 +4,19 @@ import InputField from "../../../components/shared/input-field/InputField";
 import Button from "../../../components/shared/button/Button";
 import { fetchData } from "../../../utils/fetchData";
 import { useAuth } from "../../../contexts/AuthContext";
+import useForm from "../../../hooks/formHooks";
 import "./user-profile.css";
 
 export default function UserProfile() {
 	const { user, updateUser, logout } = useAuth();
 	const [profile, setProfile] = useState(user);
-	const [form, setForm] = useState({ 
-		name: user?.name || "", 
-		email: user?.email || "" 
+	const {
+		inputs,
+		setInputs,
+		handleInputChange,
+	} = useForm(() => {}, {
+		name: user?.name || "",
+		email: user?.email || "",
 	});
 	const [photoFile, setPhotoFile] = useState(null);
 	const [isEditing, setIsEditing] = useState(false);
@@ -27,7 +32,7 @@ export default function UserProfile() {
 			return;
 		}
 		loadProfile();
-	}, [user, navigate]);
+	}, [user?.id, navigate]);
 
 	async function loadProfile() {
 		setError("");
@@ -36,7 +41,7 @@ export default function UserProfile() {
 			if (data && data.user) {
 				setProfile(data.user);
 				updateUser(data.user);
-				setForm({
+				setInputs({
 					name: data.user.name || "",
 					email: data.user.email || "",
 				});
@@ -44,11 +49,6 @@ export default function UserProfile() {
 		} catch (err) {
 			setError(err.message);
 		}
-	}
-
-	function handleChange(event) {
-		const { name, value } = event.target;
-		setForm((prev) => ({ ...prev, [name]: value }));
 	}
 
 	function handlePhotoChange(event) {
@@ -75,8 +75,8 @@ export default function UserProfile() {
 		setError("");
 		setNotice("");
 
-		const trimmedName = form.name.trim();
-		const trimmedEmail = form.email.trim();
+		const trimmedName = inputs.name.trim();
+		const trimmedEmail = inputs.email.trim();
 
 		if (!trimmedName || !trimmedEmail) {
 			setError("Name and email are required.");
@@ -127,7 +127,7 @@ export default function UserProfile() {
 			if (data && data.user) {
 				setProfile(data.user);
 				updateUser(data.user);
-				setForm({
+				setInputs({
 					name: data.user.name || "",
 					email: data.user.email || "",
 				});
@@ -162,7 +162,7 @@ export default function UserProfile() {
 			await fetchData("/users/me", { method: "DELETE" });
 			logout();
 			setProfile(null);
-			setForm({ name: "", email: "" });
+			setInputs({ name: "", email: "" });
 			setPhotoFile(null);
 			setNotice("Account deleted.");
 		} catch (err) {
@@ -188,10 +188,13 @@ export default function UserProfile() {
 		metaText = error;
 	}
 
-	let stampCount = 0;
-	if (profile && Number.isInteger(profile.stamp_count)) {
-		stampCount = profile.stamp_count;
-	}
+	const stampGoal = 5;
+	const stampCount = profile ? profile.stamp_count : 0;
+	const isStampDiscountActive = profile ? profile.is_stamp_discount_active : false;
+	const stampsLeft = Math.max(0, stampGoal - stampCount);
+	const loyaltyHint = isStampDiscountActive
+		? "10% discount is active for your next order"
+		: `${stampsLeft} more purchase${stampsLeft === 1 ? "" : "s"} to unlock 10% on your next order`;
 
 	let actionLabel = "Edit Profile";
 	if (isEditing) {
@@ -292,20 +295,20 @@ export default function UserProfile() {
 						</Button>
 					</div>
 				</section>
-				<section>
+				<section className="profile__content">
 					<InputField
 						label="Name"
 						name="name"
-						value={form.name}
-						onChange={handleChange}
+						value={inputs.name}
+						onChange={handleInputChange}
 						disabled={fieldDisabled}
 					/>
 					<InputField
 						label="Email"
 						name="email"
 						type="email"
-						value={form.email}
-						onChange={handleChange}
+						value={inputs.email}
+						onChange={handleInputChange}
 						disabled={fieldDisabled}
 					/>
 					<InputField
@@ -321,17 +324,19 @@ export default function UserProfile() {
 					<section className="profile-loyalty">
 						<p className="profile-loyalty__label">Loyalty Stamps</p>
 						<div className="profile-loyalty__stamps">
-							<span className="profile-loyalty__stamp profile-loyalty__stamp--active">
-								★
-							</span>
-							<span className="profile-loyalty__stamp"></span>
-							<span className="profile-loyalty__stamp"></span>
-							<span className="profile-loyalty__stamp"></span>
-							<span className="profile-loyalty__stamp"></span>
+							{Array.from({ length: stampGoal }).map((_, index) => {
+								const isActive = index < stampCount;
+								return (
+									<span
+										key={index}
+										className={`profile-loyalty__stamp${isActive ? " profile-loyalty__stamp--active" : ""}`}
+									>
+										{isActive ? "★" : ""}
+									</span>
+								);
+							})}
 						</div>
-						<p className="profile-loyalty__hint">
-							4 more purchases until 10% discount
-						</p>
+						<p className="profile-loyalty__hint">{loyaltyHint}</p>
 					</section>
 					<div className="profile__stats-side">
 						<section className="profile-stat-card">
