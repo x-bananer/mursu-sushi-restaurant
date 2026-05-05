@@ -43,7 +43,7 @@ export default function CustomerNavbar() {
 			]}
 			center={<Logo />}
 			right={[
-				{ to: "/auth", content: <UserIcon />, isIcon: true },
+				{ to: "/user-profile", content: <UserIcon />, isIcon: true },
 				{ to: "/cart", content: <CartIcon />, isIcon: true },
 			]}
 			extraRight={
