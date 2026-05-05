@@ -8,7 +8,7 @@ set -e
 
 echo "Updating frontend"
 cd frontend || exit 1
-npm install vite@latest
+# npm install vite@latest
 npm install
 npm audit fix
 cd ..
