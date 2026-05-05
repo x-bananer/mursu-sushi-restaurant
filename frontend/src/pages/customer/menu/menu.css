@@ -47,6 +47,25 @@
   width: 58%;
 }
 
+/* Client menu toolbar modifiers */
+.menu-toolbar--long {
+  width: 100%;
+  flex-direction: column-reverse;
+}
+
+.menu-toolbar--long .menu-toolbar__group {
+  border: 1px solid var(--color-accent);
+}
+
+.menu-toolbar--long .menu-toolbar__btn {
+  border-right: 1px solid var(--color-accent);
+}
+
+.menu-toolbar--long .menu-toolbar__btn:hover {
+  border: 1px solid transparent;
+  border-right: 1px solid var(--color-accent);
+}
+
 /* LEFT GROUP (SORT BUTTONS) */
 .menu-toolbar__group {
   display: flex;

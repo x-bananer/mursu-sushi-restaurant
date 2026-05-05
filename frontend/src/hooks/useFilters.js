@@ -16,7 +16,7 @@ export function useFilters({
     // CATEGORY FILTER (generic now)
     if (activeCategory !== "all") {
       result = result.filter(
-        (item) => getCategoryId(item) === activeCategory
+        (item) => String(getCategoryId(item)) === String(activeCategory)
       );
     }
 
