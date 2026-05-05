@@ -288,8 +288,12 @@ export const checkoutCartBySessionId = async (sessionId, userId, checkoutData) =
         throw createHttpError(401, 'Unauthorized');
     }
 
-    if (!checkoutData.delivery_type_id || !checkoutData.address) {
+    if (!checkoutData.delivery_type_id) {
         throw createHttpError(400, 'Missing checkout data');
+    }
+
+    if (Number(checkoutData.delivery_type_id) === 3 && !String(checkoutData.address).trim()) {
+        throw createHttpError(400, 'Address is required for delivery');
     }
 
     const cart = await getCartBySessionId(sessionId);
@@ -331,7 +335,7 @@ export const checkoutCartBySessionId = async (sessionId, userId, checkoutData) =
     const order = await orderService.createOrder({
         user_id: userId,
         delivery_type_id: checkoutData.delivery_type_id,
-        address: checkoutData.address,
+        address: String(checkoutData.address ?? '').trim(),
         total_price: Number(cart.total_price),
         order_items: orderItems,
     });
