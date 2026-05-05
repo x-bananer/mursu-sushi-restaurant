@@ -28,9 +28,6 @@ export const useActiveOrder = () => {
 
         const response = await fetchData("/orders/active", {
   		  method: "GET",
-  		  headers: {
-    	    Authorization: `Bearer ${localStorage.getItem("token")}`,
-  		  },
 		});
 
         setOrder(response.order ?? null);
@@ -100,9 +97,6 @@ export const useOrderTracking = (orderId) => {
         `/orders/${orderId}/tracking`,
         {
           method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
         }
       );
 
@@ -137,9 +131,6 @@ export const useEtaEstimation = (orderId, userCoordsLat, userCoordsLong) => {
         `/orders/${orderId}/estimate/${userCoordsLat}/${userCoordsLong}`,
         {
           method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
         }
       );
 
@@ -180,9 +171,6 @@ export const useRouteByMode = (
         `/orders/${orderId}/route/${mode}/${lat}/${lon}`,
         {
           method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
         }
       );
 

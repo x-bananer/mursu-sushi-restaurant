@@ -75,3 +75,59 @@ export function useDailySpecial() {
 
 	return { specialDish, loading, error };
 }
+
+export function useDishFavorites() {
+	const [favoriteDishIds, setFavoriteDishIds] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
+	const [pendingDishIds, setPendingDishIds] = useState([]);
+
+	useEffect(() => {
+		const loadFavorites = async () => {
+			try {
+				setLoading(true);
+				setError(null);
+				const response = await fetchData("/dishes/favorites");
+				const ids = (response?.favorites || []).map((dish) => dish.id);
+				setFavoriteDishIds(ids);
+			} catch (err) {
+				setError(err.message);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		loadFavorites();
+	}, []);
+
+	const toggleFavorite = async (dishId) => {
+		const isFavorite = favoriteDishIds.includes(dishId);
+
+		try {
+			setPendingDishIds((prev) => [...prev, dishId]);
+			setError(null);
+
+			if (isFavorite) {
+				await fetchData(`/dishes/${dishId}/favorite`, { method: "DELETE" });
+				setFavoriteDishIds((prev) => prev.filter((id) => id !== dishId));
+				return { message: "Removed from favorites" };
+			}
+
+			await fetchData(`/dishes/${dishId}/favorite`, { method: "POST" });
+			setFavoriteDishIds((prev) => [...prev, dishId]);
+			return { message: "Added to favorites" };
+		} catch (err) {
+			return { message: err.message || "Failed to update favorites" };
+		} finally {
+			setPendingDishIds((prev) => prev.filter((id) => id !== dishId));
+		}
+	};
+
+	return {
+		favoriteDishIds,
+		toggleFavorite,
+		pendingDishIds,
+		loading,
+		error,
+	};
+}

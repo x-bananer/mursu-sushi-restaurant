@@ -1,5 +1,5 @@
 import "./menu.css";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import CategoryTabs from "../../../components/shared/category-tabs/categoryTabs";
 import SpecialCard from "../../../components/customer/menu/special-card/specialCard";
@@ -9,26 +9,36 @@ import InputField from "../../../components/shared/input-field/InputField";
 import Loader from "../../../components/shared/loader/Loader";
 import ErrorState from "../../../components/shared/error-state/errorState";
 import EmptyState from "../../../components/shared/empty-state/emptyState";
+import Toast from "../../../components/shared/toast/Toast";
 
 import { useFilters } from "../../../hooks/useFilters";
-import { useDishes, useDishCategories, useDailySpecial } from "../../../hooks/apiHooks/dish";
+import { useDishes, useDishCategories, useDailySpecial, useDishFavorites } from "../../../hooks/apiHooks/dish";
 import { useCartContext } from "../../../hooks/contextHooks/cart";
 
 export default function Menu() {
 	const [activeCategory, setActiveCategory] = useState("all");
 	const [search, setSearch] = useState("");
 	const [sort, setSort] = useState("default");
+	const [favoriteToast, setFavoriteToast] = useState("");
 
 	const { dishes, loading: dishesLoading, error: dishesError } = useDishes();
 	const { categories, loading: categoriesLoading, error: categoriesError } = useDishCategories();
 	const { specialDish, loading: specialLoading, error: specialError } = useDailySpecial();
+	const { favoriteDishIds, toggleFavorite, pendingDishIds, loading: favoritesLoading } = useDishFavorites();
 	const { cart, addDishToCart, removeCartItem } = useCartContext();
 
-	const loading = dishesLoading || categoriesLoading || specialLoading;
+	const loading = dishesLoading || categoriesLoading || specialLoading || favoritesLoading;
 	const error = dishesError || categoriesError || specialError;
 
+	const dishesWithFavorite = useMemo(() => {
+		return dishes.map((dish) => ({
+			...dish,
+			is_favorite: favoriteDishIds.includes(dish.id),
+		}));
+	}, [dishes, favoriteDishIds]);
+
 	const filteredItems = useFilters({
-		items: dishes,
+		items: dishesWithFavorite,
 		activeCategory,
 		search,
 		sort,
@@ -107,10 +117,18 @@ export default function Menu() {
 							cart={cart}
 							addDishToCart={addDishToCart}
 							removeCartItem={removeCartItem}
+							onToggleFavorite={async () => {
+								const result = await toggleFavorite(item.id);
+								if (result?.message) {
+									setFavoriteToast(result.message);
+								}
+							}}
+							isFavoritePending={pendingDishIds.includes(item.id)}
 						/>
 					))}
 				</section>
 			)}
+			<Toast message={favoriteToast} duration={3000} onClose={() => setFavoriteToast("")} />
 		</div>
 	);
 }

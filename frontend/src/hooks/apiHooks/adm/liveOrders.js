@@ -22,9 +22,6 @@ export const useAdmOrders = () => {
 
       const response = await fetchData("/adm/orders", {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
       });
 
       setOrders(response.orders || []);
@@ -75,7 +72,6 @@ export const useUpdateOrderStatus = () => {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({ status }),
       });
@@ -102,9 +98,6 @@ export const useStatusCount = () => {
 
       const response = await fetchData("/adm/orders/status/count", {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
       });
 
       const normalized = Object.fromEntries(

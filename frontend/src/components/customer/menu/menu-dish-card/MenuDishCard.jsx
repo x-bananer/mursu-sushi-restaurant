@@ -1,16 +1,27 @@
 import { useState } from "react";
 import { FiHeart } from "react-icons/fi";
+import { useNavigate } from "react-router";
 
 import CardBase from "../../../shared/card-base/cardBase";
 import Button from "../../../shared/button/Button";
 import ButtonCounter from "../../../shared/button-counter/ButtonCounter";
 
-export default function MenuDishCard({ item, index, cart, addDishToCart, removeCartItem }) {
+export default function MenuDishCard({
+	item,
+	index,
+	cart,
+	addDishToCart,
+	removeCartItem,
+	onToggleFavorite,
+	isFavoritePending = false,
+}) {
 	const [isPending, setIsPending] = useState(false);
+	const navigate = useNavigate();
 
 	const isLightCard = index % 2 === 0;
-	const cardVariant = isLightCard ? "light" : "dark";
-	const heartButtonVariant = isLightCard ? "accent" : "light";
+	const isFavorite = item?.is_favorite;
+	const cardVariant = isFavorite ? "accent" : isLightCard ? "light" : "dark";
+	const heartButtonVariant = isFavorite ? "accent" : isLightCard ? "dark" : "light";
 	const addButtonVariant = isLightCard ? "dark" : "light";
 	const counterVariant = isLightCard ? "light" : "dark";
 
@@ -54,6 +65,15 @@ export default function MenuDishCard({ item, index, cart, addDishToCart, removeC
 		}
 	};
 
+	const handleFavoriteClick = () => {
+		const token = localStorage.getItem("token");
+		if (!token) {
+			navigate("/login");
+			return;
+		}
+		onToggleFavorite?.();
+	};
+
 	return (
 		<CardBase
 			title={item.name}
@@ -63,7 +83,12 @@ export default function MenuDishCard({ item, index, cart, addDishToCart, removeC
 			variant={cardVariant}
 			controllers={
 				<>
-					<Button size="small" variant={heartButtonVariant}>
+					<Button
+						size="small"
+						variant={heartButtonVariant}
+						onClick={handleFavoriteClick}
+						disabled={isFavoritePending}
+					>
 						<FiHeart />
 					</Button>
 
