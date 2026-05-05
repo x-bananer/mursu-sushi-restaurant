@@ -24,6 +24,8 @@ export function useLogin() {
 
 			if (token) {
 				localStorage.setItem("token", token);
+				localStorage.setItem("user", user);
+				console.log(JSON.stringify(user, null, 2));
 			}
 
 			return response;
