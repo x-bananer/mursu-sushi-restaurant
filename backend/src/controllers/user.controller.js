@@ -1,5 +1,15 @@
 import * as userService from "../services/user/user.service.js";
-import { placeholder } from "../utils/paceholder.js";
+
+function getPayloadWithPhoto(req) {
+	if (!req.file) {
+		return req.body;
+	}
+
+	return {
+		...req.body,
+		photo_url: `${req.protocol}://${req.get("host")}/uploads/users/${req.file.filename}`,
+	};
+}
 
 export async function getProfile(req, res, next) {
 	try {
@@ -16,11 +26,36 @@ export async function getProfile(req, res, next) {
 	}
 }
 
-export const updateProfile = placeholder("users.updateProfile");
-export const deleteProfile = placeholder('users.deleteProfile');
+export async function deleteProfile(req, res, next) {
+	try {
+		await userService.deleteUserById(req.user.id);
+		res.status(204).send();
+	} catch (error) {
+		next(error);
+	}
+}
+export async function updateProfile(req, res, next) {
+	try {
+		const user = await userService.updateOwnProfile(
+			req.user.id,
+			getPayloadWithPhoto(req),
+		);
+		res.json({ user });
+	} catch (error) {
+		next(error);
+	}
+}
 
 /* ADMIN only */
-export const listCustomers     = placeholder('adm.listCustomers');
+export async function listCustomers(req, res, next) {
+	try {
+		const users = await userService.listUsers();
+		res.json({ users });
+	} catch (error) {
+		next(error);
+	}
+}
+
 export async function getUserById(req, res, next) {
 	try {
 		const user = await userService.getUserById(req.params.userId);
@@ -36,8 +71,18 @@ export async function getUserById(req, res, next) {
 	}
 }
 
-// TODO: CHECK IF THE FOLLOWING WILL BE NEEDED BY ENDPOINTS
-// OR IF KSENIA WILL CALL THE SERVICE DIRECTLY AFTER THE PAYMENT CONFIMATION IN CHECKOUT.
+export async function updateUserById(req, res, next) {
+	try {
+		const user = await userService.updateUserById(
+			req.params.userId,
+			getPayloadWithPhoto(req),
+		);
+		res.json({ user });
+	} catch (error) {
+		next(error);
+	}
+}
+
 export async function setStampCount(req, res, next) {
 	try {
 		const user = await userService.updateStampCount(

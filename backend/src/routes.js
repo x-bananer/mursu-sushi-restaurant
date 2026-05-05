@@ -1,6 +1,7 @@
 import { Router } from "express";
 import auth from "./middleware/auth.js";
 import adminOnly from "./middleware/adminOnly.js";
+import { uploadUserPhoto } from "./middleware/uploadUserPhoto.js";
 
 import * as authController  from './controllers/auth.controller.js';
 import * as dishController  from './controllers/dish.controller.js';
@@ -27,10 +28,11 @@ router.post("/auth/refresh", auth, authController.refresh);
 
 router.get("/users/me", auth, userController.getProfile);
 router.delete("/users/me", auth, userController.deleteProfile);
-router.patch("/users/me", auth, userController.updateProfile);
+router.patch("/users/me", auth, uploadUserPhoto, userController.updateProfile);
 
 /* ADMIN only */
-router.get("/users/:userId", auth, adminOnly, userController.getUserById);
+router.get("/adm/users/:userId", auth, adminOnly, userController.getUserById);
+router.patch("/adm/users/:userId", auth, adminOnly, uploadUserPhoto, userController.updateUserById);
 router.get("/adm/customers", auth, adminOnly, userController.listCustomers);
 
 // ─────────────────────────────────────────────────────────────────────────────

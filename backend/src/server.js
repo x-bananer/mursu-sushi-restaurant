@@ -15,6 +15,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());              // Enable CORS
 app.use(express.json());      // Parse JSON bodies
 app.use(morgan('dev'));      // Logging
+app.use('/uploads', express.static('uploads')); // Serve uploaded user photos
 
 // ─────────────────────────────────────────────────────────────
 // API DOCUMENTATION

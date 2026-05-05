@@ -198,3 +198,8 @@ dist
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,node,visualstudiocode
 v/
+
+# User uploads (keep folders, ignore files)
+backend/uploads/**
+!backend/uploads/.gitkeep
+!backend/uploads/users/.gitkeep
