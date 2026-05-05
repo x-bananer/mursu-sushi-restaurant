@@ -120,6 +120,10 @@ If you are a developer and want to evaluate the project, please use the evaluati
 
 https://forms.gle/3uTGABkuHVZcW7h2A
 
+Evaluation results:
+
+https://docs.google.com/spreadsheets/d/1O8OZVGrA055_6B0C-gazvQfBWqI8_nnPwnvzrreIM1I/edit?resourcekey=&gid=849336732#gid=849336732
+
 If you want to provide feedback, have questions or need help, please use this support form:
 
 https://forms.gle/kPwvDc3ysCv5uBqy5
