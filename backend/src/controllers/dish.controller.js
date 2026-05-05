@@ -18,6 +18,44 @@ export async function specials(req, res, next) {
 	}
 }
 
+export async function categories(req, res, next) {
+	try {
+		const categories = await dishService.getDishCategories();
+		res.json({ categories });
+	} catch (err) {
+		next(err);
+	}
+}
+
+export async function createCategory(req, res, next) {
+	try {
+		const category = await dishService.createDishCategory(req.body || {});
+		return res.status(201).json({ category });
+	} catch (err) {
+		next(err);
+	}
+}
+
+export async function updateCategory(req, res, next) {
+	try {
+		const categoryId = Number(req.params.id);
+		const category = await dishService.updateDishCategory(categoryId, req.body || {});
+		return res.json({ category });
+	} catch (err) {
+		next(err);
+	}
+}
+
+export async function deleteCategory(req, res, next) {
+	try {
+		const categoryId = Number(req.params.id);
+		await dishService.deleteDishCategory(categoryId);
+		return res.status(204).send();
+	} catch (err) {
+		next(err);
+	}
+}
+
 export async function get(req, res, next) {
 	try {
 		const dishId = Number(req.params.dish_id);

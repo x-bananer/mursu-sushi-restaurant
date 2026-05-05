@@ -10,6 +10,7 @@ export async function getUserFavorites(userId) {
 			SELECT
   			dishes.id,
   			dishes.name,
+  			dishes.category_id,
   			dishes.description,
   			dishes.price,
   			dishes.is_available,

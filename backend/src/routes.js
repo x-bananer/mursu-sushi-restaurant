@@ -38,6 +38,7 @@ router.get("/adm/customers", auth, adminOnly, userController.listCustomers);
 // ─────────────────────────────────────────────────────────────────────────────
 
 router.get("/dishes", dishController.list); // returns DishDTO[]
+router.get("/dishes/categories", dishController.categories); // returns categories list
 router.get("/dishes/daily-special", dishController.specials); // returns DishDTO
 
 /* FAVORITES (cutomer logged) */
@@ -48,6 +49,9 @@ router.get("/dishes/:dish_id", dishController.get); // returns DishDTO
 
 /* ADMIN only */
 router.post("/adm/dishes", auth, adminOnly, dishController.createDish);
+router.post("/adm/dishes/categories", auth, adminOnly, dishController.createCategory);
+router.patch("/adm/dishes/categories/:id", auth, adminOnly, dishController.updateCategory);
+router.delete("/adm/dishes/categories/:id", auth, adminOnly, dishController.deleteCategory);
 router.patch("/adm/dishes/:id", auth, adminOnly, dishController.updateDish);
 router.delete("/adm/dishes/:id", auth, adminOnly, dishController.deleteDish);
 
