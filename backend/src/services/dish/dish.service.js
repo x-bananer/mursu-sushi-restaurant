@@ -8,17 +8,32 @@ function createHttpError(statusCode, message) {
 	return error;
 }
 
+function normalizeBadges(rawBadges) {
+	if (Array.isArray(rawBadges)) {
+		return rawBadges;
+	}
+
+	if (typeof rawBadges === "string") {
+		try {
+			const parsed = JSON.parse(rawBadges || "[]");
+			return Array.isArray(parsed) ? parsed : [];
+		} catch {
+			return [];
+		}
+	}
+
+	return [];
+}
+
 export async function getDishes() {
 	const dishes = await dishRepo.getDishes();
 
 	return dishes.map((d) => {
-		const badges = JSON.parse(d.badges || "[]");
-
 		return {
 			...d,
 			price: Number(d.price),
 			is_available: Boolean(d.is_available),
-			badges: Array.isArray(badges) ? badges : [],
+			badges: normalizeBadges(d.badges),
 		};
 	});
 }
@@ -101,13 +116,11 @@ export async function getDish(dishId) {
 	}
 
 	return dish.map((d) => {
-		const badges = JSON.parse(d.badges || "[]");
-
 		return {
 			...d,
 			price: Number(d.price),
 			is_available: Boolean(d.is_available),
-			badges: Array.isArray(badges) ? badges : [],
+			badges: normalizeBadges(d.badges),
 		};
 	});
 }
@@ -116,13 +129,11 @@ export async function getDailySpecial() {
 	const special = await dailySpecialRepo.getDailySpecial();
 
 	return special.map((d) => {
-		const badges = JSON.parse(d.badges || "[]");
-
 		return {
 			...d,
 			price: Number(d.price),
 			is_available: Boolean(d.is_available),
-			badges: Array.isArray(badges) ? badges : [],
+			badges: normalizeBadges(d.badges),
 		};
 	});
 }
@@ -131,13 +142,11 @@ export async function getUserFavorites(userId) {
 	const favorites = await userFavoriteRepo.getUserFavorites(userId);
 
 	return favorites.map((d) => {
-		const badges = JSON.parse(d.badges || "[]");
-
 		return {
 			...d,
 			price: Number(d.price),
 			is_available: Boolean(d.is_available),
-			badges: Array.isArray(badges) ? badges : [],
+			badges: normalizeBadges(d.badges),
 		};
 	});
 }
