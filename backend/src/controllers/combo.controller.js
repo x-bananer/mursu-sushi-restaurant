@@ -7,7 +7,7 @@ import * as comboService from '../services/dish/combo.service.js';
 export async function previewCombo(req, res, next) {
     try {
         const { ingredients } = req.body;
-        const combo = await comboService.previewCombo(ingredients);
+        const combo = await comboService.previewCombo(ingredients, false, req.locale);
         return res.json({ combo });
     } catch (err) {
         next(err);
@@ -23,7 +23,7 @@ export async function createCombo(req, res, next) {
         const sessionId = String(req.headers['x-session-id'] || '').trim();
         const { ingredients } = req.body;
 
-        const cart = await comboService.createCombo(sessionId, ingredients);
+        const cart = await comboService.createCombo(sessionId, ingredients, req.locale);
         return res.json({ cart });
     } catch (err) {
         next(err);
@@ -51,7 +51,7 @@ export async function listIngredientTypes(req, res, next) {
 /* ADM only */
 export async function createIngredient(req, res, next) {
     try {
-        const ingredient = await comboService.createIngredient(req.body || {});
+        const ingredient = await comboService.createIngredient(req.body || {}, req.locale);
         return res.status(201).json({ ingredient });
     } catch (err) {
         next(err);
@@ -61,7 +61,7 @@ export async function createIngredient(req, res, next) {
 export async function updateIngredient(req, res, next) {
     try {
         const ingredientId = Number(req.params.id);
-        const ingredient = await comboService.updateIngredient(ingredientId, req.body || {});
+        const ingredient = await comboService.updateIngredient(ingredientId, req.body || {}, req.locale);
         return res.json({ ingredient });
     } catch (err) {
         next(err);
@@ -71,7 +71,7 @@ export async function updateIngredient(req, res, next) {
 export async function deleteIngredient(req, res, next) {
     try {
         const ingredientId = Number(req.params.id);
-        await comboService.deleteIngredient(ingredientId);
+        await comboService.deleteIngredient(ingredientId, req.locale);
         return res.status(204).send();
     } catch (err) {
         next(err);

@@ -90,6 +90,7 @@
   transform: translate3d(var(--parallax-right-x), var(--parallax-right-y), 0) rotate(var(--parallax-right-rotate)) scale(var(--parallax-right-scale));
   will-change: transform;
   transform-origin: center center;
+  background-color: var(--color-white);
 }
 
 .system-preview__box {

@@ -1,6 +1,7 @@
 import * as dishRepo from "../../models/db/repositories/dish/dish.repository.js";
 import * as dailySpecialRepo from "../../models/db/repositories/dish/dailySpecial.repository.js";
 import * as userFavoriteRepo from "../../models/db/repositories/dish/favorite.repository.js";
+import { t } from "../../i18n/messages.js";
 
 function createHttpError(statusCode, message) {
 	const error = /** @type {Error & { statusCode: number }} */ (new Error(message));
@@ -42,24 +43,24 @@ export async function getDishCategories() {
 	return dishRepo.getDishCategories();
 }
 
-export async function createDishCategory(payload = {}) {
+export async function createDishCategory(payload = {}, locale) {
 	const name = String(payload.name || "").trim();
 	const sortOrder = payload.sort_order === undefined ? 0 : Number(payload.sort_order);
 
 	if (!name) {
-		throw createHttpError(400, "Category name is required");
+		throw createHttpError(400, t(locale, "dish", "category_name_required"));
 	}
 	if (!Number.isInteger(sortOrder)) {
-		throw createHttpError(400, "sort_order must be an integer");
+		throw createHttpError(400, t(locale, "dish", "sort_order_integer"));
 	}
 
 	const categoryId = await dishRepo.createDishCategory({ name, sort_order: sortOrder });
 	return dishRepo.getDishCategoryById(categoryId);
 }
 
-export async function updateDishCategory(categoryId, payload = {}) {
+export async function updateDishCategory(categoryId, payload = {}, locale) {
 	if (!Number.isInteger(categoryId) || categoryId <= 0) {
-		throw createHttpError(400, "Valid category id is required");
+		throw createHttpError(400, t(locale, "dish", "valid_category_id_required"));
 	}
 
 	const updates = {};
@@ -67,7 +68,7 @@ export async function updateDishCategory(categoryId, payload = {}) {
 	if (payload.name !== undefined) {
 		const name = String(payload.name).trim();
 		if (!name) {
-			throw createHttpError(400, "Category name cannot be empty");
+			throw createHttpError(400, t(locale, "dish", "category_name_empty"));
 		}
 		updates.name = name;
 	}
@@ -75,44 +76,44 @@ export async function updateDishCategory(categoryId, payload = {}) {
 	if (payload.sort_order !== undefined) {
 		const sortOrder = Number(payload.sort_order);
 		if (!Number.isInteger(sortOrder)) {
-			throw createHttpError(400, "sort_order must be an integer");
+			throw createHttpError(400, t(locale, "dish", "sort_order_integer"));
 		}
 		updates.sort_order = sortOrder;
 	}
 
 	if (!Object.keys(updates).length) {
-		throw createHttpError(400, "No fields provided for update");
+		throw createHttpError(400, t(locale, "dish", "no_update_fields"));
 	}
 
 	const updatedFields = await dishRepo.updateDishCategoryById(categoryId, updates);
 	if (updatedFields === 0) {
-		throw createHttpError(404, "Category not found");
+		throw createHttpError(404, t(locale, "dish", "category_not_found"));
 	}
 
 	return dishRepo.getDishCategoryById(categoryId);
 }
 
-export async function deleteDishCategory(categoryId) {
+export async function deleteDishCategory(categoryId, locale) {
 	if (!Number.isInteger(categoryId) || categoryId <= 0) {
-		throw createHttpError(400, "Valid category id is required");
+		throw createHttpError(400, t(locale, "dish", "valid_category_id_required"));
 	}
 
 	const deletedFields = await dishRepo.deleteDishCategoryById(categoryId);
 	if (deletedFields === 0) {
-		throw createHttpError(404, "Category not found");
+		throw createHttpError(404, t(locale, "dish", "category_not_found"));
 	}
 
 	return true;
 }
 
-export async function getDish(dishId) {
+export async function getDish(dishId, locale) {
 	if (!Number.isInteger(dishId) || dishId <= 0) {
-		throw createHttpError(400, "Valid dish id is required");
+		throw createHttpError(400, t(locale, "dish", "valid_dish_id_required"));
 	}
 
 	const dish = await dishRepo.getDish(dishId);
 	if (!dish.length) {
-		throw createHttpError(404, "Dish not found");
+		throw createHttpError(404, t(locale, "dish", "dish_not_found"));
 	}
 
 	return dish.map((d) => {
@@ -151,19 +152,19 @@ export async function getUserFavorites(userId) {
 	});
 }
 
-export async function addFavorite(userId, dishId) {
+export async function addFavorite(userId, dishId, locale) {
 	if (!Number.isInteger(dishId) || dishId <= 0) {
-		throw createHttpError(400, "Valid dish id is required");
+		throw createHttpError(400, t(locale, "dish", "valid_dish_id_required"));
 	}
 
 	try {
 		await userFavoriteRepo.addFavorite(userId, dishId);
 	} catch (err) {
 		if (err && err.code === "ER_DUP_ENTRY") {
-			throw createHttpError(409, "Dish already in favorites");
+			throw createHttpError(409, t(locale, "dish", "dish_already_favorite"));
 		}
 		if (err && err.code === "ER_NO_REFERENCED_ROW_2") {
-			throw createHttpError(400, "Cannot add favorite: user or dish does not exist");
+			throw createHttpError(400, t(locale, "dish", "favorite_fk_missing"));
 		}
 		throw err;
 	}
@@ -171,20 +172,20 @@ export async function addFavorite(userId, dishId) {
 	return true;
 }
 
-export async function removeFavorite(userId, dishId) {
+export async function removeFavorite(userId, dishId, locale) {
 	if (!Number.isInteger(userId) || userId <= 0) {
-		throw createHttpError(401, "Unauthorized");
+		throw createHttpError(401, t(locale, "dish", "unauthorized"));
 	}
 
 	if (!Number.isInteger(dishId) || dishId <= 0) {
-		throw createHttpError(400, "Valid dish id is required");
+		throw createHttpError(400, t(locale, "dish", "valid_dish_id_required"));
 	}
 
 	await userFavoriteRepo.removeFavorite(userId, dishId);
 	return true;
 }
 
-export async function createDish(payload = {}) {
+export async function createDish(payload = {}, locale) {
 	const body = payload || {};
 	const name = String(body.name || "").trim();
 	const description = body.description ? String(body.description).trim() : null;
@@ -193,13 +194,13 @@ export async function createDish(payload = {}) {
 	const categoryId = body.category_id == null ? null : Number(body.category_id);
 
 	if (!name) {
-		throw createHttpError(400, "Dish name is required");
+		throw createHttpError(400, t(locale, "dish", "dish_name_required"));
 	}
 	if (Number.isNaN(price) || price < 0) {
-		throw createHttpError(400, "Valid dish price is required");
+		throw createHttpError(400, t(locale, "dish", "valid_dish_price_required"));
 	}
 	if (categoryId !== null && (!Number.isInteger(categoryId) || categoryId <= 0)) {
-		throw createHttpError(400, "Valid category_id is required");
+		throw createHttpError(400, t(locale, "dish", "valid_category_id_payload_required"));
 	}
 
 	const dishId = await dishRepo.createDish({
@@ -214,9 +215,9 @@ export async function createDish(payload = {}) {
 	return dish[0];
 }
 
-export async function updateDish(dishId, payload = {}) {
+export async function updateDish(dishId, payload = {}, locale) {
 	if (!Number.isInteger(dishId) || dishId <= 0) {
-		throw createHttpError(400, "Valid dish id is required");
+		throw createHttpError(400, t(locale, "dish", "valid_dish_id_required"));
 	}
 
 	const updates = {};
@@ -224,7 +225,7 @@ export async function updateDish(dishId, payload = {}) {
 	if (payload.name !== undefined) {
 		const name = String(payload.name).trim();
 		if (!name) {
-			throw createHttpError(400, "Dish name cannot be empty");
+			throw createHttpError(400, t(locale, "dish", "dish_name_empty"));
 		}
 		updates.name = name;
 	}
@@ -236,7 +237,7 @@ export async function updateDish(dishId, payload = {}) {
 	if (payload.price !== undefined) {
 		const price = Number(payload.price);
 		if (Number.isNaN(price) || price < 0) {
-			throw createHttpError(400, "Valid dish price is required");
+			throw createHttpError(400, t(locale, "dish", "valid_dish_price_required"));
 		}
 		updates.price = price;
 	}
@@ -251,78 +252,78 @@ export async function updateDish(dishId, payload = {}) {
 		} else {
 			const categoryId = Number(payload.category_id);
 			if (!Number.isInteger(categoryId) || categoryId <= 0) {
-				throw createHttpError(400, "Valid category_id is required");
+				throw createHttpError(400, t(locale, "dish", "valid_category_id_payload_required"));
 			}
 			updates.category_id = categoryId;
 		}
 	}
 
 	if (!Object.keys(updates).length) {
-		throw createHttpError(400, "No fields provided for update");
+		throw createHttpError(400, t(locale, "dish", "no_update_fields"));
 	}
 
 	const updatedFields = await dishRepo.updateDishById(dishId, updates);
 	if (updatedFields === 0) {
-		throw createHttpError(404, "Dish not found");
+		throw createHttpError(404, t(locale, "dish", "dish_not_found"));
 	}
 
 	const dish = await dishRepo.getDish(dishId);
 	return dish[0];
 }
 
-export async function deleteDish(dishId) {
+export async function deleteDish(dishId, locale) {
 	if (!Number.isInteger(dishId) || dishId <= 0) {
-		throw createHttpError(400, "Valid dish id is required");
+		throw createHttpError(400, t(locale, "dish", "valid_dish_id_required"));
 	}
 
 	const deletedFields = await dishRepo.deleteDishById(dishId);
 	if (deletedFields === 0) {
-		throw createHttpError(404, "Dish not found");
+		throw createHttpError(404, t(locale, "dish", "dish_not_found"));
 	}
 
 	return true;
 }
 
-export async function createDailySpecial(dishId, payload = {}) {
+export async function createDailySpecial(dishId, payload = {}, locale) {
 	if (!Number.isInteger(dishId) || dishId <= 0) {
-		throw createHttpError(400, "Valid dish id is required");
+		throw createHttpError(400, t(locale, "dish", "valid_dish_id_required"));
 	}
 
 	const validOn = String(payload?.valid_on ?? "").trim();
 	if (!validOn) {
-		throw createHttpError(400, "valid_on is required");
+		throw createHttpError(400, t(locale, "dish", "valid_on_required"));
 	}
 
 	const specialId = await dailySpecialRepo.createDailySpecial({ dishId, validOn });
 	return dailySpecialRepo.getDailySpecialById(specialId);
 }
 
-export async function updateDailySpecial(dishId, payload = {}) {
+export async function updateDailySpecial(dishId, payload = {}, locale) {
 	if (!Number.isInteger(dishId) || dishId <= 0) {
-		throw createHttpError(400, "Valid dish id is required");
+		throw createHttpError(400, t(locale, "dish", "valid_dish_id_required"));
 	}
 
 	const validOn = String(payload?.valid_on ?? "").trim();
 	if (!validOn) {
-		throw createHttpError(400, "valid_on is required");
+		throw createHttpError(400, t(locale, "dish", "valid_on_required"));
 	}
 
 	const updatedFields = await dailySpecialRepo.updateDailySpecialByDishId(dishId, validOn);
 	if (updatedFields === 0) {
-		throw createHttpError(404, "Daily special not found for this dish");
+		throw createHttpError(404, t(locale, "dish", "daily_special_not_found"));
 	}
 
 	return { dish_id: dishId, valid_on: validOn };
 }
 
-export async function deleteDailySpecial(dishId) {
+export async function deleteDailySpecial(dishId, locale) {
 	if (!Number.isInteger(dishId) || dishId <= 0) {
-		throw createHttpError(400, "Valid dish id is required");
+		throw createHttpError(400, t(locale, "dish", "valid_dish_id_required"));
 	}
 
 	const deletedFields = await dailySpecialRepo.deleteDailySpecialByDishId(dishId);
 	if (deletedFields === 0) {
-		throw createHttpError(404, "Daily special not found for this dish");
+		throw createHttpError(404, t(locale, "dish", "daily_special_not_found"));
 	}
 
 	return true;

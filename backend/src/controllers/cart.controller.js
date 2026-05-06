@@ -8,7 +8,7 @@ import * as cartService from '../services/cart/cart.service.js';
 export async function get(req, res, next) {
 	try {
 		const sessionId = String(req.headers["x-session-id"] ?? "").trim();
-		const cart = await cartService.getCartBySessionId(sessionId);
+		const cart = await cartService.getCartBySessionId(sessionId, req.locale);
 
 		return res.json({ cart });
 	} catch (err) {
@@ -28,9 +28,9 @@ export async function update(req, res, next) {
 		let cart = null;
 
 		if (Array.isArray(items)) {
-			cart = await cartService.updateCartBySessionId(sessionId, items);
+			cart = await cartService.updateCartBySessionId(sessionId, items, req.locale);
 		} else {
-			cart = await cartService.updateCartDishBySessionId(sessionId, dish_id, quantity);
+			cart = await cartService.updateCartDishBySessionId(sessionId, dish_id, quantity, req.locale);
 		}
 
 		return res.json({ cart });

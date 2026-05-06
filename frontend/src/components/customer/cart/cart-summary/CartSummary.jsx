@@ -71,9 +71,9 @@ export default function CartSummary({
                 </div>
                 {!isAuthorized && (
                     <div className="cart-summary__plate">
-                        <Button className="cart-summary__auth-link" variant="link" onClick={() => navigate('/login')}>Sign in</Button>
+                        <Button className="cart-summary__auth-link" variant="link" onClick={() => navigate('/auth')}>Sign in</Button>
                         {' '}or{' '}
-                        <Button className="cart-summary__auth-link" variant="link" onClick={() => navigate('/login')}>create an account</Button>
+                        <Button className="cart-summary__auth-link" variant="link" onClick={() => navigate('/auth')}>create an account</Button>
                         <br></br>{' '}to continue to checkout
                     </div>
                 )}

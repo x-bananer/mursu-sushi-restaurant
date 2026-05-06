@@ -1,6 +1,7 @@
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import * as userRepo from "../../models/db/repositories/user/user.repository.js";
+import { t } from "../../i18n/messages.js";
 
 const ARGON2_OPTIONS = {
 	type: argon2.argon2id,
@@ -10,9 +11,9 @@ const ARGON2_OPTIONS = {
 };
 
 function createHttpError(statusCode, message) {
-	const error = new Error(message);
-	error.statusCode = statusCode;
-	return error;
+    const error = /** @type {Error & { statusCode: number }} */ (new Error(message));
+    error.statusCode = statusCode;
+    return error;
 }
 
 function normalizeEmail(email) {
@@ -28,11 +29,11 @@ function validateEmail(email) {
 	return emailRegex.test(email);
 }
 
-function getJwtSecret() {
+function getJwtSecret(locale) {
 	const secret = process.env.JWT_SECRET;
 
 	if (!secret) {
-		throw createHttpError(500, "JWT secret is not configured");
+		throw createHttpError(500, t(locale, "auth", "jwt_secret_not_configured"));
 	}
 
 	return secret;
@@ -49,8 +50,9 @@ function toPublicUser(user) {
 	};
 }
 
-function signToken(user) {
-	const secret = getJwtSecret();
+function signToken(user, locale) {
+	const secret = getJwtSecret(locale);
+	
 	const expiresIn = process.env.JWT_EXPIRES_IN || "7d";
 
 	return jwt.sign(
@@ -63,7 +65,7 @@ function signToken(user) {
 	);
 }
 
-export async function register(payload) {
+export async function register(payload, locale) {
 	const name = typeof payload?.name === "string" ? payload.name.trim() : "";
 	const email = normalizeEmail(payload?.email);
 	const password =
@@ -72,27 +74,27 @@ export async function register(payload) {
 	let roleId = 1;
 	if (Number(payload?.role_id) === 2) {
 		if (payload?.adminSecret !== process.env.ADMIN_SECRET) {
-			throw createHttpError(403, "Unauthorized to create admin");
+			throw createHttpError(403, t(locale, "auth", "unauthorized_create_admin"));
 		}
 		roleId = 2;
 	}
 
 	if (!name) {
-		throw createHttpError(400, "Name is required");
+		throw createHttpError(400, t(locale, "auth", "name_required"));
 	}
 
 	if (!validateEmail(email)) {
-		throw createHttpError(400, "Valid email is required");
+		throw createHttpError(400, t(locale, "auth", "valid_email_required"));
 	}
 
 	if (password.length < 8) {
-		throw createHttpError(400, "Password must be at least 8 characters");
+		throw createHttpError(400, t(locale, "auth", "password_min_8"));
 	}
 
 	const existingUser = await userRepo.getUserByEmail(email);
 
 	if (existingUser) {
-		throw createHttpError(409, "User with this email already exists");
+		throw createHttpError(409, t(locale, "auth", "user_exists"));
 	}
 
 	const passwordHash = await argon2.hash(password, ARGON2_OPTIONS);
@@ -104,16 +106,16 @@ export async function register(payload) {
 	});
 
 	if (!userId) {
-		throw createHttpError(500, "Failed to create user");
+		throw createHttpError(500, t(locale, "auth", "failed_create_user"));
 	}
 
 	const createdUser = await userRepo.getUserById(userId);
 
 	if (!createdUser) {
-		throw createHttpError(500, "Created user cannot be loaded");
+		throw createHttpError(500, t(locale, "auth", "created_user_not_loaded"));
 	}
 
-	const token = signToken(createdUser);
+	const token = signToken(createdUser, locale);
 
 	return {
 		user: toPublicUser(createdUser),
@@ -121,23 +123,23 @@ export async function register(payload) {
 	};
 }
 
-export async function login(payload) {
+export async function login(payload, locale) {
 	const email = normalizeEmail(payload?.email);
 	const password =
 		typeof payload?.password === "string" ? payload.password : "";
 
 	if (!validateEmail(email)) {
-		throw createHttpError(400, "Valid email is required");
+		throw createHttpError(400, t(locale, "auth", "valid_email_required"));
 	}
 
 	if (!password) {
-		throw createHttpError(400, "Password is required");
+		throw createHttpError(400, t(locale, "auth", "password_required"));
 	}
 
 	const user = await userRepo.getUserByEmail(email);
 
 	if (!user) {
-		throw createHttpError(401, "Invalid email or password");
+		throw createHttpError(401, t(locale, "auth", "invalid_email_or_password"));
 	}
 
 	let isPasswordValid = false;
@@ -145,14 +147,14 @@ export async function login(payload) {
 	try {
 		isPasswordValid = await argon2.verify(user.password_hash, password);
 	} catch (error) {
-		throw createHttpError(401, "Invalid email or password");
+		throw createHttpError(401, t(locale, "auth", "invalid_email_or_password"));
 	}
 
 	if (!isPasswordValid) {
-		throw createHttpError(401, "Invalid email or password");
+		throw createHttpError(401, t(locale, "auth", "invalid_email_or_password"));
 	}
 
-	const token = signToken(user);
+	const token = signToken(user, locale);
 
 	return {
 		user: toPublicUser(user),
