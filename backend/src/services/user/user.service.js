@@ -250,7 +250,6 @@ export async function updateOwnProfile(userId, data, locale) {
 		email: data?.email,
 		photo_url: data?.photo_url,
 		password: data?.password,
-	});
 	}, locale);
 }
 
