@@ -3,22 +3,28 @@ import auth from "./middleware/auth.js";
 import adminOnly from "./middleware/adminOnly.js";
 import { uploadUserPhoto } from "./middleware/uploadUserPhoto.js";
 
-import * as authController  from './controllers/auth.controller.js';
-import * as dishController  from './controllers/dish.controller.js';
-import * as comboController from './controllers/combo.controller.js';
-import * as orderController from './controllers/order.controller.js';
-import * as userController  from './controllers/user.controller.js';
-import * as cartController  from './controllers/cart.controller.js';
-import * as paymentController from './controllers/payment.controller.js';
+import * as authController from "./controllers/auth.controller.js";
+import * as dishController from "./controllers/dish.controller.js";
+import * as comboController from "./controllers/combo.controller.js";
+import * as orderController from "./controllers/order.controller.js";
+import * as userController from "./controllers/user.controller.js";
+import * as cartController from "./controllers/cart.controller.js";
+import * as paymentController from "./controllers/payment.controller.js";
 
 const router = Router();
+
+// block authed users from guest-only routes
+const guestOnly = (req, res, next) =>
+	req.headers.authorization
+		? res.status(403).json({ error: "Already authenticated" })
+		: next();
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AUTH
 // ─────────────────────────────────────────────────────────────────────────────
 
-router.post("/auth/register", authController.register);
-router.post("/auth/login", authController.login);
+router.post("/auth/register", guestOnly, authController.register);
+router.post("/auth/login", guestOnly, authController.login);
 router.post("/auth/logout", auth, authController.logout);
 router.post("/auth/refresh", auth, authController.refresh);
 
@@ -32,7 +38,13 @@ router.patch("/users/me", auth, uploadUserPhoto, userController.updateProfile);
 
 /* ADMIN only */
 router.get("/adm/users/:userId", auth, adminOnly, userController.getUserById);
-router.patch("/adm/users/:userId", auth, adminOnly, uploadUserPhoto, userController.updateUserById);
+router.patch(
+	"/adm/users/:userId",
+	auth,
+	adminOnly,
+	uploadUserPhoto,
+	userController.updateUserById,
+);
 router.get("/adm/customers", auth, adminOnly, userController.listCustomers);
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -51,58 +63,106 @@ router.get("/dishes/:dish_id", dishController.get); // returns DishDTO
 
 /* ADMIN only */
 router.post("/adm/dishes", auth, adminOnly, dishController.createDish);
-router.post("/adm/dishes/categories", auth, adminOnly, dishController.createCategory);
-router.patch("/adm/dishes/categories/:id", auth, adminOnly, dishController.updateCategory);
-router.delete("/adm/dishes/categories/:id", auth, adminOnly, dishController.deleteCategory);
+router.post(
+	"/adm/dishes/categories",
+	auth,
+	adminOnly,
+	dishController.createCategory,
+);
+router.patch(
+	"/adm/dishes/categories/:id",
+	auth,
+	adminOnly,
+	dishController.updateCategory,
+);
+router.delete(
+	"/adm/dishes/categories/:id",
+	auth,
+	adminOnly,
+	dishController.deleteCategory,
+);
 router.patch("/adm/dishes/:id", auth, adminOnly, dishController.updateDish);
 router.delete("/adm/dishes/:id", auth, adminOnly, dishController.deleteDish);
 
-router.post("/adm/dishes/:id/special", auth, adminOnly, dishController.createDailySpecial);
-router.patch("/adm/dishes/:id/special", auth, adminOnly, dishController.updateDailySpecial);
-router.delete("/adm/dishes/:id/special", auth, adminOnly, dishController.deleteDailySpecial);
+router.post(
+	"/adm/dishes/:id/special",
+	auth,
+	adminOnly,
+	dishController.createDailySpecial,
+);
+router.patch(
+	"/adm/dishes/:id/special",
+	auth,
+	adminOnly,
+	dishController.updateDailySpecial,
+);
+router.delete(
+	"/adm/dishes/:id/special",
+	auth,
+	adminOnly,
+	dishController.deleteDailySpecial,
+);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DISHES COMBO BUILDER  (used by custom orders)
 // ─────────────────────────────────────────────────────────────────────────────
-router.get('/dishes/combo/ingredients', comboController.listComboIngredients);
-router.get('/dishes/combo/ingredients/types', comboController.listIngredientTypes);
-router.post('/dishes/combo/preview', comboController.previewCombo);
-router.post('/dishes/combo/create', comboController.createCombo);
+router.get("/dishes/combo/ingredients", comboController.listComboIngredients);
+router.get(
+	"/dishes/combo/ingredients/types",
+	comboController.listIngredientTypes,
+);
+router.post("/dishes/combo/preview", comboController.previewCombo);
+router.post("/dishes/combo/create", comboController.createCombo);
 
 /* ADMIN only */
-router.post("/adm/ingredients", auth, adminOnly, comboController.createIngredient);
-router.patch("/adm/ingredients/:id", auth, adminOnly, comboController.updateIngredient);
-router.delete("/adm/ingredients/:id", auth, adminOnly, comboController.deleteIngredient);
+router.post(
+	"/adm/ingredients",
+	auth,
+	adminOnly,
+	comboController.createIngredient,
+);
+router.patch(
+	"/adm/ingredients/:id",
+	auth,
+	adminOnly,
+	comboController.updateIngredient,
+);
+router.delete(
+	"/adm/ingredients/:id",
+	auth,
+	adminOnly,
+	comboController.deleteIngredient,
+);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ORDERS
 // ─────────────────────────────────────────────────────────────────────────────
 /* ETA + ROUTING (USER TRACKING UI) */
-router.get('/orders/:id/estimate/:lat/:lon', orderController.estimate);
-router.get('/orders/:id/route/:mode/:lat/:lon', orderController.routeByMode);
+router.get("/orders/:id/estimate/:lat/:lon", orderController.estimate);
+router.get("/orders/:id/route/:mode/:lat/:lon", orderController.routeByMode);
 /* LOGGED USER */
-router.get('/orders/active', auth, orderController.getActive);
-router.get('/orders/:id/tracking', orderController.tracking);
+router.get("/orders/active", auth, orderController.getActive);
+router.get("/orders/:id/tracking", orderController.tracking);
 /* REAL TIME ORDER TRACKER STREAMER */
-router.get('/orders/:id/stream', orderController.streamOrders);
+router.get("/orders/:id/stream", orderController.streamOrders);
 
 /* ADMIN only */
-router.get('/adm/orders/stream', orderController.streamAdmOrders);
-router.get('/adm/orders/status/count', auth, orderController.statusCount);
-router.patch('/adm/orders/:id/status', orderController.updateStatus);
-router.get('/adm/orders/:id', auth, adminOnly, orderController.get);
-router.get('/adm/orders', orderController.list);
+router.get("/adm/orders/stream", orderController.streamAdmOrders);
+router.get("/adm/orders/status/count", auth, orderController.statusCount);
+router.patch("/adm/orders/:id/status", orderController.updateStatus);
+router.get("/adm/orders/:id", auth, adminOnly, orderController.get);
+router.get("/adm/orders", orderController.list);
 // remove create from front end access once cart is implemented:
 router.post("/adm/orders", orderController.create);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CART
 // ─────────────────────────────────────────────────────────────────────────────
-router.get('/cart', cartController.get);
-router.get('/cart/delivery-types', cartController.getDeliveryTypes);
-router.patch('/cart', cartController.update);
+router.get("/cart", cartController.get);
+router.get("/cart/delivery-types", cartController.getDeliveryTypes);
+router.patch("/cart", cartController.update);
 
 /* PAYMENTS */
-router.post('/payments/stripe', auth, paymentController.initiate);
+router.post("/payments/stripe", auth, paymentController.initiate);
 
 export default router;

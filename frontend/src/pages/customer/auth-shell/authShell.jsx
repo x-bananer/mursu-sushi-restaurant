@@ -1,5 +1,7 @@
 import "./auth-shell.css";
 import { useState } from "react";
+import { Navigate } from "react-router";
+import { useAuth } from "../../../contexts/AuthContext";
 
 import Login from "../../../components/customer/user/login/login.jsx";
 import RegisterUser from "../../../components/customer/user/register-user/registerUser.jsx";
@@ -9,8 +11,13 @@ import ForgotPassword from "../../../components/customer/user/forgot-password/fo
 import Modal from "../../../components/shared/modal/modal.jsx";
 
 export default function Auth() {
+  const { user } = useAuth();
   const [mode, setMode] = useState("login");
   const [activeModal, setActiveModal] = useState(null); // "forgot" | "admin"
+
+  if (user) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <main className="layout page auth-wrapper">
