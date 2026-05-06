@@ -1,4 +1,12 @@
+import argon2 from "argon2";
 import * as userRepo from "../../models/db/repositories/user/user.repository.js";
+
+const ARGON2_OPTIONS = {
+	type: argon2.argon2id,
+	memoryCost: 65536,
+	timeCost: 3,
+	parallelism: 1,
+};
 
 function createHttpError(statusCode, message) {
 	const error = /** @type {Error & { statusCode: number }} */ (
@@ -35,6 +43,7 @@ function toPublicUser(user) {
 		role_id: user.role_id,
 		stamp_count: user.stamp_count,
 		is_stamp_discount_active: user.is_stamp_discount_active,
+		created_at: user.created_at,
 	};
 }
 
@@ -180,6 +189,14 @@ export async function updateUserById(userId, data) {
 		payload.photo_url = data.photo_url;
 	}
 
+	if (data?.password !== undefined) {
+		const password = String(data.password);
+		if (password.length < 8) {
+			throw createHttpError(400, "Password must be at least 8 characters");
+		}
+		payload.password_hash = await argon2.hash(password, ARGON2_OPTIONS);
+	}
+
 	if (data?.role_id !== undefined) {
 		const roleId = Number(data.role_id);
 		if (!Number.isInteger(roleId) || roleId <= 0) {
@@ -225,6 +242,7 @@ export async function updateOwnProfile(userId, data) {
 		name: data?.name,
 		email: data?.email,
 		photo_url: data?.photo_url,
+		password: data?.password,
 	});
 }
 

@@ -17,6 +17,7 @@ export default function UserProfile() {
 	} = useForm(() => {}, {
 		name: user?.name || "",
 		email: user?.email || "",
+		password: "",
 	});
 	const [photoFile, setPhotoFile] = useState(null);
 	const [isEditing, setIsEditing] = useState(false);
@@ -44,6 +45,7 @@ export default function UserProfile() {
 				setInputs({
 					name: data.user.name || "",
 					email: data.user.email || "",
+					password: "",
 				});
 			}
 		} catch (err) {
@@ -77,6 +79,7 @@ export default function UserProfile() {
 
 		const trimmedName = inputs.name.trim();
 		const trimmedEmail = inputs.email.trim();
+		const trimmedPassword = inputs.password.trim();
 
 		if (!trimmedName || !trimmedEmail) {
 			setError("Name and email are required.");
@@ -90,6 +93,13 @@ export default function UserProfile() {
 		}
 		if (trimmedEmail !== profile.email) {
 			payload.email = trimmedEmail;
+		}
+		if (trimmedPassword) {
+			if (trimmedPassword.length < 8) {
+				setError("Password must be at least 8 characters.");
+				return;
+			}
+			payload.password = trimmedPassword;
 		}
 
 		if (Object.keys(payload).length === 0 && !hasPhoto) {
@@ -107,6 +117,9 @@ export default function UserProfile() {
 				}
 				if (payload.email) {
 					formData.append("email", payload.email);
+				}
+				if (payload.password) {
+					formData.append("password", payload.password);
 				}
 				formData.append("photo", photoFile);
 
@@ -130,6 +143,7 @@ export default function UserProfile() {
 				setInputs({
 					name: data.user.name || "",
 					email: data.user.email || "",
+					password: "",
 				});
 				setPhotoFile(null);
 				setNotice("Profile updated.");
@@ -162,7 +176,7 @@ export default function UserProfile() {
 			await fetchData("/users/me", { method: "DELETE" });
 			logout();
 			setProfile(null);
-			setInputs({ name: "", email: "" });
+			setInputs({ name: "", email: "", password: "" });
 			setPhotoFile(null);
 			setNotice("Account deleted.");
 		} catch (err) {
@@ -179,7 +193,8 @@ export default function UserProfile() {
 
 	let metaText = "Sign in to view your profile.";
 	if (profile && profile.email) {
-		metaText = profile.email;
+		const regDate = profile.created_at ? new Date(profile.created_at).toLocaleDateString() : "";
+		metaText = `${profile.email} ${regDate ? `• Joined ${regDate}` : ""}`;
 	}
 	if (notice) {
 		metaText = notice;
@@ -311,6 +326,17 @@ export default function UserProfile() {
 						onChange={handleInputChange}
 						disabled={fieldDisabled}
 					/>
+					{isEditing && (
+						<InputField
+							label="New Password (optional)"
+							name="password"
+							type="password"
+							value={inputs.password}
+							onChange={handleInputChange}
+							disabled={fieldDisabled}
+							placeholder="Leave empty to keep current"
+						/>
+					)}
 					<InputField
 						label="Photo"
 						name="photo"

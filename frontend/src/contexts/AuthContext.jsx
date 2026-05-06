@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import { fetchData } from "../utils/fetchData";
 
 const AuthContext = createContext(null);
 
@@ -9,6 +10,33 @@ export function AuthProvider({ children }) {
 	});
 
 	const [token, setToken] = useState(() => localStorage.getItem("token"));
+	const [isLoading, setIsLoading] = useState(!!token);
+
+	useEffect(() => {
+		async function refreshAuth() {
+			if (!token) {
+				setIsLoading(false);
+				return;
+			}
+
+			try {
+				const data = await fetchData("/auth/refresh", { method: "POST" });
+				if (data?.user && data?.token) {
+					login(data.user, data.token);
+				} else {
+					logout();
+				}
+			} catch (err) {
+				console.error("Auth refresh failed:", err);
+				logout();
+			} finally {
+				setIsLoading(false);
+			}
+		}
+
+		refreshAuth();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const login = (userData, userToken) => {
 		setUser(userData);
@@ -30,7 +58,7 @@ export function AuthProvider({ children }) {
 	};
 
 	return (
-		<AuthContext.Provider value={{ user, token, login, logout, updateUser }}>
+		<AuthContext.Provider value={{ user, token, isLoading, login, logout, updateUser }}>
 			{children}
 		</AuthContext.Provider>
 	);

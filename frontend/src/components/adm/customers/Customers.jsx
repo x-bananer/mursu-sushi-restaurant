@@ -3,10 +3,12 @@ import './customers.css';
 import TableBase from "../../shared/table-base/tableBase";
 import Button from "../../shared/button/Button";
 import Modal from "../../shared/modal/modal";
+import InputField from "../../shared/input-field/InputField";
 import { fetchData } from "../../../utils/fetchData";
 
 export default function Customers() {
   const [users, setUsers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -92,6 +94,11 @@ export default function Customers() {
     setSelectedUser(null);
   }
 
+  const filteredUsers = users.filter((user) =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   let description = "";
   if (isLoading) {
     description = "Loading users...";
@@ -99,10 +106,19 @@ export default function Customers() {
     description = error;
   } else if (users.length === 0) {
     description = "No users found.";
+  } else if (filteredUsers.length === 0 && searchQuery) {
+    description = "No users match your search.";
   }
 
   return (
     <>
+      <div style={{ marginBottom: "2rem", maxWidth: "400px" }}>
+        <InputField
+          placeholder="Search by name or email..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
       <TableBase
         title="Customers"
         description={description}
@@ -110,7 +126,7 @@ export default function Customers() {
           { key: "name", label: "Name" },
           { key: "email", label: "Email" },
         ]}
-        data={users}
+        data={filteredUsers}
         renderRow={(user) => {
           let discountLabel = "Activate discount";
           if (user.is_stamp_discount_active) {
@@ -152,10 +168,10 @@ export default function Customers() {
           <div>
             <p>Name: {selectedUser.name}</p>
             <p>Email: {selectedUser.email}</p>
-            <p>Role: {selectedUser.role_id}</p>
+            <p>Role: {selectedUser.role_id === 2 ? "Admin" : "Customer"}</p>
             <p>Stamps: {selectedUser.stamp_count}</p>
             <p>
-              Discount active: {String(selectedUser.is_stamp_discount_active)}
+              Discount active: {selectedUser.is_stamp_discount_active ? "Yes" : "No"}
             </p>
           </div>
         )}
