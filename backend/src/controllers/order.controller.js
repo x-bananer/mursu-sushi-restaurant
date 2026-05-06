@@ -13,18 +13,10 @@ import * as orderService from '../services/order/order.service.js';
 import { t } from '../i18n/messages.js';
 
 /**
- * =========================================================
- * ADMIN / KITCHEN
- * =========================================================
- */
-
-/**
- * GET /adm/orders
- * Returns ALL ACTIVE orders for the kitchen dashboard.
- *
- * @param {LocalizedRequest & import('express').Request<OrdersRequest>} req
- * @param {import('express').Response<OrdersResponse>} res
- * @param {import('express').NextFunction} next
+ * @api {get} /api/v1/adm/orders List active orders
+ * @apiName ListActiveOrders
+ * @apiGroup OrdersAdmin
+ * @apiSuccess {Object[]} orders Active orders.
  */
 export async function list(req, res, next) {
   try {
@@ -36,12 +28,13 @@ export async function list(req, res, next) {
 }
 
 /**
- * GET /adm/orders/:id
- * Get FULL details of a single order (admin or user view)
- *
- * @param {LocalizedRequest & import('express').Request<OrderRequest>} req
- * @param {import('express').Response<OrderResponse>} res
- * @param {import('express').NextFunction} next
+ * @api {get} /api/v1/adm/orders/:id Get order by id
+ * @apiName GetOrderAdmin
+ * @apiGroup OrdersAdmin
+ * @apiParam {Number} id Order id.
+ * @apiSuccess {Object} order Order DTO.
+ * @apiError (400) BadRequest Invalid order id.
+ * @apiError (404) NotFound Order not found.
  */
 export async function get(req, res, next) {
 	try {
@@ -63,8 +56,12 @@ export async function get(req, res, next) {
 }
 
 /**
- * PATCH /adm/orders/:id/status
- * Update order status (kitchen workflow)
+ * @api {patch} /api/v1/adm/orders/:id/status Update order status
+ * @apiName UpdateOrderStatus
+ * @apiGroup OrdersAdmin
+ * @apiParam {Number} id Order id.
+ * @apiBody {String} status New status.
+ * @apiSuccess {Boolean} success True.
  */
 export async function updateStatus(req, res, next) {
 	try {
@@ -83,8 +80,10 @@ export async function updateStatus(req, res, next) {
 }
 
 /**
- * GET /adm/orders/status/count
- * Get counts of orders per status
+ * @api {get} /api/v1/adm/orders/status/count Get order status counts
+ * @apiName GetOrderStatusCount
+ * @apiGroup OrdersAdmin
+ * @apiSuccess {Object[]} stats Count items by status.
  */
 export async function statusCount(req, res, next) {
   try {
@@ -96,9 +95,10 @@ export async function statusCount(req, res, next) {
 }
 
 /**
- * GET adm/orders/stream
- * Real-time order updates using Server-Sent Events (SSE)
- * Used when order is created.
+ * @api {get} /api/v1/adm/orders/stream Stream admin orders (SSE)
+ * @apiName StreamAdminOrders
+ * @apiGroup OrdersAdmin
+ * @apiSuccess {String} event Stream events.
  */
 export function streamAdmOrders(req, res) {
   res.writeHead(200, {
@@ -117,12 +117,14 @@ export function streamAdmOrders(req, res) {
 }
 
 /**
- * ONCE CART IS IMPLEMENTED POST /orders WILL BE REMOVES AS ENDPOINT:
- */
-
-/**
- * POST /adm/orders
- * Create a new order (called by cart AFTER payment)
+ * @api {post} /api/v1/adm/orders Create order
+ * @apiName CreateOrderAdmin
+ * @apiGroup OrdersAdmin
+ * @apiBody {Number} user_id User id.
+ * @apiBody {Number} delivery_type_id Delivery type id.
+ * @apiBody {Number} total_price Total price.
+ * @apiBody {Object[]} order_items Order items.
+ * @apiSuccess (201) {Object} order Created order.
  */
 export async function create(req, res, next) {
   try {
@@ -134,14 +136,12 @@ export async function create(req, res, next) {
 }
 
 /**
- * =========================================================
- * USER LOGGED IN
- * =========================================================
- */
-
-/**
- * GET /orders/active
- * Get the user's current active order
+ * @api {get} /api/v1/orders/active Get active order
+ * @apiName GetActiveOrder
+ * @apiGroup OrdersTracking
+ * @apiHeader {String} Authorization Bearer JWT token.
+ * @apiSuccess {Object} order Active order or null.
+ * @apiError (401) Unauthorized Missing/invalid token.
  */
 export async function getActive(req, res, next) {
 	try {
@@ -159,8 +159,11 @@ export async function getActive(req, res, next) {
 }
 
 /**
- * GET /orders/:id/tracking
- * Get history tracking data for timeline UI
+ * @api {get} /api/v1/orders/:id/tracking Get tracking history
+ * @apiName GetOrderTracking
+ * @apiGroup OrdersTracking
+ * @apiParam {Number} id Order id.
+ * @apiSuccess {Object[]} history Tracking history.
  */
 export async function tracking(req, res, next) {
 	try {
@@ -178,9 +181,11 @@ export async function tracking(req, res, next) {
 }
 
 /**
- * GET orders/:id/stream
- * Real-time order updates using Server-Sent Events (SSE)
- * Used when an order is updated by id
+ * @api {get} /api/v1/orders/:id/stream Stream order updates (SSE)
+ * @apiName StreamOrderUpdates
+ * @apiGroup OrdersTracking
+ * @apiParam {Number} id Order id.
+ * @apiSuccess {String} event Stream events.
  */
 
 export function streamOrders(req, res) {
@@ -206,8 +211,13 @@ export function streamOrders(req, res) {
 }
 
 /**
- * GET /orders/:id/estimate/:lat/:lon
- * Returns ETA + routing + kitchen timing for an order
+ * @api {get} /api/v1/orders/:id/estimate/:lat/:lon Get order ETA estimate
+ * @apiName GetOrderEstimate
+ * @apiGroup OrdersTracking
+ * @apiParam {Number} id Order id.
+ * @apiParam {Number} lat Latitude.
+ * @apiParam {Number} lon Longitude.
+ * @apiSuccess {Object} estimate Estimate payload.
  */
 export async function estimate(req, res, next) {
   try {
@@ -234,7 +244,14 @@ export async function estimate(req, res, next) {
 }
 
 /**
- * GET /orders/:id/route/:mode/:lat/:lon
+ * @api {get} /api/v1/orders/:id/route/:mode/:lat/:lon Get route by mode
+ * @apiName GetOrderRouteByMode
+ * @apiGroup OrdersTracking
+ * @apiParam {Number} id Order id.
+ * @apiParam {String} mode Transport mode.
+ * @apiParam {Number} lat Latitude.
+ * @apiParam {Number} lon Longitude.
+ * @apiSuccess {Object} route Route payload.
  */
 export async function routeByMode(req, res, next) {
   try {

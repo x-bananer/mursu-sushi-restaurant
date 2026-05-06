@@ -1,9 +1,12 @@
 import * as cartService from '../services/cart/cart.service.js';
 
 /**
- * GET /cart
- * Return current cart for authenticated user or guest session.
- *
+ * @api {get} /api/v1/cart Get cart
+ * @apiName GetCart
+ * @apiGroup Cart
+ * @apiHeader {String} x-session-id Session id.
+ * @apiSuccess {Object} cart Cart DTO or null.
+ * @apiError (400) BadRequest Missing session id.
  */
 export async function get(req, res, next) {
 	try {
@@ -17,9 +20,15 @@ export async function get(req, res, next) {
 }
 
 /**
- * PATCH /cart
- * Update cart for authenticated user or guest session.
- *
+ * @api {patch} /api/v1/cart Update cart
+ * @apiName UpdateCart
+ * @apiGroup Cart
+ * @apiHeader {String} x-session-id Session id.
+ * @apiBody {Number} [dish_id] Dish id for single-item update.
+ * @apiBody {Number} [quantity] Quantity for single-item update.
+ * @apiBody {Object[]} [items] Full items payload.
+ * @apiSuccess {Object} cart Updated cart DTO.
+ * @apiError (400) BadRequest Invalid payload or missing session id.
  */
 export async function update(req, res, next) {
 	try {
@@ -40,9 +49,10 @@ export async function update(req, res, next) {
 }
 
 /**
- * GET /cart/delivery-types
- * Return available delivery types for checkout.
- *
+ * @api {get} /api/v1/cart/delivery-types Get delivery types
+ * @apiName GetDeliveryTypes
+ * @apiGroup Cart
+ * @apiSuccess {Object[]} deliveryTypes Delivery type list.
  */
 export async function getDeliveryTypes(req, res, next) {
 	try {

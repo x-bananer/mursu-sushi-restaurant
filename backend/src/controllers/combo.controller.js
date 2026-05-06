@@ -1,8 +1,12 @@
 import * as comboService from '../services/dish/combo.service.js';
 
 /**
- * POST /dishes/combo/preview
- * Validate combo ingredients and return calculated combo preview.
+ * @api {post} /api/v1/dishes/combo/preview Preview combo
+ * @apiName PreviewCombo
+ * @apiGroup Combo
+ * @apiBody {Object[]} ingredients Ingredient rows.
+ * @apiSuccess {Object} combo Combo with `ingredients` and `total_price`.
+ * @apiError (400) BadRequest Invalid combo payload/order.
  */
 export async function previewCombo(req, res, next) {
     try {
@@ -15,8 +19,13 @@ export async function previewCombo(req, res, next) {
 }
 
 /**
- * POST /dishes/combo/create
- * Create combo item from ingredients and add it to cart by session id.
+ * @api {post} /api/v1/dishes/combo/create Create combo
+ * @apiName CreateCombo
+ * @apiGroup Combo
+ * @apiHeader {String} x-session-id Session id.
+ * @apiBody {Object[]} ingredients Ingredient rows.
+ * @apiSuccess {Object} cart Updated cart DTO.
+ * @apiError (400) BadRequest Missing session id or invalid combo.
  */
 export async function createCombo(req, res, next) {
     try {
@@ -30,6 +39,12 @@ export async function createCombo(req, res, next) {
     }
 }
 
+/**
+ * @api {get} /api/v1/dishes/combo/ingredients List combo ingredients
+ * @apiName ListComboIngredients
+ * @apiGroup Combo
+ * @apiSuccess {Object[]} ingredients Ingredient list.
+ */
 export async function listComboIngredients(req, res, next) {
    try {
         const ingredients = await comboService.listComboIngredients();
@@ -39,6 +54,12 @@ export async function listComboIngredients(req, res, next) {
     }
 }
 
+/**
+ * @api {get} /api/v1/dishes/combo/ingredients/types List combo ingredient types
+ * @apiName ListComboIngredientTypes
+ * @apiGroup Combo
+ * @apiSuccess {Object[]} ingredientTypes Ingredient type list.
+ */
 export async function listIngredientTypes(req, res, next) {
    try {
         const ingredientTypes = await comboService.listIngredientTypes();
@@ -48,7 +69,16 @@ export async function listIngredientTypes(req, res, next) {
     }
 }
 
-/* ADM only */
+/**
+ * @api {post} /api/v1/adm/ingredients Create ingredient
+ * @apiName CreateIngredient
+ * @apiGroup ComboAdmin
+ * @apiHeader {String} Authorization Bearer JWT token (admin).
+ * @apiBody {String} name Ingredient name.
+ * @apiBody {Number} price Ingredient price.
+ * @apiBody {Number} ingredient_type_id Ingredient type id.
+ * @apiSuccess (201) {Object} ingredient Created ingredient.
+ */
 export async function createIngredient(req, res, next) {
     try {
         const ingredient = await comboService.createIngredient(req.body || {}, req.locale);
@@ -58,6 +88,14 @@ export async function createIngredient(req, res, next) {
     }
 }
 
+/**
+ * @api {patch} /api/v1/adm/ingredients/:id Update ingredient
+ * @apiName UpdateIngredient
+ * @apiGroup ComboAdmin
+ * @apiHeader {String} Authorization Bearer JWT token (admin).
+ * @apiParam {Number} id Ingredient id.
+ * @apiSuccess {Object} ingredient Updated ingredient.
+ */
 export async function updateIngredient(req, res, next) {
     try {
         const ingredientId = Number(req.params.id);
@@ -68,6 +106,14 @@ export async function updateIngredient(req, res, next) {
     }
 }
 
+/**
+ * @api {delete} /api/v1/adm/ingredients/:id Delete ingredient
+ * @apiName DeleteIngredient
+ * @apiGroup ComboAdmin
+ * @apiHeader {String} Authorization Bearer JWT token (admin).
+ * @apiParam {Number} id Ingredient id.
+ * @apiSuccess (204) NoContent Deleted.
+ */
 export async function deleteIngredient(req, res, next) {
     try {
         const ingredientId = Number(req.params.id);
