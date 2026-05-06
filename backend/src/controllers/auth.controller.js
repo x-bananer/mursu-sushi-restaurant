@@ -4,7 +4,7 @@ import { placeholder } from "../utils/paceholder.js";
 
 export async function register(req, res, next) {
 	try {
-		const result = await authService.register(req.body || {});
+		const result = await authService.register(req.body || {}, req.locale);
 
 		// Attach cart to user when user gets user_id after auth.
 		const sessionId = String(req.headers["x-session-id"] ?? "").trim();
@@ -20,7 +20,7 @@ export async function register(req, res, next) {
 
 export async function login(req, res, next) {
 	try {
-		const result = await authService.login(req.body || {});
+		const result = await authService.login(req.body || {}, req.locale);
 
 		// Attach cart to user when user gets user_id after auth.
 		const sessionId = String(req.headers["x-session-id"] ?? "").trim();
