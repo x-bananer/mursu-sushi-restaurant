@@ -74,7 +74,6 @@ export default function RegisterUser() {
 					name="firstName"
 					value={form.firstName}
 					onChange={handleChange}
-					placeholder="YUKIO"
 				/>
 
 				<InputField
@@ -82,7 +81,6 @@ export default function RegisterUser() {
 					name="lastName"
 					value={form.lastName}
 					onChange={handleChange}
-					placeholder="MISHIMA"
 				/>
 			</div>
 

@@ -132,7 +132,7 @@ export default function CartContent() {
 
 		// TODO Fix after auth is done
 		if (!isAuthorized) {
-			navigate('/login');
+			navigate('/auth');
 			return;
 		}
 
