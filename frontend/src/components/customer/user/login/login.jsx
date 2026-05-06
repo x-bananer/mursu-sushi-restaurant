@@ -93,7 +93,7 @@ export default function Login({ onForgot, onAdminRegister }) {
 					className="auth-card__link"
 					onClick={onAdminRegister}
 				>
-					STAFF? REGISTER HERE ↗
+					STAFF? Sign in HERE ↗
 				</button>
 			</div>
 		</form>

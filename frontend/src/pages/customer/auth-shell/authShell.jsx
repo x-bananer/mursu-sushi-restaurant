@@ -69,7 +69,7 @@ export default function Auth() {
       <Modal
         isOpen={activeModal === "admin"}
         onClose={() => setActiveModal(null)}
-        title="Admin Registration"
+        title="Admin Sign"
       >
         <RegisterAdmin onSuccess={() => setActiveModal(null)} />
       </Modal>
