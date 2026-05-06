@@ -44,6 +44,9 @@ export default function Menu() {
 		sort,
 	});
 
+	const availableItems = filteredItems.filter((item) => item.is_available);
+	const unavailableItems = filteredItems.filter((item) => !item.is_available);
+
 	const sortOptions = [
 		{ value: "default", label: "Default" },
 		{ value: "price_asc", label: "Price ↑" },
@@ -108,25 +111,52 @@ export default function Menu() {
 			)}
 
 			{!loading && !error && filteredItems.length > 0 && (
-				<section className="menu-grid">
-					{filteredItems.map((item, index) => (
-						<MenuDishCard
-							key={item.id}
-							item={item}
-							index={index}
-							cart={cart}
-							addDishToCart={addDishToCart}
-							removeCartItem={removeCartItem}
-							onToggleFavorite={async () => {
-								const result = await toggleFavorite(item.id);
-								if (result?.message) {
-									setFavoriteToast(result.message);
-								}
-							}}
-							isFavoritePending={pendingDishIds.includes(item.id)}
-						/>
-					))}
-				</section>
+				<>
+					{availableItems.length > 0 && (
+						<section className="menu-section">
+							<h2 className="menu-section__title">Today’s Menu</h2>
+							<section className="menu-grid">
+								{availableItems.map((item, index) => (
+									<MenuDishCard
+										key={item.id}
+										item={item}
+										index={index}
+										cart={cart}
+										addDishToCart={addDishToCart}
+										removeCartItem={removeCartItem}
+										onToggleFavorite={async () => {
+											const result = await toggleFavorite(item.id);
+											if (result?.message) {
+												setFavoriteToast(result.message);
+											}
+										}}
+										isFavoritePending={pendingDishIds.includes(item.id)}
+									/>
+								))}
+							</section>
+						</section>
+					)}
+
+					{unavailableItems.length > 0 && (
+						<section className="menu-section">
+							<h2 className="menu-section__title">Other Dishes</h2>
+							<section className="menu-grid menu-grid--unavailable">
+								{unavailableItems.map((item, index) => (
+									<MenuDishCard
+										key={item.id}
+										item={item}
+										index={index}
+										cart={cart}
+										addDishToCart={addDishToCart}
+										removeCartItem={removeCartItem}
+										onToggleFavorite={() => {}}
+										isFavoritePending
+									/>
+								))}
+							</section>
+						</section>
+					)}
+				</>
 			)}
 			<Toast message={favoriteToast} duration={3000} onClose={() => setFavoriteToast("")} />
 		</div>

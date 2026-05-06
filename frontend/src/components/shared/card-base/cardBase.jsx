@@ -28,9 +28,9 @@ export default function CardBase({
 
       {tags.length > 0 && (
         <div className="card-base__badges">
-          {tags.map((tag) => (
-            <Badge key={tag}>
-              {tag}
+          {tags.map((tag, index) => (
+            <Badge key={tag?.id ?? `badge-${index}`}>
+              {tag?.name}
             </Badge>
           ))}
         </div>
