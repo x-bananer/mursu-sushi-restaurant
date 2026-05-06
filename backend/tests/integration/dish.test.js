@@ -1,15 +1,13 @@
-import dotenv from "dotenv";
-dotenv.config();
-
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:3000/api/v1";
+import request from "supertest";
+import app from "../../src/app.js";
 
 describe("Dish API", () => {
     test("GET /dishes returns 200", async () => {
-        const res = await fetch(`${API_BASE_URL}/dishes`);
+        const res = await request(app).get("/api/v1/dishes");
         expect(res.status).toBe(200);
 
-        const body = await res.json();
-
+        const body = res.body;
+        
         expect(body).toBeDefined();
 
         expect(Array.isArray(body.dishes)).toBe(true);
@@ -43,11 +41,11 @@ describe("Dish API", () => {
     });
 
     test("GET /dishes/:dish_id returns 200", async () => {
-        const res = await fetch(`${API_BASE_URL}/dishes/1`);
+        const res = await request(app).get("/api/v1/dishes/1");
         expect(res.status).toBe(200);
 
-        const body = await res.json();
-        const dish = body.dish[0];
+        const body = res.body;
+        const dish = body.dish?.[0];
 
         expect(dish).toEqual(
             expect.objectContaining({
@@ -62,13 +60,11 @@ describe("Dish API", () => {
     });
 
     test("GET /dishes/categories returns 200", async () => {
-        const res = await fetch(`${API_BASE_URL}/dishes/categories`);
+        const res = await request(app).get("/api/v1/dishes/categories");
         expect(res.status).toBe(200);
 
-        const body = await res.json();
-
+        const body = res.body;
         expect(body).toBeDefined();
-
         expect(Array.isArray(body.categories)).toBe(true);
 
         if (body.categories.length > 0) {
@@ -84,11 +80,10 @@ describe("Dish API", () => {
     });
 
     test("GET /dishes/daily-special returns 200", async () => {
-        const res = await fetch(`${API_BASE_URL}/dishes/daily-special`);
+        const res = await request(app).get("/api/v1/dishes/daily-special");
         expect(res.status).toBe(200);
 
-        const body = await res.json();
-
+        const body = res.body;
         expect(body).toBeDefined();
         expect(Array.isArray(body.dish)).toBe(true);
 

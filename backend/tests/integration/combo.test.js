@@ -1,18 +1,15 @@
-import dotenv from "dotenv";
-dotenv.config();
-
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:3000/api/v1";
-const SESSION_ID = `${Date.now()}`;
+import request from "supertest";
+import app from "../../src/app.js";
 
 describe("Combo API", () => {
 	let validCombo = [];
 	let invalidCombo = [];
+	const sessionId = `${Date.now()}`;
 
 	test("GET /dishes/combo/ingredients returns 200", async () => {
-		const res = await fetch(`${API_BASE_URL}/dishes/combo/ingredients`);
+		const res = await request(app).get("/api/v1/dishes/combo/ingredients");
 		expect(res.status).toBe(200);
-
-		const body = await res.json();
+		const body = res.body;
 
 		expect(Array.isArray(body.ingredients)).toBe(true);
 
@@ -59,19 +56,12 @@ describe("Combo API", () => {
 	});
 
 	test("POST /dishes/combo/preview with valid payload returns 200", async () => {
-		const res = await fetch(`${API_BASE_URL}/dishes/combo/preview`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify({
-				ingredients: validCombo
-			}),
+		const res = await request(app).post("/api/v1/dishes/combo/preview").send({
+			ingredients: validCombo
 		});
 
 		expect(res.status).toBe(200);
-
-		const body = await res.json();
+		const body = res.body;
 
 		expect(body).toHaveProperty("combo");
 
@@ -80,26 +70,19 @@ describe("Combo API", () => {
 	});
 
 	test("POST /dishes/combo/create adds combo to cart", async () => {
-		const res = await fetch(`${API_BASE_URL}/dishes/combo/create`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"x-session-id": SESSION_ID,
-			},
-			body: JSON.stringify({
+		const res = await request(app)
+			.post("/api/v1/dishes/combo/create")
+			.set("x-session-id", sessionId)
+			.send({
 				ingredients: validCombo
-			}),
-		});
+			});
 
 		expect(res.status).toBe(200);
 
-		const cart = await fetch(`${API_BASE_URL}/cart`, {
-			headers: { "x-session-id": SESSION_ID },
-		});
+		const cart = await request(app).get("/api/v1/cart").set("x-session-id", sessionId);
 
 		expect(cart.status).toBe(200);
-
-		const body = await cart.json();
+		const body = cart.body;
 
 		expect(body).toHaveProperty("cart");
 
@@ -109,16 +92,12 @@ describe("Combo API", () => {
 	});
 
 	test("POST /dishes/combo/create with invalid payload returns 400", async () => {
-		const res = await fetch(`${API_BASE_URL}/dishes/combo/create`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"x-session-id": SESSION_ID,
-			},
-			body: JSON.stringify({
+		const res = await request(app)
+			.post("/api/v1/dishes/combo/create")
+			.set("x-session-id", sessionId)
+			.send({
 				ingredients: invalidCombo,
-			}),
-		});
+			});
 
 		expect(res.status).toBe(400);
 	});

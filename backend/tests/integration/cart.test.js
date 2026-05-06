@@ -1,24 +1,17 @@
-import dotenv from "dotenv";
-dotenv.config();
-
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:3000/api/v1";
+import request from "supertest";
+import app from "../../src/app.js";
 
 describe("Cart API", () => {
 	const sessionId = `${Date.now()}`;
 
 	test("GET /cart returns 200 with session header", async () => {
-		const res = await fetch(`${API_BASE_URL}/cart`, {
-			headers: {
-				"x-session-id": sessionId,
-			},
-		});
+		const res = await request(app).get("/api/v1/cart").set("x-session-id", sessionId);
 
 		expect(res.status).toBe(200);
-
-		const body = await res.json();
+		const body = res.body;
 
 		expect(body).toHaveProperty("cart");
-		
+
 		if (body.cart) {
 			expect(typeof body.cart.total_price).toBe("number");
 		}
@@ -26,21 +19,13 @@ describe("Cart API", () => {
 	});
 
 	test("PATCH /cart adds dish item", async () => {
-		const res = await fetch(`${API_BASE_URL}/cart`, {
-			method: "PATCH",
-			headers: {
-				"Content-Type": "application/json",
-				"x-session-id": sessionId,
-			},
-			body: JSON.stringify({
-				dish_id: 1,
-				quantity: 1,
-			}),
+		const res = await request(app).patch("/api/v1/cart").set("x-session-id", sessionId).send({
+			dish_id: 1,
+			quantity: 1,
 		});
 
 		expect(res.status).toBe(200);
-
-		const body = await res.json();
+		const body = res.body;
 
 		expect(body).toHaveProperty("cart");
 
@@ -48,21 +33,13 @@ describe("Cart API", () => {
 	});
 
 	test("PATCH /cart with quantity 0 removes dish item", async () => {
-		const res = await fetch(`${API_BASE_URL}/cart`, {
-			method: "PATCH",
-			headers: {
-				"Content-Type": "application/json",
-				"x-session-id": sessionId,
-			},
-			body: JSON.stringify({
-				dish_id: 1,
-				quantity: 0,
-			}),
+		const res = await request(app).patch("/api/v1/cart").set("x-session-id", sessionId).send({
+			dish_id: 1,
+			quantity: 0,
 		});
 
 		expect(res.status).toBe(200);
-
-		const body = await res.json();
+		const body = res.body;
 
 		expect(body).toHaveProperty("cart");
 
@@ -70,7 +47,7 @@ describe("Cart API", () => {
 	});
 
 	test("GET /cart without session id returns 400", async () => {
-		const res = await fetch(`${API_BASE_URL}/cart`);
+		const res = await request(app).get("/api/v1/cart");
 		expect(res.status).toBe(400);
 	});
 });
