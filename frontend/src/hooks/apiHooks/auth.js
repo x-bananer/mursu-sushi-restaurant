@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { fetchData } from "../../utils/fetchData";
+import { useAuth } from "../../contexts/AuthContext";
 
 export function useLogin() {
+	const { login: authLogin } = useAuth();
 	const [user, setUser] = useState(null);
 	const [token, setToken] = useState(null);
 	const [loading, setLoading] = useState(false);
@@ -22,10 +24,8 @@ export function useLogin() {
 			setUser(user);
 			setToken(token);
 
-			if (token) {
-				localStorage.setItem("token", token);
-				localStorage.setItem("user", user);
-				console.log(JSON.stringify(user, null, 2));
+			if (token && user) {
+				authLogin(user, token);
 			}
 
 			return response;
@@ -41,6 +41,7 @@ export function useLogin() {
 }
 
 export function useRegisterUser() {
+	const { login: authLogin } = useAuth();
 	const [user, setUser] = useState(null);
 	const [token, setToken] = useState(null);
 	const [loading, setLoading] = useState(false);
@@ -61,10 +62,8 @@ export function useRegisterUser() {
 			setUser(user);
 			setToken(token);
 
-			if (token) {
-				localStorage.setItem("token", token);
-				localStorage.setItem("user", user);
-				console.log(JSON.stringify(user, null, 2));
+			if (token && user) {
+				authLogin(user, token);
 			}
 
 			return response;

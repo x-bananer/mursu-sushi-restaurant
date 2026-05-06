@@ -1,6 +1,5 @@
 import * as authService from "../services/auth/auth.service.js";
 import * as cartService from "../services/cart/cart.service.js";
-import { placeholder } from "../utils/paceholder.js";
 
 /**
  * @api {post} /api/v1/auth/register Register user
@@ -68,7 +67,13 @@ export async function login(req, res, next) {
  * @apiSuccess (204) NoContent Logged out.
  * @apiError (401) Unauthorized Missing or invalid JWT.
  */
-export const logout = placeholder("auth.logout");
+export async function logout(req, res, next) {
+	try {
+		res.status(204).send();
+	} catch (error) {
+		next(error);
+	}
+}
 
 /**
  * @api {post} /api/v1/auth/refresh Refresh auth token
@@ -80,4 +85,11 @@ export const logout = placeholder("auth.logout");
  * @apiSuccess {String} token New JWT token.
  * @apiError (401) Unauthorized Missing or invalid JWT.
  */
-export const refresh = placeholder("auth.refresh");
+export async function refresh(req, res, next) {
+	try {
+		const result = await authService.refresh(req.user?.id);
+		res.json(result);
+	} catch (error) {
+		next(error);
+	}
+}
