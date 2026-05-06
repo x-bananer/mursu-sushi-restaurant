@@ -16,6 +16,7 @@ import Cart from "./pages/customer/cart/Cart";
 import OrderTracker from "./pages/customer/order-tracker/OrderTracker";
 import UserProfile from "./pages/customer/user-profile/UserProfile";
 import AuthShell from "./pages/customer/auth-shell/authShell";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Admin pages
 import Admin from "./pages/adm/AdmPanel";
@@ -37,12 +38,30 @@ function App() {
 						<Route path="/combo-builder" element={<ComboBuilder />} />
 						<Route path="/cart" element={<Cart />} />
 						<Route path="/auth" element={<AuthShell />} />
-						<Route path="/order-tracker" element={<OrderTracker />} />
-						<Route path="/user-profile" element={<UserProfile />} />
+						<Route 
+							path="/order-tracker" 
+							element={
+								<ProtectedRoute>
+									<OrderTracker />
+								</ProtectedRoute>
+							} 
+						/>
+						<Route 
+							path="/user-profile" 
+							element={
+								<ProtectedRoute>
+									<UserProfile />
+								</ProtectedRoute>
+							} 
+						/>
 					</Route>
 
 					{/* ADMIN ROUTES */}
-					<Route element={<AdminLayout />}>
+					<Route element={
+						<ProtectedRoute adminOnly>
+							<AdminLayout />
+						</ProtectedRoute>
+					}>
 						<Route path="/adm" element={<Admin />} />
 						<Route path="/adm/customers" element={<Customers />} />
 						<Route path="/adm/special" element={<DailySpecial />} />

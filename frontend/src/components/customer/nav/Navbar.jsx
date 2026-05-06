@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router";
+import { HiOutlineUser, HiOutlineShoppingBag } from "react-icons/hi2";
 import NavBase from "../../shared/nav/NavBase";
-import { UserIcon, CartIcon } from "../../shared/nav/icons";
 import { useCartContext } from "../../../hooks/contextHooks/cart";
 import { useAuth } from "../../../contexts/AuthContext";
 
@@ -35,7 +35,22 @@ export default function CustomerNavbar() {
 			alt="User Profile" 
 			className="nav__avatar-img"
 		/>
-	) : <UserIcon />;
+	) : (
+		<HiOutlineUser size={20} />
+	);
+
+	const rightItems = [
+		{ 
+			to: user ? "/user-profile" : "/auth", 
+			content: userLinkContent, 
+			isIcon: !user?.photo_url 
+		},
+		{ 
+			to: "/cart", 
+			content: <HiOutlineShoppingBag size={20} />, 
+			isIcon: true 
+		},
+	];
 
 	return (
 		<NavBase
@@ -52,10 +67,7 @@ export default function CustomerNavbar() {
 				},
 			]}
 			center={<Logo />}
-			right={[
-				{ to: "/user-profile", content: userLinkContent, isIcon: !user?.photo_url },
-				{ to: "/cart", content: <CartIcon />, isIcon: true },
-			]}
+			right={rightItems}
 			extraRight={
 				<button
 					className="nav__link"

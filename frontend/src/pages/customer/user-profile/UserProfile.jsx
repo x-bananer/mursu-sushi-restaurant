@@ -1,249 +1,75 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import InputField from "../../../components/shared/input-field/InputField";
+import { HiOutlineUser } from "react-icons/hi2";
 import Button from "../../../components/shared/button/Button";
-import { fetchData } from "../../../utils/fetchData";
+import Modal from "../../../components/shared/modal/modal";
+import Toast from "../../../components/shared/toast/Toast";
+import Loader from "../../../components/shared/loader/Loader";
+import ErrorState from "../../../components/shared/error-state/ErrorState";
+
+import LoyaltyStamps from "../../../components/customer/user/profile/LoyaltyStamps";
+import ProfileEditForm from "../../../components/customer/user/profile/ProfileEditForm";
+
 import { useAuth } from "../../../contexts/AuthContext";
-import useForm from "../../../hooks/formHooks";
+import { useUser } from "../../../hooks/apiHooks/user";
 import "./user-profile.css";
 
 export default function UserProfile() {
-	const { user, updateUser, logout } = useAuth();
+	const { user, logout } = useAuth();
+	const { getProfile, updateProfile, deleteAccount, isLoading, error } = useUser();
+	
 	const [profile, setProfile] = useState(user);
-	const {
-		inputs,
-		setInputs,
-		handleInputChange,
-	} = useForm(() => {}, {
-		name: user?.name || "",
-		email: user?.email || "",
-		password: "",
-	});
-	const [photoFile, setPhotoFile] = useState(null);
-	const [isEditing, setIsEditing] = useState(false);
+	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
-	const [error, setError] = useState("");
-	const [notice, setNotice] = useState("");
-	const navigate = useNavigate();
+	const [toast, setToast] = useState(null);
 
 	useEffect(() => {
-		if (!user) {
-			navigate("/auth", { replace: true });
-			return;
+		async function load() {
+			const data = await getProfile();
+			if (data) setProfile(data);
 		}
-		loadProfile();
-	}, [user?.id, navigate]);
+		load();
+	}, [getProfile]);
 
-	async function loadProfile() {
-		setError("");
-		try {
-			const data = await fetchData("/users/me");
-			if (data && data.user) {
-				setProfile(data.user);
-				updateUser(data.user);
-				setInputs({
-					name: data.user.name || "",
-					email: data.user.email || "",
-					password: "",
-				});
-			}
-		} catch (err) {
-			setError(err.message);
-		}
-	}
-
-	function handlePhotoChange(event) {
-		const file = event.target.files && event.target.files[0];
-		if (file) {
-			setPhotoFile(file);
-			return;
-		}
-
-		setPhotoFile(null);
-	}
-
-	function handleEditStart() {
-		setNotice("");
-		setError("");
-		setIsEditing(true);
-	}
-
-	async function handleSave() {
-		if (isSaving || !profile) {
-			return;
-		}
-
-		setError("");
-		setNotice("");
-
-		const trimmedName = inputs.name.trim();
-		const trimmedEmail = inputs.email.trim();
-		const trimmedPassword = inputs.password.trim();
-
-		if (!trimmedName || !trimmedEmail) {
-			setError("Name and email are required.");
-			return;
-		}
-
-		const payload = {};
-		const hasPhoto = Boolean(photoFile);
-		if (trimmedName !== profile.name) {
-			payload.name = trimmedName;
-		}
-		if (trimmedEmail !== profile.email) {
-			payload.email = trimmedEmail;
-		}
-		if (trimmedPassword) {
-			if (trimmedPassword.length < 8) {
-				setError("Password must be at least 8 characters.");
-				return;
-			}
-			payload.password = trimmedPassword;
-		}
-
-		if (Object.keys(payload).length === 0 && !hasPhoto) {
-			setIsEditing(false);
-			return;
-		}
-
+	const handleSaveProfile = async (payload, photoFile) => {
 		setIsSaving(true);
 		try {
-			let data = null;
-			if (hasPhoto) {
-				const formData = new FormData();
-				if (payload.name) {
-					formData.append("name", payload.name);
-				}
-				if (payload.email) {
-					formData.append("email", payload.email);
-				}
-				if (payload.password) {
-					formData.append("password", payload.password);
-				}
-				formData.append("photo", photoFile);
-
-				data = await fetchData("/users/me", {
-					method: "PATCH",
-					body: formData,
-				});
-			} else {
-				data = await fetchData("/users/me", {
-					method: "PATCH",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(payload),
-				});
+			const updatedUser = await updateProfile(payload, photoFile);
+			if (updatedUser) {
+				setProfile(updatedUser);
+				setToast({ message: "Profile updated successfully!" });
+				setIsEditModalOpen(false);
 			}
-
-			if (data && data.user) {
-				setProfile(data.user);
-				updateUser(data.user);
-				setInputs({
-					name: data.user.name || "",
-					email: data.user.email || "",
-					password: "",
-				});
-				setPhotoFile(null);
-				setNotice("Profile updated.");
-			}
-
-			setIsEditing(false);
 		} catch (err) {
-			setError(err.message);
+			setToast({ message: err.message || "Failed to update profile", type: "error" });
 		} finally {
 			setIsSaving(false);
 		}
-	}
+	};
 
-	async function handleDelete() {
-		if (!profile || isDeleting) {
-			return;
-		}
+	const handleDeleteAccount = async () => {
+		const confirmed = window.confirm("Delete your account? This cannot be undone.");
+		if (!confirmed) return;
 
-		const confirmed = window.confirm(
-			"Delete your account? This cannot be undone.",
-		);
-		if (!confirmed) {
-			return;
-		}
-
-		setError("");
-		setNotice("");
 		setIsDeleting(true);
-		try {
-			await fetchData("/users/me", { method: "DELETE" });
-			logout();
-			setProfile(null);
-			setInputs({ name: "", email: "", password: "" });
-			setPhotoFile(null);
-			setNotice("Account deleted.");
-		} catch (err) {
-			setError(err.message);
-		} finally {
+		const success = await deleteAccount();
+		if (!success) {
+			setToast({ message: "Failed to delete account", type: "error" });
 			setIsDeleting(false);
 		}
+	};
+
+	if (isLoading && !profile) {
+		return <Loader size={48} text="Loading profile..." className="page-loader" />;
 	}
 
-	let displayName = "Guest";
-	if (profile && profile.name) {
-		displayName = profile.name;
+	if (error && !profile) {
+		return <ErrorState message={error} onRetry={getProfile} />;
 	}
 
-	let metaText = "Sign in to view your profile.";
-	if (profile && profile.email) {
-		const regDate = profile.created_at ? new Date(profile.created_at).toLocaleDateString() : "";
-		metaText = `${profile.email} ${regDate ? `• Joined ${regDate}` : ""}`;
-	}
-	if (notice) {
-		metaText = notice;
-	}
-	if (error) {
-		metaText = error;
-	}
-
-	const stampGoal = 5;
-	const stampCount = profile ? profile.stamp_count : 0;
-	const isStampDiscountActive = profile ? profile.is_stamp_discount_active : false;
-	const stampsLeft = Math.max(0, stampGoal - stampCount);
-	const loyaltyHint = isStampDiscountActive
-		? "10% discount is active for your next order"
-		: `${stampsLeft} more purchase${stampsLeft === 1 ? "" : "s"} to unlock 10% on your next order`;
-
-	let actionLabel = "Edit Profile";
-	if (isEditing) {
-		if (isSaving) {
-			actionLabel = "Saving...";
-		} else {
-			actionLabel = "Save Changes";
-		}
-	}
-
-	let actionHandler = handleEditStart;
-	if (isEditing) {
-		actionHandler = handleSave;
-	}
-
-	let actionDisabled = isSaving || isDeleting;
-	if (!profile) {
-		actionDisabled = true;
-	}
-
-	let fieldDisabled = !isEditing || isDeleting;
-	if (isSaving) {
-		fieldDisabled = true;
-	}
-
-	let deleteDisabled = isDeleting || isSaving;
-	if (!profile) {
-		deleteDisabled = true;
-	}
-
-	let deleteLabel = "Delete Account";
-	if (isDeleting) {
-		deleteLabel = "Deleting...";
-	}
+	const displayName = profile?.name || "Guest";
+	const regDate = profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : "";
+	const metaText = profile?.email ? `${profile.email} ${regDate ? `• Joined ${regDate}` : ""}` : "";
 
 	return (
 		<div className="profile">
@@ -258,32 +84,7 @@ export default function UserProfile() {
 									className="profile__avatar-img"
 								/>
 							) : (
-								<svg
-									viewBox="0 0 48 48"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<circle
-										cx="24"
-										cy="24"
-										r="18"
-										stroke="currentColor"
-										strokeWidth="2"
-									/>
-									<circle
-										cx="24"
-										cy="18"
-										r="5"
-										stroke="currentColor"
-										strokeWidth="2"
-									/>
-									<path
-										d="M14 34C14 29 18 26 24 26C30 26 34 29 34 34"
-										stroke="currentColor"
-										strokeWidth="2"
-										strokeLinecap="round"
-									/>
-								</svg>
+								<HiOutlineUser size={32} />
 							)}
 						</div>
 						<div className="profile__identity">
@@ -294,92 +95,59 @@ export default function UserProfile() {
 					<div className="profile__actions">
 						<Button
 							variant="light"
-							type="button"
-							disabled={actionDisabled}
-							onClick={actionHandler}
+							onClick={() => setIsEditModalOpen(true)}
 						>
-							{actionLabel}
+							Edit Profile
 						</Button>
 						<Button
 							variant="gray"
-							type="button"
-							disabled={deleteDisabled}
-							onClick={handleDelete}
+							onClick={logout}
 						>
-							{deleteLabel}
+							Logout
 						</Button>
 					</div>
 				</section>
-				<section className="profile__content">
-					<InputField
-						label="Name"
-						name="name"
-						value={inputs.name}
-						onChange={handleInputChange}
-						disabled={fieldDisabled}
-					/>
-					<InputField
-						label="Email"
-						name="email"
-						type="email"
-						value={inputs.email}
-						onChange={handleInputChange}
-						disabled={fieldDisabled}
-					/>
-					{isEditing && (
-						<InputField
-							label="New Password (optional)"
-							name="password"
-							type="password"
-							value={inputs.password}
-							onChange={handleInputChange}
-							disabled={fieldDisabled}
-							placeholder="Leave empty to keep current"
-						/>
-					)}
-					<InputField
-						label="Photo"
-						name="photo"
-						type="file"
-						accept="image/*"
-						onChange={handlePhotoChange}
-						disabled={fieldDisabled}
-					/>
-				</section>
+
 				<section className="profile__stats">
-					<section className="profile-loyalty">
-						<p className="profile-loyalty__label">Loyalty Stamps</p>
-						<div className="profile-loyalty__stamps">
-							{Array.from({ length: stampGoal }).map((_, index) => {
-								const isActive = index < stampCount;
-								return (
-									<span
-										key={index}
-										className={`profile-loyalty__stamp${isActive ? " profile-loyalty__stamp--active" : ""}`}
-									>
-										{isActive ? "★" : ""}
-									</span>
-								);
-							})}
-						</div>
-						<p className="profile-loyalty__hint">{loyaltyHint}</p>
-					</section>
+					<LoyaltyStamps 
+						stampCount={profile?.stamp_count || 0} 
+						isDiscountActive={profile?.is_stamp_discount_active} 
+					/>
+					
 					<div className="profile__stats-side">
 						<section className="profile-stat-card">
-							<p className="profile-stat-card__label">
-								Next Milestone
-							</p>
+							<p className="profile-stat-card__label">Next Milestone</p>
 							<p className="profile-stat-card__value">10% off</p>
 						</section>
 						<section className="profile-stat-card profile-stat-card--light">
-							<p className="profile-stat-card__label">
-								Rewards Earned
-							</p>
-							<p className="profile-stat-card__value">{stampCount}</p>
+							<p className="profile-stat-card__label">Rewards Earned</p>
+							<p className="profile-stat-card__value">{profile?.stamp_count || 0}</p>
 						</section>
 					</div>
 				</section>
 			</div>
+
+			<Modal
+				isOpen={isEditModalOpen}
+				onClose={() => setIsEditModalOpen(false)}
+				title="Edit Profile"
+			>
+				<ProfileEditForm 
+					user={profile} 
+					onSave={handleSaveProfile} 
+					onDelete={handleDeleteAccount}
+					isSaving={isSaving}
+					isDeleting={isDeleting}
+				/>
+			</Modal>
+
+			{toast && (
+				<Toast 
+					message={toast.message} 
+					className={toast.type === "error" ? "toast--error" : ""}
+					onClose={() => setToast(null)} 
+				/>
+			)}
 		</div>
 	);
 }
