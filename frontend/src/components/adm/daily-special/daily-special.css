@@ -1,8 +1,0 @@
-/* ── form group ──────────────────────────────── */
-
-.admin-form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-    max-width: 480px;
-}
