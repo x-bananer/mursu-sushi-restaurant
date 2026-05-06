@@ -11,6 +11,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",
     "fix": "eslint . --fix && prettier . --write",
+    "docs:api": "apidoc -i src/controllers -o docs/api",
     "test:integration": "NODE_ENV=test node --experimental-vm-modules ./node_modules/jest/bin/jest.js --config jest.config.js --runInBand --detectOpenHandles",
     "test:user-flow": "node tests/user.test.js",
     "test:combo-flow": "node tests/combo.test.js"
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "apidoc": "^1.2.0",
     "eslint": "^9.39.4",
     "globals": "^17.4.0",
     "jest": "^30.3.0",
