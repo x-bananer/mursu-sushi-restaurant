@@ -80,13 +80,13 @@ export default function Login({ onForgot, onAdminRegister }) {
 			</div>
 
 			<div className="auth-card__footer">
-				{/* <button
+				<button
 					type="button"
 					className="auth-card__link"
 					onClick={onForgot}
 				>
 					FORGOT CREDENTIALS?
-				</button> */}
+				</button>
 
 				<button
 					type="button"
