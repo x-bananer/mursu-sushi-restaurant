@@ -294,6 +294,7 @@ export async function createDailySpecial(dishId, payload = {}, locale) {
 		throw createHttpError(400, t(locale, "dish", "valid_on_required"));
 	}
 
+	await dailySpecialRepo.deleteDailySpecialByValidOn(validOn);
 	const specialId = await dailySpecialRepo.createDailySpecial({ dishId, validOn });
 	return dailySpecialRepo.getDailySpecialById(specialId);
 }
