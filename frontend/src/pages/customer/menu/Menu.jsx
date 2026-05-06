@@ -139,7 +139,7 @@ export default function Menu() {
 
 					{unavailableItems.length > 0 && (
 						<section className="menu-section">
-							<h2 className="menu-section__title">Other Dishes</h2>
+							<h2 className="menu-section__title">Out of Stock</h2>
 							<section className="menu-grid menu-grid--unavailable">
 								{unavailableItems.map((item, index) => (
 									<MenuDishCard

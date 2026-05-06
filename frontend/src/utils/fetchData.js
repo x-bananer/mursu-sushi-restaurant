@@ -3,9 +3,11 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const fetchData = async (url, options = {}) => {
 	const sessionId = localStorage.getItem("session_id");
 	const token = localStorage.getItem("token");
+	const locale = localStorage.getItem("locale") || "en";
 
 	const headers = {
 		"Content-Type": "application/json",
+		"x-locale": locale,
 		...(options.headers || {}),
 	};
 
