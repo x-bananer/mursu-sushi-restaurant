@@ -105,7 +105,7 @@ export default function MenuDishCard({
 			title={item.name}
 			price={item.price}
 			description={item.description}
-			tags={item.tags ?? []}
+			tags={item.badges ?? []}
 			variant={cardVariant}
 			controllers={
 				<>

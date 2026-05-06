@@ -1,117 +1,103 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
 import InputField from "../../../shared/input-field/InputField";
 import Button from "../../../shared/button/Button";
-import { fetchData } from "../../../../utils/fetchData";
-import { useAuth } from "../../../../contexts/AuthContext";
+import Loader from "../../../shared/loader/Loader";
+import ErrorState from "../../../shared/error-state/errorState";
+import { useLogin } from "../../../../hooks/apiHooks/auth";
+import { useNavigate } from 'react-router';
 
 export default function Login({ onForgot, onAdminRegister }) {
-  const { login } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+	const { login, loading, error } = useLogin();
   const navigate = useNavigate();
 
-  async function handleLogin() {
-    if (isSubmitting) {
-      return;
-    }
+  console.log('login: ', login);
 
-    setError("");
+	const [form, setForm] = useState({
+		email: "",
+		password: "",
+	});
 
-    const trimmedEmail = email.trim();
+	const handleChange = (e) => {
+		setForm((prev) => ({
+			...prev,
+			[e.target.name]: e.target.value,
+		}));
+	};
 
-    if (!trimmedEmail || !password) {
-      setError("Email and password are required.");
-      return;
-    }
+	const handleSubmit = async (e) => {
+		e.preventDefault();
 
-    setIsSubmitting(true);
+		try {
+		  const res = await login(form);
 
-    try {
-      const data = await fetchData("/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: trimmedEmail,
-          password,
-        }),
-      });
+		  const role = res?.user?.role_id;
 
-      if (data && data.token) {
-        login(data.user, data.token);
-        navigate("/user-profile", { replace: true });
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
+		  if (role === 2) {
+			  navigate("/admin");
+		  } else {
+			  navigate("/user-profile");
+		  }
+	  } catch (err) {
+		console.err(err);
+	}
+	};
 
-  let message = null;
-  if (error) {
-    message = <p className="auth-card__link">{error}</p>;
-  }
+	// LOADING STATE
+	if (loading) {
+		return <Loader text="Signing you in..." />;
+	}
 
-  return (
-    <>
-      <InputField
-        label="EMAIL ADDRESS"
-        type="email"
-        placeholder="ARCHITECT@MURSU.ZEN"
-        value={email}
-        onChange={(event) => setEmail(event.target.value)}
-      />
+	return (
+		<form onSubmit={handleSubmit}>
+			{/* ERROR STATE */}
+			{error && (
+				<ErrorState
+					message={error}
+					onRetry={() => handleSubmit(new Event("submit"))}
+				/>
+			)}
 
-      <InputField
-        label="PASSWORD"
-        type="password"
-        placeholder="••••••••••"
-        value={password}
-        onChange={(event) => setPassword(event.target.value)}
-      />
+			<InputField
+				label="EMAIL ADDRESS"
+				type="email"
+				name="email"
+				value={form.email}
+				onChange={handleChange}
+				placeholder="ARCHITECT@MURSU.ZEN"
+			/>
 
-      <div className="auth-card__actions">
-        <Button
-          variant="light"
-          className="auth-card__btn"
-          type="button"
-          onClick={handleLogin}
-          disabled={isSubmitting}
-        >
-          SIGN IN
-        </Button>
+			<InputField
+				label="PASSWORD"
+				type="password"
+				name="password"
+				value={form.password}
+				onChange={handleChange}
+				placeholder="••••••••••"
+			/>
 
-        <Button
-          variant="link"
-          className="auth-card__btn auth-card__btn--secondary"
-        >
-          CONTINUE AS GUEST
-        </Button>
-      </div>
+			<div className="auth-card__actions">
+				<Button variant="light" className="auth-card__btn" type="submit">
+					SIGN IN
+				</Button>
+			</div>
 
-      <div className="auth-card__footer">
-        <button
-          type="button"
-          className="auth-card__link"
-          onClick={onForgot}
-        >
-          FORGOT CREDENTIALS?
-        </button>
+			<div className="auth-card__footer">
+				<button
+					type="button"
+					className="auth-card__link"
+					onClick={onForgot}
+				>
+					FORGOT CREDENTIALS?
+				</button>
 
-        <button
-          type="button"
-          className="auth-card__link"
-          onClick={onAdminRegister}
-        >
-          STAFF? REGISTER HERE ↗
-        </button>
-      </div>
-      {message}
-    </>
-  );
+				<button
+					type="button"
+					className="auth-card__link"
+					onClick={onAdminRegister}
+				>
+					STAFF? REGISTER HERE ↗
+				</button>
+			</div>
+		</form>
+	);
 }

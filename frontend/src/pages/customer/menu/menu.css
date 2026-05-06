@@ -3,6 +3,19 @@
   position: relative;
 }
 
+.menu-section {
+  margin-top: 40px;
+}
+
+.menu-section__title {
+  color: var(--color-light-gray);
+  font-family: var(--font-button);
+  font-size: 32px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
 /* HERO */
 .menu-page__hero {
   display: grid;
@@ -128,9 +141,15 @@
   position: relative;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin-top: 42px;
+  margin-top: 20px;
   border-top: 1px solid var(--color-dark-gray);
   border-left: 1px solid var(--color-dark-gray);
+}
+
+.menu-grid--unavailable .card-base {
+  opacity: 0.5;
+  filter: grayscale(1);
+  pointer-events: none;
 }
 
 @media (max-width: 1024px) {
@@ -142,6 +161,6 @@
 @media (max-width: 768px) {
   .menu-grid {
     grid-template-columns: 1fr;
-    margin-top: 32px;
+    margin-top: 16px;
   }
 }

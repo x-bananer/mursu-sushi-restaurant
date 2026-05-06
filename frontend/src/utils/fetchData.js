@@ -5,6 +5,7 @@ const fetchData = async (url, options = {}) => {
 	const token = localStorage.getItem("token");
 
 	const headers = {
+		"Content-Type": "application/json",
 		...(options.headers || {}),
 	};
 
