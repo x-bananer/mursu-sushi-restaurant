@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useMemo } from "react";
+import { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
 import { fetchData } from "../utils/fetchData";
 
 const AuthContext = createContext(null);
@@ -17,24 +17,24 @@ export function AuthProvider({ children }) {
 	const [token, setToken] = useState(() => localStorage.getItem("token"));
 	const [isLoading, setIsLoading] = useState(!!token);
 
-	const login = (userData, userToken) => {
+	const login = useCallback((userData, userToken) => {
 		setUser(userData);
 		setToken(userToken);
 		localStorage.setItem("user", JSON.stringify(userData));
 		localStorage.setItem("token", userToken);
-	};
+	}, []);
 
-	const logout = () => {
+	const logout = useCallback(() => {
 		setUser(null);
 		setToken(null);
 		localStorage.removeItem("user");
 		localStorage.removeItem("token");
-	};
+	}, []);
 
-	const updateUser = (userData) => {
+	const updateUser = useCallback((userData) => {
 		setUser(userData);
 		localStorage.setItem("user", JSON.stringify(userData));
-	};
+	}, []);
 
 	useEffect(() => {
 		async function refreshAuth() {
@@ -70,7 +70,7 @@ export function AuthProvider({ children }) {
 		logout,
 		updateUser,
 		isAdmin: user?.role_id === 2
-	}), [user, token, isLoading]);
+	}), [user, token, isLoading, login, logout, updateUser]);
 
 	return (
 		<AuthContext.Provider value={value}>
