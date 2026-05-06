@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import router from './routes.js';
 import { startHeartbeat } from './services/order/order.tracker.js';
 import errorHandler from './middleware/errorHandler.js';
+import languageMiddleware from './middleware/language.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +17,7 @@ app.use(cors());              // Enable CORS
 app.use(express.json());      // Parse JSON bodies
 app.use(morgan('dev'));      // Logging
 app.use('/uploads', express.static('uploads')); // Serve uploaded user photos
+app.use(languageMiddleware);
 
 // ─────────────────────────────────────────────────────────────
 // API DOCUMENTATION
