@@ -9,7 +9,7 @@ export async function register(req, res, next) {
 		// Attach cart to user when user gets user_id after auth.
 		const sessionId = String(req.headers["x-session-id"] ?? "").trim();
 		if (sessionId) {
-			await cartService.addUserIdToCart(sessionId, result?.user?.id);
+			await cartService.addUserIdToCart(sessionId, result?.user?.id, req.locale);
 		}
 
 		res.status(201).json(result);
@@ -25,7 +25,7 @@ export async function login(req, res, next) {
 		// Attach cart to user when user gets user_id after auth.
 		const sessionId = String(req.headers["x-session-id"] ?? "").trim();
 		if (sessionId) {
-			await cartService.addUserIdToCart(sessionId, result?.user?.id);
+			await cartService.addUserIdToCart(sessionId, result?.user?.id, req.locale);
 		}
 
 		res.json(result);

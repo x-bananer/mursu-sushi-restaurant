@@ -6,6 +6,7 @@ import * as dailySpecialRepo from '../../models/db/repositories/dish/dailySpecia
 import * as orderService from '../order/order.service.js';
 import * as cartMapper from './cart.mapper.js';
 import * as cartEngine from '../../models/engine/cart.engine.js';
+import { t } from '../../i18n/messages.js';
 
 function createHttpError(statusCode, message) {
     const error = /** @type {Error & { statusCode: number }} */ (new Error(message));
@@ -14,9 +15,9 @@ function createHttpError(statusCode, message) {
 }
 
 // Create cart for session
-export const createCartBySessionId = async (sessionId, items = []) => {
+export const createCartBySessionId = async (sessionId, items = [], locale) => {
     if (!sessionId) {
-        throw createHttpError(400, 'Missing session_id');
+        throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
     }
 
     let cart = await cartRepo.getCartBySessionId(sessionId);
@@ -30,11 +31,11 @@ export const createCartBySessionId = async (sessionId, items = []) => {
     }
 
     if (!cart) {
-        throw new Error('Cart was not created');
+        throw new Error(t(locale, 'cart', 'cart_not_created'));
     }
 
     for (const item of items) {
-        const itemPrice = await getItemPrice(item);
+        const itemPrice = await getItemPrice(item, locale);
 
         const cartItemId = await cartItemsRepo.createCartItem({
             cart_id: cart.id,
@@ -49,13 +50,13 @@ export const createCartBySessionId = async (sessionId, items = []) => {
         }
     }
 
-    return getCartBySessionId(sessionId);
+    return getCartBySessionId(sessionId, locale);
 }
 
 // Get cart for session
-export const getCartBySessionId = async (sessionId) => {
+export const getCartBySessionId = async (sessionId, locale) => {
     if (!sessionId) {
-        throw createHttpError(400, 'Missing session_id');
+        throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
     }
 
     const cart = await cartRepo.getCartBySessionId(sessionId);
@@ -73,20 +74,21 @@ export const getCartBySessionId = async (sessionId) => {
         items,
         ingredients,
         totalPrice,
-        discount
+        discount,
+        locale
     );
 }
 
 // Update/create the whole cart for session
-export const updateCartBySessionId = async (sessionId, items = []) => {
+export const updateCartBySessionId = async (sessionId, items = [], locale) => {
     if (!sessionId) {
-        throw createHttpError(400, 'Missing session_id');
+        throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
     }
 
     const cart = await cartRepo.getCartBySessionId(sessionId);
 
     if (!cart) {
-        return createCartBySessionId(sessionId, items);
+        return createCartBySessionId(sessionId, items, locale);
     }
 
     const filteredItems = items.filter(item => {
@@ -96,7 +98,7 @@ export const updateCartBySessionId = async (sessionId, items = []) => {
     if (filteredItems.length === 0) {
         await cartItemsRepo.deleteCartItemsByCartId(cart.id);
         await cartRepo.updateCartBySessionId(sessionId);
-        return getCartBySessionId(sessionId);
+        return getCartBySessionId(sessionId, locale);
     }
 
     const oldItems = await cartItemsRepo.getCartItemsByCartId(cart.id);
@@ -128,7 +130,7 @@ export const updateCartBySessionId = async (sessionId, items = []) => {
 
     for (const item of filteredItems) {
         if (item.id) {
-            const itemPrice = await getItemPrice(item);
+            const itemPrice = await getItemPrice(item, locale);
 
             await cartItemsRepo.updateCartItem({
                 id: item.id,
@@ -144,7 +146,7 @@ export const updateCartBySessionId = async (sessionId, items = []) => {
                 await createCartItemIngredients(item.id, item.ingredients);
             }
         } else {
-            const itemPrice = await getItemPrice(item);
+            const itemPrice = await getItemPrice(item, locale);
 
             const cartItemId = await cartItemsRepo.createCartItem({
                 cart_id: cart.id,
@@ -162,21 +164,21 @@ export const updateCartBySessionId = async (sessionId, items = []) => {
 
     await cartRepo.updateCartBySessionId(sessionId);
 
-    return getCartBySessionId(sessionId);
+    return getCartBySessionId(sessionId, locale);
 }
 
 // Update/create ona cart dish for session
-export const updateCartDishBySessionId = async (sessionId, dishId, quantity) => {
+export const updateCartDishBySessionId = async (sessionId, dishId, quantity, locale) => {
     if (!sessionId) {
-        throw createHttpError(400, 'Missing session_id');
+        throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
     }
 
     if (!Number(dishId)) {
-        throw createHttpError(400, 'Valid dish_id is required');
+        throw createHttpError(400, t(locale, 'cart', 'valid_dish_id_required'));
     }
 
     if (Number.isNaN(Number(quantity)) || Number(quantity) < 0) {
-        throw createHttpError(400, 'Valid quantity is required');
+        throw createHttpError(400, t(locale, 'cart', 'valid_quantity_required'));
     }
 
     let cart = await cartRepo.getCartBySessionId(sessionId);
@@ -197,10 +199,10 @@ export const updateCartDishBySessionId = async (sessionId, dishId, quantity) => 
             await cartRepo.updateCartBySessionId(sessionId);
         }
 
-        return getCartBySessionId(sessionId);
+        return getCartBySessionId(sessionId, locale);
     }
 
-    const itemPrice = await getDishItemPrice({ dish_id: Number(dishId) });
+    const itemPrice = await getDishItemPrice({ dish_id: Number(dishId) }, locale);
 
     if (existingDishItem) {
         await cartItemsRepo.updateCartItem({
@@ -221,13 +223,13 @@ export const updateCartDishBySessionId = async (sessionId, dishId, quantity) => 
     }
 
     await cartRepo.updateCartBySessionId(sessionId);
-    return getCartBySessionId(sessionId);
+    return getCartBySessionId(sessionId, locale);
 }
 
 // Clear cart for session
-export const clearCartBySessionId = async (sessionId) => {
+export const clearCartBySessionId = async (sessionId, locale) => {
     if (!sessionId) {
-        throw createHttpError(400, 'Missing session_id');
+        throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
     }
 
     const cart = await cartRepo.getCartBySessionId(sessionId);
@@ -242,13 +244,13 @@ export const clearCartBySessionId = async (sessionId) => {
     return true;
 }
 
-export const addUserIdToCart = async (sessionId, userId) => {
+export const addUserIdToCart = async (sessionId, userId, locale) => {
     if (!sessionId) {
-        throw createHttpError(400, 'Missing session_id');
+        throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
     }
 
     if (!userId) {
-        throw createHttpError(400, 'Missing user_id');
+        throw createHttpError(400, t(locale, 'cart', 'missing_user_id'));
     }
 
     let cart = await cartRepo.getCartBySessionId(sessionId);
@@ -279,31 +281,31 @@ export const addUserIdToCart = async (sessionId, userId) => {
     await cartRepo.addUserIdToCart(sessionId, userId);
 }
 
-export const checkoutCartBySessionId = async (sessionId, userId, checkoutData) => {
+export const checkoutCartBySessionId = async (sessionId, userId, checkoutData, locale) => {
     if (!sessionId) {
-        throw createHttpError(400, 'Missing session_id');
+        throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
     }
 
     if (!Number.isInteger(userId)) {
-        throw createHttpError(401, 'Unauthorized');
+        throw createHttpError(401, t(locale, 'access', 'unauthorized'));
     }
 
     if (!checkoutData.delivery_type_id) {
-        throw createHttpError(400, 'Missing checkout data');
+        throw createHttpError(400, t(locale, 'cart', 'missing_checkout_data'));
     }
 
     if (Number(checkoutData.delivery_type_id) === 3 && !String(checkoutData.address).trim()) {
-        throw createHttpError(400, 'Address is required for delivery');
+        throw createHttpError(400, t(locale, 'cart', 'address_required_for_delivery'));
     }
 
-    const cart = await getCartBySessionId(sessionId);
+    const cart = await getCartBySessionId(sessionId, locale);
 
     if (!cart) {
-        throw createHttpError(404, 'Cart not found');
+        throw createHttpError(404, t(locale, 'cart', 'cart_not_found'));
     }
 
     if (!cart.items.length) {
-        throw createHttpError(400, 'Cart is empty');
+        throw createHttpError(400, t(locale, 'cart', 'cart_empty'));
     }
 
     const orderItems = cart.items.map((item) => {
@@ -363,29 +365,29 @@ export const getDeliveryTypes = async () => {
 
 // Get item price
 // item: { dish_id: 1, quantity: 2, item_type_id: 1 }
-const getItemPrice = async (item) => {
+const getItemPrice = async (item, locale) => {
     try {
         if (item.item_type_id === 1) {
-            return await getDishItemPrice(item);
+            return await getDishItemPrice(item, locale);
         }
 
         if (item.item_type_id === 2) {
-            return await getCustomItemPrice(item);
+            return await getCustomItemPrice(item, locale);
         }
 
-        throw new Error('Invalid cart item type');
+        throw new Error(t(locale, 'cart', 'invalid_cart_item_type'));
     } catch (error) {
-        throw toInvalidCartDataError(error);
+        throw toInvalidCartDataError(error, locale);
     }
 }
 
 // Get saved dish price from DB
-const getDishItemPrice = async (item) => {
+const getDishItemPrice = async (item, locale) => {
     // dish: { id: 1, name: 'Sake Sashimi', price: 12 }
     const dish = await cartItemsRepo.getDishById(item.dish_id);
 
     if (!dish) {
-        throw new Error('Dish not found');
+        throw new Error(t(locale, 'cart', 'dish_not_found'));
     }
 
     return Number(dish.price);
@@ -393,7 +395,7 @@ const getDishItemPrice = async (item) => {
 
 // Calculate custom item price from selected ingredients
 // item: { item_type_id: 2, quantity: 1, ingredients: [{ ingredient_id: 1, quantity: 1, position: 1 }] }
-const getCustomItemPrice = async (item) => {
+const getCustomItemPrice = async (item, locale) => {
     // itemIngredients: [{ ingredient_id: 1, quantity: 1, position: 1 }]
     const itemIngredients = item.ingredients || [];
     // itemIngredientIds: [1, 12, 21]
@@ -413,7 +415,7 @@ const getCustomItemPrice = async (item) => {
         );
 
         if (!ingredient) {
-            throw new Error('Ingredient not found');
+            throw new Error(t(locale, 'cart', 'ingredient_not_found'));
         }
 
         totalPrice += Number(ingredient.price) * Number(itemIngredient.quantity);
@@ -479,7 +481,7 @@ const getCartTotalPrice = async (cart, items) => {
     }
 }
 
-const toInvalidCartDataError = (error) => {
+const toInvalidCartDataError = (error, locale) => {
     console.error('Cart validation failed:', error);
-    return new Error('Invalid cart data');
+    return new Error(t(locale, 'common', 'internal_error'));
 }
