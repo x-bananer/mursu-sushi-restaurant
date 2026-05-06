@@ -44,6 +44,18 @@ export async function createDailySpecial({ dishId, validOn }) {
 	return result.insertId;
 }
 
+export async function deleteDailySpecialByValidOn(validOn) {
+	const result = await execute(
+		`
+		DELETE FROM daily_specials
+		WHERE valid_on = ?;
+		`,
+		[validOn],
+	);
+
+	return result.affectedRows;
+}
+
 export async function getDailySpecialById(id) {
 	const rows = await select(
 		`

@@ -293,6 +293,7 @@ export async function createDailySpecial(dishId, payload = {}) {
 		throw createHttpError(400, "valid_on is required");
 	}
 
+	await dailySpecialRepo.deleteDailySpecialByValidOn(validOn);
 	const specialId = await dailySpecialRepo.createDailySpecial({ dishId, validOn });
 	return dailySpecialRepo.getDailySpecialById(specialId);
 }
