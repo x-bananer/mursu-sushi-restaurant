@@ -223,7 +223,7 @@ export async function estimate(req, res, next) {
       userCoords = { lat, lon };
     }
 
-    const result = await orderService.getOrderRoute(orderId, userCoords);
+    const result = await orderService.getOrderRoute(orderId, userCoords, req.locale);
 
     res.json({ estimate: result });
   } catch (err) {
@@ -258,7 +258,8 @@ export async function routeByMode(req, res, next) {
     const result = await orderService.getOrderRouteByMode(
       orderId,
       userCoords,
-      mode
+      mode,
+      req.locale
     );
 
     res.json({ route: result });

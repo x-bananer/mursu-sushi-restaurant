@@ -123,6 +123,10 @@ const messages = {
 			hsl_api_error: "HSL API {status}: {statusText} — {text}",
 			hsl_graphql_error: "HSL GraphQL: {message}",
 			ors_api_error: "ORS {status}: {text}",
+			hsl_route_coords_required: "getRoute: from and to coordinates are required",
+			hsl_unsupported_mode: "getRoute: unsupported mode",
+			ors_route_coords_required: "getCarRoute: from and to required",
+			ors_invalid_coordinate_format: "Invalid coordinate format",
 		},
 	},
 	fi: {
@@ -259,6 +263,10 @@ const messages = {
 			hsl_api_error: "HSL API {status}: {statusText} — {text}",
 			hsl_graphql_error: "HSL GraphQL: {message}",
 			ors_api_error: "ORS {status}: {text}",
+			hsl_route_coords_required: "lähtö- ja kohdekoordinaatit vaaditaan",
+			hsl_unsupported_mode: "tila ei ole tuettu",
+			ors_route_coords_required: "lähtö ja kohde vaaditaan",
+			ors_invalid_coordinate_format: "Virheellinen koordinaattimuoto",
 		},
 	},
 };

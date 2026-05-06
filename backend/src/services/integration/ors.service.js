@@ -16,6 +16,7 @@
 
 import polyline from '@mapbox/polyline';
 import dotenv from 'dotenv';
+import { t } from '../../i18n/messages.js';
 dotenv.config();
 
 /**
@@ -78,9 +79,9 @@ function mapStep(step) {
 
 // ── HTTP ─────────────────────────────────────────────────
 
-async function orsRequest(body, attempt = 1) {
+async function orsRequest(body, attempt = 1, locale = 'en') {
   if (!ORS_API_KEY) {
-    throw new Error('ORS_API_KEY is missing');
+    throw new Error(t(locale, 'integration', 'ors_api_key_missing'));
   }
 
   const controller = new AbortController();
@@ -99,11 +100,11 @@ async function orsRequest(body, attempt = 1) {
 
     if (res.status === 429 && attempt <= MAX_RETRIES) {
       await new Promise(r => setTimeout(r, 1000 * attempt));
-      return orsRequest(body, attempt + 1);
+      return orsRequest(body, attempt + 1, locale);
     }
 
     if (!res.ok) {
-      throw new Error(`ORS ${res.status}: ${await res.text()}`);
+      throw new Error(t(locale, 'integration', 'ors_api_error'));
     }
 
     return res.json();
@@ -115,7 +116,7 @@ async function orsRequest(body, attempt = 1) {
 
     if (retryable && attempt <= MAX_RETRIES) {
       await new Promise(r => setTimeout(r, 500 * attempt));
-      return orsRequest(body, attempt + 1);
+      return orsRequest(body, attempt + 1, locale);
     }
 
     throw err;
@@ -126,9 +127,9 @@ async function orsRequest(body, attempt = 1) {
 
 // ── Public API ───────────────────────────────────────────
 
-export async function getCarRoute({ from, to }) {
+export async function getCarRoute({ from, to, locale = 'en' }) {
   if (!from || !to) {
-    throw new TypeError('getCarRoute: from and to required');
+    throw new TypeError(t(locale, 'integration', 'ors_route_coords_required'));
   }
 
   if (
@@ -137,7 +138,7 @@ export async function getCarRoute({ from, to }) {
     typeof to.lat !== 'number' ||
     typeof to.lon !== 'number'
   ) {
-    throw new TypeError('Invalid coordinate format');
+    throw new TypeError(t(locale, 'integration', 'ors_invalid_coordinate_format'));
   }
 
   try {
@@ -150,7 +151,7 @@ export async function getCarRoute({ from, to }) {
       geometry: true,
       geometry_simplify: false,
       language: 'en',
-    });
+    }, 1, locale);
 
     const route = data?.routes?.[0];
     if (!route) return null;

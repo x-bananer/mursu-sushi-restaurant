@@ -22,7 +22,7 @@ export async function previewCombo(ingredientsFromClient = [], withValidation = 
 export async function createCombo(sessionId, ingredientsFromClient, locale) {
     let validatedCombo;
     try {
-        validatedCombo = await previewCombo(ingredientsFromClient, true);
+        validatedCombo = await previewCombo(ingredientsFromClient, true, locale);
     } catch (error) {
         throw createHttpError(400, error.message || t(locale, 'combo', 'invalid_combo_data'));
     }

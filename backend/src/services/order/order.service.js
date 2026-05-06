@@ -281,7 +281,7 @@ function getOrdersAhead(allOrders, currentOrder) {
     );
 }
 
-export async function getOrderRoute(orderId, userLocation) {
+export async function getOrderRoute(orderId, userLocation, locale) {
   const order = await getOrder(orderId);
   if (!order) throw createHttpError(400, 'Order not found');
 
@@ -293,10 +293,11 @@ export async function getOrderRoute(orderId, userLocation) {
     userCoords: userLocation,
     serviceType: order.delivery_type.type,
     activeOrdersAheadCount: activeOrdersAhead.length,
+    locale,
   });
 }
 
-export async function getOrderRouteByMode(orderId, userLocation, mode) {
+export async function getOrderRouteByMode(orderId, userLocation, mode, locale) {
   const order = await getOrder(orderId);
   if (!order) throw createHttpError(400, 'Order not found');
 
@@ -304,5 +305,6 @@ export async function getOrderRouteByMode(orderId, userLocation, mode) {
     order,
     userCoords: userLocation,
     mode,
+    locale,
   });
 }
