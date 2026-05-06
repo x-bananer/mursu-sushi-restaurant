@@ -8,21 +8,21 @@ function createHttpError(statusCode, message) {
 	return error;
 }
 
-function normalizeBadges(rawBadges) {
-	if (Array.isArray(rawBadges)) {
-		return rawBadges;
-	}
+function normalizeBadges(databaseBadges) {
+	let badges = [];
 
-	if (typeof rawBadges === "string") {
+	if (Array.isArray(databaseBadges)) {
+		badges = databaseBadges;
+	} else if (typeof databaseBadges === "string") {
 		try {
-			const parsed = JSON.parse(rawBadges || "[]");
-			return Array.isArray(parsed) ? parsed : [];
+			const parsed = JSON.parse(databaseBadges || "[]");
+			badges = Array.isArray(parsed) ? parsed : [];
 		} catch {
-			return [];
+			badges = [];
 		}
 	}
 
-	return [];
+	return badges.filter((badge) => badge && typeof badge === "object" && badge.id != null && badge.name != null);
 }
 
 export async function getDishes() {

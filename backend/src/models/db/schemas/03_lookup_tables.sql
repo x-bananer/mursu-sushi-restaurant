@@ -45,11 +45,15 @@ INSERT INTO badge (id, name) VALUES
 (1, 'Vegan'),
 (2, 'Vegetarian'),
 (3, 'Gluten-Free'),
-(4, 'Dairy-Free'),
-(5, 'Spicy'),
-(6, 'Popular'),
-(7, 'New'),
-(8, 'Chef Special');
+(4, 'Lactose-Free'),
+(5, 'Dairy-Free'),
+(6, 'Nut-Free'),
+(7, 'Spicy'),
+(8, 'Keto'),
+(9, 'High-Protein'),
+(10, 'Popular'),
+(11, 'New'),
+(12, 'Chef Special');
 
 -- ── INGREDIENT TYPE ───────────────────────────
 
