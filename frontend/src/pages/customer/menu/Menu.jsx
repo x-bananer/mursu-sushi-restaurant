@@ -58,7 +58,7 @@ export default function Menu() {
 		<div className="menu-page">
 			<section className="menu-page__hero">
 				<div className="menu-page__hero-main">
-					<h1 className="menu-page__title">Menu</h1>
+					<h1 className="menu-page__title">Today’s menu</h1>
 					<p className="menu-page__subtitle">
 						Browse the menu, choose your favorites, and add them to cart.
 					</p>
@@ -114,7 +114,6 @@ export default function Menu() {
 				<>
 					{availableItems.length > 0 && (
 						<section className="menu-section">
-							<h2 className="menu-section__title">Today’s Menu</h2>
 							<section className="menu-grid">
 								{availableItems.map((item, index) => (
 									<MenuDishCard
@@ -139,7 +138,7 @@ export default function Menu() {
 
 					{unavailableItems.length > 0 && (
 						<section className="menu-section">
-							<h2 className="menu-section__title">Other Dishes</h2>
+							<h2 className="menu-section__title">Out of Stock</h2>
 							<section className="menu-grid menu-grid--unavailable">
 								{unavailableItems.map((item, index) => (
 									<MenuDishCard

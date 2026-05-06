@@ -24,7 +24,10 @@ const Logo = () => (
 
 export default function CustomerNavbar() {
 	const location = useLocation();
-	const [language, setLanguage] = React.useState("fi");
+	const [language, setLanguage] = React.useState(
+		localStorage.getItem("locale") || 'en',
+	);
+	const languageFlag = language === "fi" ? "🇫🇮" : "🇬🇧";
 
 	const { cartItemsCount } = useCartContext();
 	const { user } = useAuth();
@@ -73,10 +76,14 @@ export default function CustomerNavbar() {
 					className="nav__link"
 					type="button"
 					onClick={() =>
-						setLanguage((l) => (l === "en" ? "fi" : "en"))
+						setLanguage((l) => {
+							const newLocale = l === "en" ? "fi" : "en";
+							localStorage.setItem("locale", newLocale);
+							return newLocale;
+						})
 					}
 				>
-					🇫🇮 {language.toUpperCase()}
+					{languageFlag} {language.toUpperCase()}
 				</button>
 			}
 			badge={cartItemsCount}

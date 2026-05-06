@@ -253,7 +253,7 @@ export default function Home() {
 					<h2 className="home-info-card__title">CONTACT</h2>
 					<div className="home-info-card__text">
 						<a href="mailto:mursu@mursusushi.zen" className="home-info-card__link">
-							MURSU@MURSUSUSHI@FMAIL.COM
+							MURSU@MURSU.SUSHI
 						</a>
 						<br />
 						<a href="tel:+358105150143" className="home-info-card__link">

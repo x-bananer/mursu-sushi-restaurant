@@ -29,7 +29,7 @@ export async function categories(req, res, next) {
 
 export async function createCategory(req, res, next) {
 	try {
-		const category = await dishService.createDishCategory(req.body || {});
+		const category = await dishService.createDishCategory(req.body || {}, req.locale);
 		return res.status(201).json({ category });
 	} catch (err) {
 		next(err);
@@ -39,7 +39,7 @@ export async function createCategory(req, res, next) {
 export async function updateCategory(req, res, next) {
 	try {
 		const categoryId = Number(req.params.id);
-		const category = await dishService.updateDishCategory(categoryId, req.body || {});
+		const category = await dishService.updateDishCategory(categoryId, req.body || {}, req.locale);
 		return res.json({ category });
 	} catch (err) {
 		next(err);
@@ -49,7 +49,7 @@ export async function updateCategory(req, res, next) {
 export async function deleteCategory(req, res, next) {
 	try {
 		const categoryId = Number(req.params.id);
-		await dishService.deleteDishCategory(categoryId);
+		await dishService.deleteDishCategory(categoryId, req.locale);
 		return res.status(204).send();
 	} catch (err) {
 		next(err);
@@ -59,7 +59,7 @@ export async function deleteCategory(req, res, next) {
 export async function get(req, res, next) {
 	try {
 		const dishId = Number(req.params.dish_id);
-		const dish = await dishService.getDish(dishId);
+		const dish = await dishService.getDish(dishId, req.locale);
 		res.json({ dish });
 	} catch (err) {
 		next(err);
@@ -80,7 +80,7 @@ export async function addFavorite(req, res, next) {
 	try {
 		const userId = Number(req.user?.id);
 		const dishId = Number(req.params.dish_id);
-		await dishService.addFavorite(userId, dishId);
+		await dishService.addFavorite(userId, dishId, req.locale);
 		return res.status(204).send();
 	} catch (err) {
 		next(err);
@@ -91,7 +91,7 @@ export async function removeFavorite(req, res, next) {
 	try {
 		const userId = Number(req.user?.id);
 		const dishId = Number(req.params.dish_id);
-		await dishService.removeFavorite(userId, dishId);
+		await dishService.removeFavorite(userId, dishId, req.locale);
 		return res.status(204).send();
 	} catch (err) {
 		next(err);
@@ -101,7 +101,7 @@ export async function removeFavorite(req, res, next) {
 /* ADM only */
 export async function createDish(req, res, next) {
 	try {
-		const dish = await dishService.createDish(req.body || {});
+		const dish = await dishService.createDish(req.body || {}, req.locale);
 		return res.status(201).json({ dish });
 	} catch (err) {
 		next(err);
@@ -111,7 +111,7 @@ export async function createDish(req, res, next) {
 export async function updateDish(req, res, next) {
 	try {
 		const dishId = Number(req.params.id);
-		const dish = await dishService.updateDish(dishId, req.body || {});
+		const dish = await dishService.updateDish(dishId, req.body || {}, req.locale);
 		return res.json({ dish });
 	} catch (err) {
 		next(err);
@@ -121,7 +121,7 @@ export async function updateDish(req, res, next) {
 export async function deleteDish(req, res, next) {
 	try {
 		const dishId = Number(req.params.id);
-		await dishService.deleteDish(dishId);
+		await dishService.deleteDish(dishId, req.locale);
 		return res.status(204).send();
 	} catch (err) {
 		next(err);
@@ -131,7 +131,7 @@ export async function deleteDish(req, res, next) {
 export async function createDailySpecial(req, res, next) {
 	try {
 		const dishId = Number(req.params.id);
-		const special = await dishService.createDailySpecial(dishId, req.body || {});
+		const special = await dishService.createDailySpecial(dishId, req.body || {}, req.locale);
 		return res.status(201).json({ special });
 	} catch (err) {
 		next(err);
@@ -141,7 +141,7 @@ export async function createDailySpecial(req, res, next) {
 export async function updateDailySpecial(req, res, next) {
 	try {
 		const dishId = Number(req.params.id);
-		const special = await dishService.updateDailySpecial(dishId, req.body || {});
+		const special = await dishService.updateDailySpecial(dishId, req.body || {}, req.locale);
 		return res.json({ special });
 	} catch (err) {
 		next(err);
@@ -151,7 +151,7 @@ export async function updateDailySpecial(req, res, next) {
 export async function deleteDailySpecial(req, res, next) {
 	try {
 		const dishId = Number(req.params.id);
-		await dishService.deleteDailySpecial(dishId);
+		await dishService.deleteDailySpecial(dishId, req.locale);
 		return res.status(204).send();
 	} catch (err) {
 		next(err);

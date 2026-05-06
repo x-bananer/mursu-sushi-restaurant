@@ -44,17 +44,18 @@ body {
 }
 
 .auth-card__tab--inactive {
-  background: var(--color-white);
-  color: var(--color-black);
+
+  background: var(--color-black);
+  color: var(--color-white);
 }
 
 .auth-card__tab--active {
-  background: var(--color-black);
-  color: var(--color-white);
+  background: var(--color-white);
+  color: var(--color-black);
   border-left: 1px solid var(--color-dark-gray);
 }
 
-.auth-card__body form{
+.auth-card__body form {
   flex: 1;
   padding: 32px 46px;
   display: flex;
@@ -125,14 +126,14 @@ body {
 
 .auth-card__footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   margin-top: auto;
   padding-top: 26px;
 }
 
 .auth-card__link {
-  font-size: 7px;
-  color: var(--color-dark-gray);
+  font-size: 14px;
+  color: var(--color-gray);
   text-transform: uppercase;
   letter-spacing: 1.5px;
   text-decoration: none;

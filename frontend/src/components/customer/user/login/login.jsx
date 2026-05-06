@@ -63,7 +63,6 @@ export default function Login({ onForgot, onAdminRegister }) {
 				name="email"
 				value={form.email}
 				onChange={handleChange}
-				placeholder="ARCHITECT@MURSU.ZEN"
 			/>
 
 			<InputField
@@ -72,7 +71,6 @@ export default function Login({ onForgot, onAdminRegister }) {
 				name="password"
 				value={form.password}
 				onChange={handleChange}
-				placeholder="••••••••••"
 			/>
 
 			<div className="auth-card__actions">
@@ -95,7 +93,7 @@ export default function Login({ onForgot, onAdminRegister }) {
 					className="auth-card__link"
 					onClick={onAdminRegister}
 				>
-					STAFF? REGISTER HERE ↗
+					STAFF? Sign in HERE ↗
 				</button>
 			</div>
 		</form>

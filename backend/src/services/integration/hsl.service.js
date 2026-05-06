@@ -12,6 +12,7 @@
 
 import polyline from '@mapbox/polyline';
 import dotenv from 'dotenv';
+import { t } from '../../i18n/messages.js';
 dotenv.config();
 
 // ── Config ────────────────────────────────────────────────────────────────────
@@ -119,7 +120,7 @@ function mapLeg(leg) {
 
 // ── Request layer ─────────────────────────────────────────────────────────────
 
-async function hslRequest(query, attempt = 1) {
+async function hslRequest(query, attempt = 1, locale = 'en') {
   const controller = new AbortController();
   const timeout    = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
@@ -143,13 +144,13 @@ async function hslRequest(query, attempt = 1) {
 
     if (!res.ok) {
       const text = await res.text();
-      throw new Error(`HSL API ${res.status}: ${res.statusText} — ${text}`);
+      throw new Error(t(locale, 'integration', 'hsl_api_error'));
     }
 
     const json = await res.json();
 
     if (json.errors?.length) {
-      throw new Error(`HSL GraphQL: ${json.errors[0].message}`);
+      throw new Error(t(locale, 'integration', 'hsl_graphql_error'));
     }
 
     return json.data;
@@ -162,7 +163,7 @@ async function hslRequest(query, attempt = 1) {
 
     if (retryable && attempt <= MAX_RETRIES) {
       await new Promise(r => setTimeout(r, 500 * attempt));
-      return hslRequest(query, attempt + 1);
+      return hslRequest(query, attempt + 1, locale);
     }
 
     throw err;
@@ -174,21 +175,19 @@ async function hslRequest(query, attempt = 1) {
 
 // ── Public API ────────────────────────────────────────────────────────────────
 
-export async function getRoute({ from, to, mode }) {
+export async function getRoute({ from, to, mode, locale = 'en' }) {
   if (!from || !to) {
-    throw new TypeError('getRoute: from and to coordinates are required');
+    throw new TypeError(t(locale, 'integration', 'hsl_route_coords_required'));
   }
 
   const transportMode = MODE_MAP[mode];
 
   if (!transportMode) {
-    throw new Error(
-      `getRoute: unsupported mode "${mode}". Supported: ${Object.keys(MODE_MAP).join(', ')}`
-    );
+    throw new Error(t(locale, 'integration', 'hsl_unsupported_mode'));
   }
 
   try {
-    const data      = await hslRequest(buildQuery(from, to, transportMode));
+    const data      = await hslRequest(buildQuery(from, to, transportMode), 1, locale);
     const itinerary = data?.plan?.itineraries?.[0];
 
     if (!itinerary) return null;
