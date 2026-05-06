@@ -1,4 +1,5 @@
 import * as userService from "../services/user/user.service.js";
+import { t } from "../i18n/messages.js";
 
 function getPayloadWithPhoto(req) {
 	if (!req.file) {
@@ -13,10 +14,10 @@ function getPayloadWithPhoto(req) {
 
 export async function getProfile(req, res, next) {
 	try {
-		const user = await userService.getUserById(req.user.id);
+		const user = await userService.getUserById(req.user.id, req.locale);
 
 		if (!user) {
-			res.status(404).json({ message: "User not found" });
+			res.status(404).json({ message: t(req.locale, "user", "user_not_found") });
 			return;
 		}
 
@@ -28,7 +29,7 @@ export async function getProfile(req, res, next) {
 
 export async function deleteProfile(req, res, next) {
 	try {
-		await userService.deleteUserById(req.user.id);
+		await userService.deleteUserById(req.user.id, req.locale);
 		res.status(204).send();
 	} catch (error) {
 		next(error);
@@ -39,6 +40,7 @@ export async function updateProfile(req, res, next) {
 		const user = await userService.updateOwnProfile(
 			req.user.id,
 			getPayloadWithPhoto(req),
+			req.locale,
 		);
 		res.json({ user });
 	} catch (error) {
@@ -58,14 +60,14 @@ export async function listCustomers(req, res, next) {
 
 export async function getUserById(req, res, next) {
 	try {
-		const user = await userService.getUserById(req.params.userId);
+		const localizedUser = await userService.getUserById(req.params.userId, req.locale);
 
-		if (!user) {
-			res.status(404).json({ message: "User not found" });
+		if (!localizedUser) {
+			res.status(404).json({ message: t(req.locale, "user", "user_not_found") });
 			return;
 		}
 
-		res.json({ user });
+		res.json({ user: localizedUser });
 	} catch (error) {
 		next(error);
 	}
@@ -76,6 +78,7 @@ export async function updateUserById(req, res, next) {
 		const user = await userService.updateUserById(
 			req.params.userId,
 			getPayloadWithPhoto(req),
+			req.locale,
 		);
 		res.json({ user });
 	} catch (error) {
@@ -88,6 +91,7 @@ export async function setStampCount(req, res, next) {
 		const user = await userService.updateStampCount(
 			req.params.userId,
 			req.body?.stampCount,
+			req.locale,
 		);
 		res.json({ user });
 	} catch (error) {
@@ -106,6 +110,7 @@ export async function addStamp(req, res, next) {
 		const user = await userService.incrementStampCount(
 			req.params.userId,
 			incrementBy,
+			req.locale,
 		);
 		res.json({ user });
 	} catch (error) {
@@ -118,6 +123,7 @@ export async function setStampDiscountActive(req, res, next) {
 		const user = await userService.updateIsStampDiscountActive(
 			req.params.userId,
 			req.body?.isActive,
+			req.locale,
 		);
 		res.json({ user });
 	} catch (error) {

@@ -99,6 +99,8 @@ const messages = {
 			payment_status_not_found: "Payment status not found",
 		},
 		user: {
+			valid_user_id_required: "Valid user id is required",
+			valid_order_id_required: "Valid order id is required",
 			valid_entity_id_required: "Valid {entityName} id is required",
 			user_not_found: "User not found",
 			order_not_belong_to_user: "Order does not belong to user",
@@ -112,6 +114,10 @@ const messages = {
 				"stamp_count must be a non-negative integer",
 			is_stamp_discount_active_boolean:
 				"is_stamp_discount_active must be boolean",
+			cannot_update_restricted_profile_fields:
+				"You cannot update role or stamp fields in your own profile",
+			cannot_delete_user_with_related_records:
+				"Cannot delete user with related records (orders/payments)",
 		},
 		db: {
 			expected_select_rows: "Expected SELECT query to return rows.",
@@ -237,6 +243,8 @@ const messages = {
 			payment_status_not_found: "Maksun tilaa ei löytynyt",
 		},
 		user: {
+			valid_user_id_required: "Kelvollinen käyttäjä-id vaaditaan",
+			valid_order_id_required: "Kelvollinen tilaus-id vaaditaan",
 			valid_entity_id_required: "Kelvollinen {entityName}-id on pakollinen",
 			user_not_found: "Käyttäjää ei löytynyt",
 			order_not_belong_to_user: "Tilaus ei kuulu käyttäjälle",
@@ -251,6 +259,10 @@ const messages = {
 				"stamp_count pitää olla ei-negatiivinen kokonaisluku",
 			is_stamp_discount_active_boolean:
 				"is_stamp_discount_active pitää olla boolean",
+			cannot_update_restricted_profile_fields:
+				"Et voi päivittää rooli- tai leimakenttiä omassa profiilissasi",
+			cannot_delete_user_with_related_records:
+				"Käyttäjää ei voi poistaa, koska siihen liittyy tietueita (tilaukset/maksut)",
 		},
 		db: {
 			expected_select_rows: "SELECT-kyselyn odotettiin palauttavan rivejä.",

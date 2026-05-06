@@ -5,10 +5,12 @@
  * @typedef {import('../../types/controllers/order.type.js').OrderResponse} OrderResponse
  * @typedef {import('../../types/controllers/order.type.js').OrderTrackingRequest} OrderTrackingRequest
  * @typedef {import('../../types/controllers/order.type.js').OrderTrackingResponse} OrderTrackingResponse
+ * @typedef {import('express').Request & { locale: 'en' | 'fi' }} LocalizedRequest
  */
 
 import * as tracker from '../services/order/order.tracker.js';
 import * as orderService from '../services/order/order.service.js';
+import { t } from '../i18n/messages.js';
 
 /**
  * =========================================================
@@ -20,7 +22,7 @@ import * as orderService from '../services/order/order.service.js';
  * GET /adm/orders
  * Returns ALL ACTIVE orders for the kitchen dashboard.
  *
- * @param {import('express').Request<OrdersRequest>} req
+ * @param {LocalizedRequest & import('express').Request<OrdersRequest>} req
  * @param {import('express').Response<OrdersResponse>} res
  * @param {import('express').NextFunction} next
  */
@@ -37,21 +39,21 @@ export async function list(req, res, next) {
  * GET /adm/orders/:id
  * Get FULL details of a single order (admin or user view)
  *
- * @param {import('express').Request<OrderRequest>} req
+ * @param {LocalizedRequest & import('express').Request<OrderRequest>} req
  * @param {import('express').Response<OrderResponse>} res
  * @param {import('express').NextFunction} next
  */
 export async function get(req, res, next) {
-  try {
+	try {
     const orderId = Number(req.params.id);
 	if (Number.isNaN(orderId)) {
-      return res.status(400).json({ message: 'Invalid order id' });
+      return res.status(400).json({ message: t(req.locale, 'order', 'invalid_order_id') });
     }
 
     const order = await orderService.getOrder(orderId);
 
     if (!order) {
-      return res.status(404).json({ message: 'Order not found' });
+      return res.status(404).json({ message: t(req.locale, 'order', 'order_not_found') });
     }
 
     res.json({ order });
@@ -65,14 +67,14 @@ export async function get(req, res, next) {
  * Update order status (kitchen workflow)
  */
 export async function updateStatus(req, res, next) {
-  try {
+	try {
     const orderId = Number(req.params.id);
     const { status } = req.body;
 	if (Number.isNaN(orderId)) {
-      return res.status(400).json({ message: 'Invalid order id' });
+      return res.status(400).json({ message: t(req.locale, 'order', 'invalid_order_id') });
     }
 
-    await orderService.updateOrderStatus(orderId, status);
+    await orderService.updateOrderStatus(orderId, status, req.locale);
 
     res.json({ success: true });
   } catch (err) {
@@ -142,9 +144,9 @@ export async function create(req, res, next) {
  * Get the user's current active order
  */
 export async function getActive(req, res, next) {
-  try {
+	try {
 	if (!req.user) {
-      return res.status(401).json({ message: 'Unauthorized' });
+      return res.status(401).json({ message: t(req.locale, 'access', 'unauthorized') });
     }
     const userId = req.user.id;
 
@@ -161,10 +163,10 @@ export async function getActive(req, res, next) {
  * Get history tracking data for timeline UI
  */
 export async function tracking(req, res, next) {
-  try {
+	try {
     const orderId = Number(req.params.id);
 	if (Number.isNaN(orderId)) {
-      return res.status(400).json({ message: 'Invalid order id' });
+      return res.status(400).json({ message: t(req.locale, 'order', 'invalid_order_id') });
     }
 
     const history = await orderService.getOrderHistory(orderId);
@@ -193,7 +195,7 @@ export function streamOrders(req, res) {
   const orderId = Number(req.params.id);
 
   if (Number.isNaN(orderId)) {
-    return res.status(400).json({ message: 'Invalid order id' });
+    return res.status(400).json({ message: t(req.locale, 'order', 'invalid_order_id') });
   }
 
   tracker.subscribe(res, {
@@ -215,7 +217,7 @@ export async function estimate(req, res, next) {
     const lon = Number(req.params.lon);
 
     if (Number.isNaN(orderId)) {
-      return res.status(400).json({ message: 'Invalid order id' });
+      return res.status(400).json({ message: t(req.locale, 'order', 'invalid_order_id') });
     }
 
     let userCoords = null;
@@ -243,11 +245,11 @@ export async function routeByMode(req, res, next) {
     const lon = Number(req.params.lon);
 
     if (Number.isNaN(orderId)) {
-      return res.status(400).json({ message: 'Invalid order id' });
+      return res.status(400).json({ message: t(req.locale, 'order', 'invalid_order_id') });
     }
 
     if (!mode) {
-      return res.status(400).json({ message: 'Mode required' });
+      return res.status(400).json({ message: t(req.locale, 'order', 'mode_required') });
     }
 
     const userCoords =
