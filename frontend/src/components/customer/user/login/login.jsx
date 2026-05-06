@@ -33,12 +33,12 @@ export default function Login({ onForgot, onAdminRegister }) {
 		  const role = res?.user?.role_id;
 
 		  if (role === 2) {
-			  navigate("/admin");
+			  navigate("/adm");
 		  } else {
 			  navigate("/user-profile");
 		  }
 	  } catch (err) {
-		console.err(err);
+		console.error(err);
 	}
 	};
 

@@ -1,5 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router";
 
+// Contexts
+import { AuthProvider } from "./contexts/AuthContext";
+import { CartProvider } from "./contexts/CartContext";
+
 // Layouts
 import CustomerLayout from "./pages/customer/CustomerLayout";
 import AdminLayout from "./pages/adm/AdminLayout";
@@ -12,6 +16,7 @@ import Cart from "./pages/customer/cart/Cart";
 import OrderTracker from "./pages/customer/order-tracker/OrderTracker";
 import UserProfile from "./pages/customer/user-profile/UserProfile";
 import AuthShell from "./pages/customer/auth-shell/authShell";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Admin pages
 import Admin from "./pages/adm/AdmPanel";
@@ -23,29 +28,49 @@ import MenuEdit from "./components/adm/menu-edit/MenuEdit";
 
 function App() {
 	return (
-		<BrowserRouter>
-			<Routes>
-				{/* CUSTOMER ROUTES */}
-				<Route element={<CustomerLayout />}>
-					<Route path="/" element={<Home />} />
-					<Route path="/menu" element={<Menu />} />
-					<Route path="/combo-builder" element={<ComboBuilder />} />
-					<Route path="/cart" element={<Cart />} />
-					<Route path="/auth" element={<AuthShell />} />
-					<Route path="/order-tracker" element={<OrderTracker />} />
-					<Route path="/user-profile" element={<UserProfile />} />
-				</Route>
+		<AuthProvider>
+			<BrowserRouter>
+				<Routes>
+					{/* CUSTOMER ROUTES */}
+					<Route element={<CustomerLayout />}>
+						<Route path="/" element={<Home />} />
+						<Route path="/menu" element={<Menu />} />
+						<Route path="/combo-builder" element={<ComboBuilder />} />
+						<Route path="/cart" element={<Cart />} />
+						<Route path="/auth" element={<AuthShell />} />
+						<Route 
+							path="/order-tracker" 
+							element={
+								<ProtectedRoute>
+									<OrderTracker />
+								</ProtectedRoute>
+							} 
+						/>
+						<Route 
+							path="/user-profile" 
+							element={
+								<ProtectedRoute>
+									<UserProfile />
+								</ProtectedRoute>
+							} 
+						/>
+					</Route>
 
-				{/* ADMIN ROUTES */}
-				<Route element={<AdminLayout />}>
-					<Route path="/adm" element={<Admin />} />
-					<Route path="/adm/customers" element={<Customers />} />
-					<Route path="/adm/special" element={<DailySpecial />} />
-					<Route path="/adm/orders" element={<LiveOrders />} />
-					<Route path="/adm/menu" element={<MenuEdit />} />
-				</Route>
-			</Routes>
-		</BrowserRouter>
+					{/* ADMIN ROUTES */}
+					<Route element={
+						<ProtectedRoute adminOnly>
+							<AdminLayout />
+						</ProtectedRoute>
+					}>
+						<Route path="/adm" element={<Admin />} />
+						<Route path="/adm/customers" element={<Customers />} />
+						<Route path="/adm/special" element={<DailySpecial />} />
+						<Route path="/adm/orders" element={<LiveOrders />} />
+						<Route path="/adm/menu" element={<MenuEdit />} />
+					</Route>
+				</Routes>
+			</BrowserRouter>
+		</AuthProvider>
 	);
 }
 

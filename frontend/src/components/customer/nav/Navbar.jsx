@@ -1,8 +1,9 @@
 import React from "react";
 import { Link, useLocation } from "react-router";
+import { HiOutlineUser, HiOutlineShoppingBag } from "react-icons/hi2";
 import NavBase from "../../shared/nav/NavBase";
-import { UserIcon, CartIcon } from "../../shared/nav/icons";
 import { useCartContext } from "../../../hooks/contextHooks/cart";
+import { useAuth } from "../../../contexts/AuthContext";
 
 const Logo = () => (
 	<Link to="/" className="nav__logo">
@@ -29,6 +30,30 @@ export default function CustomerNavbar() {
 	const languageFlag = language === "fi" ? "🇫🇮" : "🇬🇧";
 
 	const { cartItemsCount } = useCartContext();
+	const { user } = useAuth();
+
+	const userLinkContent = user?.photo_url ? (
+		<img 
+			src={user.photo_url} 
+			alt="User Profile" 
+			className="nav__avatar-img"
+		/>
+	) : (
+		<HiOutlineUser size={20} />
+	);
+
+	const rightItems = [
+		{ 
+			to: user ? "/user-profile" : "/auth", 
+			content: userLinkContent, 
+			isIcon: !user?.photo_url 
+		},
+		{ 
+			to: "/cart", 
+			content: <HiOutlineShoppingBag size={20} />, 
+			isIcon: true 
+		},
+	];
 
 	return (
 		<NavBase
@@ -45,10 +70,7 @@ export default function CustomerNavbar() {
 				},
 			]}
 			center={<Logo />}
-			right={[
-				{ to: "/auth", content: <UserIcon />, isIcon: true },
-				{ to: "/cart", content: <CartIcon />, isIcon: true },
-			]}
+			right={rightItems}
 			extraRight={
 				<button
 					className="nav__link"

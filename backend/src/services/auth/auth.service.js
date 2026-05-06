@@ -161,3 +161,24 @@ export async function login(payload, locale) {
 		token,
 	};
 }
+
+export async function refresh(userId) {
+	const parsedId = Number(userId);
+
+	if (!Number.isInteger(parsedId) || parsedId <= 0) {
+		throw createHttpError(401, "Invalid token payload");
+	}
+
+	const user = await userRepo.getUserById(parsedId);
+
+	if (!user) {
+		throw createHttpError(404, "User not found");
+	}
+
+	const token = signToken(user);
+
+	return {
+		user: toPublicUser(user),
+		token,
+	};
+}

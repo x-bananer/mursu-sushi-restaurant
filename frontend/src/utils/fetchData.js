@@ -4,10 +4,11 @@ const fetchData = async (url, options = {}) => {
 	const sessionId = localStorage.getItem("session_id");
 	const token = localStorage.getItem("token");
 	const locale = localStorage.getItem("locale") || "en";
+	const isFormData = options.body instanceof FormData;
 
 	const headers = {
-		"Content-Type": "application/json",
 		"x-locale": locale,
+		...(isFormData ? {} : { "Content-Type": "application/json" }),
 		...(options.headers || {}),
 	};
 
