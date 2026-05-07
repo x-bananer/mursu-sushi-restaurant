@@ -11,7 +11,7 @@ Demo video: https://youtu.be/jREubOZPitI
 
 ## Deployed application
 
-### [MursuSushi](https://mursu-sushi-restaurant.vercel.app/)
+### [MursuSushi](https://mursu-sushi-restaurant.vercel.app/) 🍣
 
 ## Evaluation and Support
 
