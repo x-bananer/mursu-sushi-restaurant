@@ -105,7 +105,6 @@
   display: flex;
 }
 
-
 /* optional: focus cleanup */
 .menu-toolbar__search input:focus {
   outline: none;

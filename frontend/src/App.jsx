@@ -36,7 +36,10 @@ function App() {
 					<Route element={<CustomerLayout />}>
 						<Route path="/" element={<Home />} />
 						<Route path="/menu" element={<Menu />} />
-						<Route path="/combo-builder" element={<ComboBuilder />} />
+						<Route
+							path="/combo-builder"
+							element={<ComboBuilder />}
+						/>
 						<Route path="/cart" element={<Cart />} />
 						<Route path="/auth" element={<AuthShell />} />
 						<Route
@@ -58,11 +61,13 @@ function App() {
 					</Route>
 
 					{/* ADMIN ROUTES */}
-					<Route element={
-						<ProtectedRoute adminOnly>
-							<AdminLayout />
-						</ProtectedRoute>
-					}>
+					<Route
+						element={
+							<ProtectedRoute adminOnly>
+								<AdminLayout />
+							</ProtectedRoute>
+						}
+					>
 						<Route path="/adm" element={<Admin />} />
 						<Route path="/adm/profile" element={<AdmProfile />} />
 						<Route path="/adm/customers" element={<Customers />} />

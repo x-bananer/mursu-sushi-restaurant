@@ -6,32 +6,32 @@ import { fetchData } from "../../utils/fetchData";
  */
 
 export const useActiveOrder = () => {
-  const [order, setOrder] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+	const [order, setOrder] = useState(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const loadOrder = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+	useEffect(() => {
+		const loadOrder = async () => {
+			try {
+				setLoading(true);
+				setError(null);
 
-        const response = await fetchData("/orders/active", {
-  		  method: "GET",
-		});
+				const response = await fetchData("/orders/active", {
+					method: "GET",
+				});
 
-        setOrder(response.order ?? null);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+				setOrder(response.order ?? null);
+			} catch (err) {
+				setError(err.message);
+			} finally {
+				setLoading(false);
+			}
+		};
 
-    loadOrder();
-  }, []);
+		loadOrder();
+	}, []);
 
-  return { order, loading, error };
+	return { order, loading, error };
 };
 
 /**
@@ -39,142 +39,133 @@ export const useActiveOrder = () => {
  */
 
 export const useOrderStream = (orderId) => {
-  const [status, setStatus] = useState(null);
+	const [status, setStatus] = useState(null);
 
-  useEffect(() => {
-    if (!orderId) return;
+	useEffect(() => {
+		if (!orderId) return;
 
-    const url = `${import.meta.env.VITE_API_BASE_URL}/orders/${orderId}/stream`;
-    const eventSource = new EventSource(url);
+		const url = `${import.meta.env.VITE_API_BASE_URL}/orders/${orderId}/stream`;
+		const eventSource = new EventSource(url);
 
-    eventSource.addEventListener("order_status_updated", (event) => {
-      const data = JSON.parse(event.data);
-      setStatus(data.payload);
-	  if (data.payload.status === "delivered") {
-    	eventSource.close();
-  	  }
-    });
+		eventSource.addEventListener("order_status_updated", (event) => {
+			const data = JSON.parse(event.data);
+			setStatus(data.payload);
+			if (data.payload.status === "delivered") {
+				eventSource.close();
+			}
+		});
 
-    eventSource.addEventListener("order_created", (event) => {
-      const data = JSON.parse(event.data);
-      setStatus(data.payload.status);
-    });
+		eventSource.addEventListener("order_created", (event) => {
+			const data = JSON.parse(event.data);
+			setStatus(data.payload.status);
+		});
 
-    eventSource.onerror = (err) => {
-      console.error("SSE error:", err);
-      eventSource.close();
-    };
+		eventSource.onerror = (err) => {
+			console.error("SSE error:", err);
+			eventSource.close();
+		};
 
-    return () => eventSource.close();
-  }, [orderId]);
+		return () => eventSource.close();
+	}, [orderId]);
 
-  return status;
+	return status;
 };
 
 export const useOrderTracking = (orderId) => {
-  const [history, setHistory] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+	const [history, setHistory] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
 
-  const loadTracking = async () => {
-    if (!orderId) return;
+	const loadTracking = async () => {
+		if (!orderId) return;
 
-    try {
-      setLoading(true);
-      setError(null);
+		try {
+			setLoading(true);
+			setError(null);
 
-      const response = await fetchData(
-        `/orders/${orderId}/tracking`,
-        {
-          method: "GET",
-        }
-      );
+			const response = await fetchData(`/orders/${orderId}/tracking`, {
+				method: "GET",
+			});
 
-      setHistory(response.history || []);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+			setHistory(response.history || []);
+		} catch (err) {
+			setError(err.message);
+		} finally {
+			setLoading(false);
+		}
+	};
 
-  useEffect(() => {
-    loadTracking();
-  }, [orderId]);
+	useEffect(() => {
+		loadTracking();
+	}, [orderId]);
 
-  return { history, loadTracking, loading, error };
+	return { history, loadTracking, loading, error };
 };
 
 export const useEtaEstimation = (orderId, userCoordsLat, userCoordsLong) => {
-  const [etaEstimation, setEtaEstimation] = useState(null);
-  const [etaLoading, setEtaLoading] = useState(true);
-  const [etaError, setEtaError] = useState(null);
+	const [etaEstimation, setEtaEstimation] = useState(null);
+	const [etaLoading, setEtaLoading] = useState(true);
+	const [etaError, setEtaError] = useState(null);
 
-  const loadEtaEstimation = async () => {
-  if (!orderId || userCoordsLat == null || userCoordsLong == null) return;
+	const loadEtaEstimation = async () => {
+		if (!orderId || userCoordsLat == null || userCoordsLong == null) return;
 
-	try {
-      setEtaLoading(true);
-      setEtaError(null);
+		try {
+			setEtaLoading(true);
+			setEtaError(null);
 
-      const response = await fetchData(
-        `/orders/${orderId}/estimate/${userCoordsLat}/${userCoordsLong}`,
-        {
-          method: "GET",
-        }
-      );
+			const response = await fetchData(
+				`/orders/${orderId}/estimate/${userCoordsLat}/${userCoordsLong}`,
+				{
+					method: "GET",
+				},
+			);
 
-      setEtaEstimation(response.estimate || {});
-    } catch (err) {
-      setEtaError(err.message);
-    } finally {
-      setEtaLoading(false);
-    }
-  };
+			setEtaEstimation(response.estimate || {});
+		} catch (err) {
+			setEtaError(err.message);
+		} finally {
+			setEtaLoading(false);
+		}
+	};
 
-  useEffect(() => {
-    loadEtaEstimation();
-  }, [orderId, userCoordsLat, userCoordsLong]);
+	useEffect(() => {
+		loadEtaEstimation();
+	}, [orderId, userCoordsLat, userCoordsLong]);
 
-  return { etaEstimation, loadEtaEstimation, etaLoading, etaError  };
+	return { etaEstimation, loadEtaEstimation, etaLoading, etaError };
+};
 
-}
+export const useRouteByMode = (orderId, lat, lon, mode) => {
+	const [route, setRoute] = useState(null);
+	const [routeLoading, setRouteLoading] = useState(false);
+	const [routeError, setRouteError] = useState(null);
 
-export const useRouteByMode = (
-  orderId,
-  lat,
-  lon,
-  mode
-) => {
-  const [route, setRoute] = useState(null);
-  const [routeLoading, setRouteLoading] = useState(false);
-  const [routeError, setRouteError] = useState(null);
+	const loadRoute = async () => {
+		if (!orderId || lat == null || lon == null || !mode) return;
 
-  const loadRoute = async () => {
-    if (!orderId || lat == null || lon == null || !mode) return;
+		try {
+			setRouteLoading(true);
+			setRouteError(null);
 
-    try {
-      setRouteLoading(true);
-      setRouteError(null);
+			const response = await fetchData(
+				`/orders/${orderId}/route/${mode}/${lat}/${lon}`,
+				{
+					method: "GET",
+				},
+			);
 
-      const response = await fetchData(
-        `/orders/${orderId}/route/${mode}/${lat}/${lon}`,
-        {
-          method: "GET",
-        }
-      );
+			setRoute(response.route || null);
+		} catch (err) {
+			setRouteError(err.message);
+		} finally {
+			setRouteLoading(false);
+		}
+	};
 
-      setRoute(response.route || null);
-    } catch (err) {
-      setRouteError(err.message);
-    } finally {
-      setRouteLoading(false);
-    }
-  };
+	useEffect(() => {
+		loadRoute();
+	}, [orderId, lat, lon, mode]);
 
-  useEffect(() => {
-    loadRoute();
-  }, [orderId, lat, lon, mode]);
-
-  return { route, routeLoading, routeError, loadRoute };
+	return { route, routeLoading, routeError, loadRoute };
 };

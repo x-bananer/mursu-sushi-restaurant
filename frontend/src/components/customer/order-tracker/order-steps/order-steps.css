@@ -30,7 +30,7 @@
 
 .order-step--done::after,
 .order-step--active::after {
-  background:var(--background-color);
+  background: var(--background-color);
 }
 
 .order-step__dot {

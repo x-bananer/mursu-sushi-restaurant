@@ -4,7 +4,11 @@ import { useTranslation } from "react-i18next";
 /**
  * Component to display user loyalty stamps and progress.
  */
-export default function LoyaltyStamps({ stampCount, stampGoal = 5, isDiscountActive }) {
+export default function LoyaltyStamps({
+	stampCount,
+	stampGoal = 5,
+	isDiscountActive,
+}) {
 	const { t } = useTranslation();
 	const stampsLeft = Math.max(0, stampGoal - stampCount);
 	const loyaltyHint = isDiscountActive
@@ -13,7 +17,9 @@ export default function LoyaltyStamps({ stampCount, stampGoal = 5, isDiscountAct
 
 	return (
 		<section className="profile-loyalty">
-			<p className="profile-loyalty__label">{t("profile.loyalty_stamps")}</p>
+			<p className="profile-loyalty__label">
+				{t("profile.loyalty_stamps")}
+			</p>
 			<div className="profile-loyalty__stamps">
 				{Array.from({ length: stampGoal }).map((_, index) => {
 					const isActive = index < stampCount;

@@ -11,11 +11,11 @@ import OrderDestination from "../../../components/customer/order-tracker/order-d
 import OrderSummary from "../../../components/customer/order-tracker/order-summary/OrderSummary";
 
 import {
-  useActiveOrder,
-  useOrderStream,
-  useOrderTracking,
-  useEtaEstimation,
-  useRouteByMode,
+	useActiveOrder,
+	useOrderStream,
+	useOrderTracking,
+	useEtaEstimation,
+	useRouteByMode,
 } from "../../../hooks/apiHooks/orderTracker";
 
 import { useGeolocation } from "../../../hooks/apiHooks/geolocation";
@@ -25,103 +25,105 @@ import ErrorState from "../../../components/shared/error-state/ErrorState";
 import EmptyState from "../../../components/shared/empty-state/EmptyState";
 
 export default function OrderTracker() {
-  const { t } = useTranslation();
-  const { order, loading, error } = useActiveOrder();
-  const status = useOrderStream(order?.id);
-  const { history, loadTracking } = useOrderTracking(order?.id);
-  const { lat, lon } = useGeolocation();
-  const { etaEstimation } = useEtaEstimation(order?.id, lat, lon);
-  const [selectedMode, setSelectedMode] = useState(null);
-  const { route } = useRouteByMode(order?.id, lat, lon, selectedMode);
+	const { t } = useTranslation();
+	const { order, loading, error } = useActiveOrder();
+	const status = useOrderStream(order?.id);
+	const { history, loadTracking } = useOrderTracking(order?.id);
+	const { lat, lon } = useGeolocation();
+	const { etaEstimation } = useEtaEstimation(order?.id, lat, lon);
+	const [selectedMode, setSelectedMode] = useState(null);
+	const { route } = useRouteByMode(order?.id, lat, lon, selectedMode);
 
-  useEffect(() => {
-    if (!status?.status?.type) return;
-    loadTracking();
-  }, [status, loadTracking]);
+	useEffect(() => {
+		if (!status?.status?.type) return;
+		loadTracking();
+	}, [status, loadTracking]);
 
-  if (loading) {
-    return (
-      <div className="order">
-        <Loader text={t("order_tracker.loading")} />
-      </div>
-    );
-  }
+	if (loading) {
+		return (
+			<div className="order">
+				<Loader text={t("order_tracker.loading")} />
+			</div>
+		);
+	}
 
-  if (error) {
-    return (
-      <div className="order">
-        <ErrorState message={error} />
-      </div>
-    );
-  }
+	if (error) {
+		return (
+			<div className="order">
+				<ErrorState message={error} />
+			</div>
+		);
+	}
 
-  if (!order) {
-    return (
-      <div className="order">
-        <EmptyState
-          title={t("order_tracker.no_active_title")}
-          description={t("order_tracker.no_active_description")}
-        />
-      </div>
-    );
-  }
+	if (!order) {
+		return (
+			<div className="order">
+				<EmptyState
+					title={t("order_tracker.no_active_title")}
+					description={t("order_tracker.no_active_description")}
+				/>
+			</div>
+		);
+	}
 
-  return (
-    <div className="order">
-      <div className="order__hero">
-        <h1 className="order__title">{t("order_tracker.title")}</h1>
+	return (
+		<div className="order">
+			<div className="order__hero">
+				<h1 className="order__title">{t("order_tracker.title")}</h1>
 
-        <div className="order__hero-right">
-          <div className="status-badge">
-            <FiClock size={14} />
-            {status?.status?.name ?? order?.status?.name}
-          </div>
-        </div>
-      </div>
+				<div className="order__hero-right">
+					<div className="status-badge">
+						<FiClock size={14} />
+						{status?.status?.name ?? order?.status?.name}
+					</div>
+				</div>
+			</div>
 
-      <div className="order__panel">
-        <aside className="order__sidebar">
-          <OrderSteps
-            history={history}
-            orderId={order?.id}
-            serviceType={order.delivery_type.type}
-          />
+			<div className="order__panel">
+				<aside className="order__sidebar">
+					<OrderSteps
+						history={history}
+						orderId={order?.id}
+						serviceType={order.delivery_type.type}
+					/>
 
-          <JourneyPlanner
-            serviceType={order.delivery_type.type}
-            recommendedMode={etaEstimation?.recommendedMode}
-            selectedMode={selectedMode}
-            onSelectMode={setSelectedMode}
-          />
+					<JourneyPlanner
+						serviceType={order.delivery_type.type}
+						recommendedMode={etaEstimation?.recommendedMode}
+						selectedMode={selectedMode}
+						onSelectMode={setSelectedMode}
+					/>
 
-          <OrderETA
-            eta={etaEstimation}
-            serviceType={order.delivery_type.type}
-            durationMins={route?.durationMins}
-          />
-        </aside>
+					<OrderETA
+						eta={etaEstimation}
+						serviceType={order.delivery_type.type}
+						durationMins={route?.durationMins}
+					/>
+				</aside>
 
-        <div className="order__right">
-          <Map
-            mode={selectedMode}
-            restaurantCoords={etaEstimation?.restaurantCoords}
-            userCoords={{ lat, lon }}
-            geometry={route?.geometry || etaEstimation?.travel?.geometry}
-            legs={route?.legs || etaEstimation?.travel?.legs}
-          />
+				<div className="order__right">
+					<Map
+						mode={selectedMode}
+						restaurantCoords={etaEstimation?.restaurantCoords}
+						userCoords={{ lat, lon }}
+						geometry={
+							route?.geometry || etaEstimation?.travel?.geometry
+						}
+						legs={route?.legs || etaEstimation?.travel?.legs}
+					/>
 
-          <OrderDestination
-            address={order.address}
-            serviceType={order.delivery_type.type}
-          />
-        </div>
-      </div>
+					<OrderDestination
+						address={order.address}
+						serviceType={order.delivery_type.type}
+					/>
+				</div>
+			</div>
 
-      <OrderSummary
-        orderId={order.id}
-        items={order.order_items}
-        totalPrice={order.total_price}
-      />
-    </div>
-  );
+			<OrderSummary
+				orderId={order.id}
+				items={order.order_items}
+				totalPrice={order.total_price}
+			/>
+		</div>
+	);
 }

@@ -12,33 +12,35 @@ import Badge from "../badge/Badge";
  */
 
 export default function CardBase({
-  title,
-  price = null,
-  description,
-  tags = [],
-  variant = "dark",
-  controllers,
+	title,
+	price = null,
+	description,
+	tags = [],
+	variant = "dark",
+	controllers,
 }) {
-  return (
-    <article className={`card-base card-base--${variant}`}>
-      <div className="card-base__head">
-        <h2 className="card-base__title">{title}</h2>
-        <p className="card-base__price">{price ? `${price.toFixed(2)} €` : ''}</p>
-      </div>
+	return (
+		<article className={`card-base card-base--${variant}`}>
+			<div className="card-base__head">
+				<h2 className="card-base__title">{title}</h2>
+				<p className="card-base__price">
+					{price ? `${price.toFixed(2)} €` : ""}
+				</p>
+			</div>
 
-      {tags.length > 0 && (
-        <div className="card-base__badges">
-          {tags.map((tag, index) => (
-            <Badge key={tag?.id ?? `badge-${index}`}>
-              {tag?.name}
-            </Badge>
-          ))}
-        </div>
-      )}
+			{tags.length > 0 && (
+				<div className="card-base__badges">
+					{tags.map((tag, index) => (
+						<Badge key={tag?.id ?? `badge-${index}`}>
+							{tag?.name}
+						</Badge>
+					))}
+				</div>
+			)}
 
-      <p className="card-base__description">{description}</p>
+			<p className="card-base__description">{description}</p>
 
-      <div className="card-base__footer">{controllers}</div>
-    </article>
-  );
+			<div className="card-base__footer">{controllers}</div>
+		</article>
+	);
 }

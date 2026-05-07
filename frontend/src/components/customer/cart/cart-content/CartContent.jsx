@@ -6,15 +6,15 @@ import { useCartContext } from "../../../../hooks/contextHooks/cart";
 import { usePayment } from "../../../../hooks/apiHooks/cart";
 import { debounce } from "../../../../utils/debounce";
 
-import CartItem from '../cart-item/CartItem';
-import CartDelivery from '../cart-delivery/CartDelivery';
+import CartItem from "../cart-item/CartItem";
+import CartDelivery from "../cart-delivery/CartDelivery";
 import CartPayment from "../cart-payment/CartPayment";
-import CartSummary from '../cart-summary/CartSummary';
-import Loader from '../../../shared/loader/Loader';
-import ErrorState from '../../../shared/error-state/errorState';
-import EmptyState from '../../../shared/empty-state/EmptyState';
+import CartSummary from "../cart-summary/CartSummary";
+import Loader from "../../../shared/loader/Loader";
+import ErrorState from "../../../shared/error-state/errorState";
+import EmptyState from "../../../shared/empty-state/EmptyState";
 
-import './cart-content.css';
+import "./cart-content.css";
 
 const EMPTY_ITEMS = [];
 
@@ -36,14 +36,14 @@ export default function CartContent() {
 	const { createPayment, paymentLoading, paymentError } = usePayment();
 	const [deliveryTypeId, setDeliveryTypeId] = useState(1);
 	const [selectedDeliveryType, setSelectedDeliveryType] = useState(null);
-	const [address, setAddress] = useState('');
+	const [address, setAddress] = useState("");
 	const [payError, setPayError] = useState(null);
 	const [visibleQuantities, setVisibleQuantities] = useState({});
 	const debouncedByItemRef = useRef({});
 	const debouncedRemoveRef = useRef(null);
 
 	// TODO Fix after auth is done
-	const isAuthorized = Boolean(localStorage.getItem('token'));
+	const isAuthorized = Boolean(localStorage.getItem("token"));
 	const items = cart?.items ?? EMPTY_ITEMS;
 
 	useEffect(() => {
@@ -62,16 +62,21 @@ export default function CartContent() {
 
 	const getDebouncedUpdateByItemId = (itemId) => {
 		if (!debouncedByItemRef.current[itemId]) {
-			debouncedByItemRef.current[itemId] = debounce((dishId, newQuantity) => {
-				addDishToCart(dishId, newQuantity);
-			}, 300);
+			debouncedByItemRef.current[itemId] = debounce(
+				(dishId, newQuantity) => {
+					addDishToCart(dishId, newQuantity);
+				},
+				300,
+			);
 		}
 		return debouncedByItemRef.current[itemId];
 	};
 
 	useEffect(() => {
 		return () => {
-			Object.values(debouncedByItemRef.current).forEach((fn) => fn.cancel());
+			Object.values(debouncedByItemRef.current).forEach((fn) =>
+				fn.cancel(),
+			);
 			if (debouncedRemoveRef.current) {
 				debouncedRemoveRef.current.cancel();
 			}
@@ -79,15 +84,11 @@ export default function CartContent() {
 	}, []);
 
 	if (loadLoading) {
-		return (
-			<Loader isLight text={t("cart.loading")} />
-		);
+		return <Loader isLight text={t("cart.loading")} />;
 	}
 
 	if (loadError) {
-		return (
-			<ErrorState isLight message={loadError} />
-		);
+		return <ErrorState isLight message={loadError} />;
 	}
 
 	if (!cart || !Array.isArray(cart.items) || cart.items.length === 0) {
@@ -115,7 +116,10 @@ export default function CartContent() {
 			return;
 		}
 
-		setVisibleQuantities((prev) => ({ ...prev, [item.id]: Math.max(0, newQuantity) }));
+		setVisibleQuantities((prev) => ({
+			...prev,
+			[item.id]: Math.max(0, newQuantity),
+		}));
 
 		if (newQuantity > 0) {
 			getDebouncedUpdateByItemId(item.id)(item.dish.id, newQuantity);
@@ -134,13 +138,13 @@ export default function CartContent() {
 
 		// TODO Fix after auth is done
 		if (!isAuthorized) {
-			navigate('/auth');
+			navigate("/auth");
 			return;
 		}
 
 		const card = elements.getElement(CardElement);
 		const { paymentMethod, error } = await stripe.createPaymentMethod({
-			type: 'card',
+			type: "card",
 			card,
 		});
 
@@ -159,14 +163,14 @@ export default function CartContent() {
 			return;
 		}
 
-		if (result?.payment?.status === 'failed') {
+		if (result?.payment?.status === "failed") {
 			setPayError(t("cart.payment_failed_retry"));
 			return;
 		}
 
-		if (result?.payment?.status === 'completed') {
+		if (result?.payment?.status === "completed") {
 			setCart({ items: [], total_price: 0, discount: 0 });
-			navigate('/order-tracker');
+			navigate("/order-tracker");
 		}
 	};
 
@@ -176,20 +180,21 @@ export default function CartContent() {
 				<section className="cart-content__section">
 					<h1 className="cart-content__title">{t("cart.title")}</h1>
 					<div className="cart-content__items">
-						{
-							items.map((item) => {
-								return (
-									<CartItem
-										key={item.id}
-										item={item}
-										quantity={visibleQuantities[item.id] ?? item.quantity}
-										onIncrease={() => handleIncrease(item)}
-										onDecrease={() => handleDecrease(item)}
-										onRemove={() => handleRemove(item)}
-									/>
-								);
-							})
-						}
+						{items.map((item) => {
+							return (
+								<CartItem
+									key={item.id}
+									item={item}
+									quantity={
+										visibleQuantities[item.id] ??
+										item.quantity
+									}
+									onIncrease={() => handleIncrease(item)}
+									onDecrease={() => handleDecrease(item)}
+									onRemove={() => handleRemove(item)}
+								/>
+							);
+						})}
 					</div>
 				</section>
 				<section className="cart-content__section">

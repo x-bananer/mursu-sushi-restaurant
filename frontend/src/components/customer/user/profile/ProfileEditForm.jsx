@@ -7,12 +7,15 @@ import useForm from "../../../../hooks/formHooks";
 /**
  * Reusable form for editing user profile details.
  */
-export default function ProfileEditForm({ user, onSave, onDelete, isSaving, isDeleting }) {
+export default function ProfileEditForm({
+	user,
+	onSave,
+	onDelete,
+	isSaving,
+	isDeleting,
+}) {
 	const { t } = useTranslation();
-	const {
-		inputs,
-		handleInputChange,
-	} = useForm(() => {}, {
+	const { inputs, handleInputChange } = useForm(() => {}, {
 		name: user?.name || "",
 		email: user?.email || "",
 		password: "",
@@ -31,7 +34,7 @@ export default function ProfileEditForm({ user, onSave, onDelete, isSaving, isDe
 		if (inputs.name !== user.name) payload.name = inputs.name;
 		if (inputs.email !== user.email) payload.email = inputs.email;
 		if (inputs.password) payload.password = inputs.password;
-		
+
 		onSave(payload, photoFile);
 	};
 
@@ -68,7 +71,10 @@ export default function ProfileEditForm({ user, onSave, onDelete, isSaving, isDe
 				onChange={handlePhotoChange}
 			/>
 
-			<div className="profile-edit-form__actions" style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+			<div
+				className="profile-edit-form__actions"
+				style={{ display: "flex", gap: "1rem", marginTop: "2rem" }}
+			>
 				<Button
 					variant="light"
 					type="submit"
@@ -82,7 +88,9 @@ export default function ProfileEditForm({ user, onSave, onDelete, isSaving, isDe
 					disabled={isSaving || isDeleting}
 					onClick={onDelete}
 				>
-					{isDeleting ? t("profile.deleting") : t("profile.delete_account")}
+					{isDeleting
+						? t("profile.deleting")
+						: t("profile.delete_account")}
 				</Button>
 			</div>
 		</form>

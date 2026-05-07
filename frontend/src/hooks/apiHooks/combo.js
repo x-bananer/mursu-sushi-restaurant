@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { fetchData } from '../../utils/fetchData';
+import { useEffect, useState } from "react";
+import { fetchData } from "../../utils/fetchData";
 
 const useComboIngredients = ({ onlyAvailable = true } = {}) => {
 	const [ingredients, setIngredients] = useState([]);
@@ -12,12 +12,14 @@ const useComboIngredients = ({ onlyAvailable = true } = {}) => {
 				setLoading(true);
 				setError(null);
 
-				const response = await fetchData('/dishes/combo/ingredients');
+				const response = await fetchData("/dishes/combo/ingredients");
 				const allIngredients = response?.ingredients ?? [];
 				if (onlyAvailable) {
-					const availableIngredients = allIngredients.filter((ingredient) => {
-						return Boolean(ingredient?.is_available);
-					});
+					const availableIngredients = allIngredients.filter(
+						(ingredient) => {
+							return Boolean(ingredient?.is_available);
+						},
+					);
 					setIngredients(availableIngredients);
 					return;
 				}
@@ -54,10 +56,12 @@ const useComboPreview = (ingredientsForPreview) => {
 			try {
 				setLoading(true);
 				setError(null);
-				const response = await fetchData('/dishes/combo/preview', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ ingredients: ingredientsForPreview }),
+				const response = await fetchData("/dishes/combo/preview", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						ingredients: ingredientsForPreview,
+					}),
 				});
 
 				setCombo(response.combo ?? null);

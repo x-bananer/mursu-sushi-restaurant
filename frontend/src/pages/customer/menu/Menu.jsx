@@ -13,7 +13,12 @@ import EmptyState from "../../../components/shared/empty-state/emptyState";
 import Toast from "../../../components/shared/toast/Toast";
 
 import { useFilters } from "../../../hooks/useFilters";
-import { useDishes, useDishCategories, useDailySpecial, useDishFavorites } from "../../../hooks/apiHooks/dish";
+import {
+	useDishes,
+	useDishCategories,
+	useDailySpecial,
+	useDishFavorites,
+} from "../../../hooks/apiHooks/dish";
 import { useCartContext } from "../../../hooks/contextHooks/cart";
 
 export default function Menu() {
@@ -24,12 +29,29 @@ export default function Menu() {
 	const [favoriteToast, setFavoriteToast] = useState("");
 
 	const { dishes, loading: dishesLoading, error: dishesError } = useDishes();
-	const { categories, loading: categoriesLoading, error: categoriesError } = useDishCategories();
-	const { specialDish, loading: specialLoading, error: specialError } = useDailySpecial();
-	const { favoriteDishIds, toggleFavorite, pendingDishIds, loading: favoritesLoading } = useDishFavorites();
+	const {
+		categories,
+		loading: categoriesLoading,
+		error: categoriesError,
+	} = useDishCategories();
+	const {
+		specialDish,
+		loading: specialLoading,
+		error: specialError,
+	} = useDailySpecial();
+	const {
+		favoriteDishIds,
+		toggleFavorite,
+		pendingDishIds,
+		loading: favoritesLoading,
+	} = useDishFavorites();
 	const { cart, addDishToCart, removeCartItem } = useCartContext();
 
-	const loading = dishesLoading || categoriesLoading || specialLoading || favoritesLoading;
+	const loading =
+		dishesLoading ||
+		categoriesLoading ||
+		specialLoading ||
+		favoritesLoading;
 	const error = dishesError || categoriesError || specialError;
 
 	const dishesWithFavorite = useMemo(() => {
@@ -61,22 +83,28 @@ export default function Menu() {
 			<section className="menu-page__hero">
 				<div className="menu-page__hero-main">
 					<h1 className="menu-page__title">{t("menu.title")}</h1>
-					<p className="menu-page__subtitle">
-						{t("menu.subtitle")}
-					</p>
+					<p className="menu-page__subtitle">{t("menu.subtitle")}</p>
 				</div>
 
 				<aside className="menu-page__hero-side">
 					<SpecialCard
 						item={{
-							title: specialDish?.name ?? t("menu.daily_special_fallback_title"),
-							description: specialDish?.description ?? t("menu.daily_special_fallback_description"),
+							title:
+								specialDish?.name ??
+								t("menu.daily_special_fallback_title"),
+							description:
+								specialDish?.description ??
+								t("menu.daily_special_fallback_description"),
 						}}
 					/>
 				</aside>
 			</section>
 
-			<CategoryTabs categories={categories} active={activeCategory} onChange={setActiveCategory} />
+			<CategoryTabs
+				categories={categories}
+				active={activeCategory}
+				onChange={setActiveCategory}
+			/>
 
 			<div className="menu-toolbar menu-toolbar--long">
 				<div className="menu-toolbar__search">
@@ -103,7 +131,13 @@ export default function Menu() {
 			</div>
 
 			{loading && <Loader isLight text={t("menu.loading")} />}
-			{error && <ErrorState isLight message={error} onRetry={() => window.location.reload()} />}
+			{error && (
+				<ErrorState
+					isLight
+					message={error}
+					onRetry={() => window.location.reload()}
+				/>
+			)}
 			{!loading && !error && filteredItems.length === 0 && (
 				<EmptyState
 					isLight
@@ -126,12 +160,18 @@ export default function Menu() {
 										addDishToCart={addDishToCart}
 										removeCartItem={removeCartItem}
 										onToggleFavorite={async () => {
-											const result = await toggleFavorite(item.id);
+											const result = await toggleFavorite(
+												item.id,
+											);
 											if (result?.message) {
-												setFavoriteToast(result.message);
+												setFavoriteToast(
+													result.message,
+												);
 											}
 										}}
-										isFavoritePending={pendingDishIds.includes(item.id)}
+										isFavoritePending={pendingDishIds.includes(
+											item.id,
+										)}
 									/>
 								))}
 							</section>
@@ -140,7 +180,9 @@ export default function Menu() {
 
 					{unavailableItems.length > 0 && (
 						<section className="menu-section">
-							<h2 className="menu-section__title">{t("menu.out_of_stock")}</h2>
+							<h2 className="menu-section__title">
+								{t("menu.out_of_stock")}
+							</h2>
 							<section className="menu-grid menu-grid--unavailable">
 								{unavailableItems.map((item, index) => (
 									<MenuDishCard
@@ -159,7 +201,11 @@ export default function Menu() {
 					)}
 				</>
 			)}
-			<Toast message={favoriteToast} duration={3000} onClose={() => setFavoriteToast("")} />
+			<Toast
+				message={favoriteToast}
+				duration={3000}
+				onClose={() => setFavoriteToast("")}
+			/>
 		</div>
 	);
 }

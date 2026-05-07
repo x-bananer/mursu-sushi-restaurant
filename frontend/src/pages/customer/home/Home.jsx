@@ -90,8 +90,14 @@ export default function Home() {
 			el.style.setProperty("--parallax-left-y", `${progress * -180}px`);
 			el.style.setProperty("--parallax-right-y", `${progress * 240}px`);
 			el.style.setProperty("--parallax-right-x", `${progress * -90}px`);
-			el.style.setProperty("--parallax-right-rotate", `${progress * 11}deg`);
-			el.style.setProperty("--parallax-right-scale", `${1 + depth * 0.14}`);
+			el.style.setProperty(
+				"--parallax-right-rotate",
+				`${progress * 11}deg`,
+			);
+			el.style.setProperty(
+				"--parallax-right-scale",
+				`${1 + depth * 0.14}`,
+			);
 		};
 
 		const onScroll = () => move();
@@ -118,13 +124,23 @@ export default function Home() {
 							: `home-hero__title home-hero__title--${titleAnim}`
 					}
 				>
-					<span className="home-hero__title-text">{titleList[titleId]}</span>
+					<span className="home-hero__title-text">
+						{titleList[titleId]}
+					</span>
 				</h1>
 				<div className="home-hero__description">
-					<p className="home-hero__line home-hero__line--1">{t("home.hero_line_1")}</p>
-					<p className="home-hero__line home-hero__line--2">{t("home.hero_line_2")}</p>
-					<p className="home-hero__line home-hero__line--4">{t("home.hero_line_3")}</p>
-					<p className="home-hero__line home-hero__line--6">{t("home.hero_line_4")}</p>
+					<p className="home-hero__line home-hero__line--1">
+						{t("home.hero_line_1")}
+					</p>
+					<p className="home-hero__line home-hero__line--2">
+						{t("home.hero_line_2")}
+					</p>
+					<p className="home-hero__line home-hero__line--4">
+						{t("home.hero_line_3")}
+					</p>
+					<p className="home-hero__line home-hero__line--6">
+						{t("home.hero_line_4")}
+					</p>
 				</div>
 				<div className="home-hero__actions">
 					<a href="/menu" className="btn btn--light">
@@ -136,53 +152,81 @@ export default function Home() {
 				</div>
 			</div>
 			<section className="home-bonsai">
-				<img src={bonsaiImage} alt={t("home.bonsai_alt")} className="home-bonsai__image" />
+				<img
+					src={bonsaiImage}
+					alt={t("home.bonsai_alt")}
+					className="home-bonsai__image"
+				/>
 			</section>
 			<section ref={systemCoreRef} className="system-core light-theme">
 				<div className="system-core__container">
 					<div className="system-core__content">
-						<h2 className="system-core__header">{t("home.experience_title")}</h2>
+						<h2 className="system-core__header">
+							{t("home.experience_title")}
+						</h2>
 						<ul className="system-core__list">
 							<li className="system-item">
 								<div className="system-item__number">01</div>
 								<div className="system-item__content">
-									<div className="system-item__title">{t("home.experience_item_1_title")}</div>
-									<div className="system-item__subtitle">{t("home.experience_item_1_subtitle")}</div>
+									<div className="system-item__title">
+										{t("home.experience_item_1_title")}
+									</div>
+									<div className="system-item__subtitle">
+										{t("home.experience_item_1_subtitle")}
+									</div>
 								</div>
 							</li>
 							<li className="system-item">
 								<div className="system-item__number">02</div>
 								<div className="system-item__content">
-									<div className="system-item__title">{t("home.experience_item_2_title")}</div>
-									<div className="system-item__subtitle">{t("home.experience_item_2_subtitle")}</div>
+									<div className="system-item__title">
+										{t("home.experience_item_2_title")}
+									</div>
+									<div className="system-item__subtitle">
+										{t("home.experience_item_2_subtitle")}
+									</div>
 								</div>
 							</li>
 							<li className="system-item">
 								<div className="system-item__number">03</div>
 								<div className="system-item__content">
-									<div className="system-item__title">{t("home.experience_item_3_title")}</div>
-									<div className="system-item__subtitle">{t("home.experience_item_3_subtitle")}</div>
+									<div className="system-item__title">
+										{t("home.experience_item_3_title")}
+									</div>
+									<div className="system-item__subtitle">
+										{t("home.experience_item_3_subtitle")}
+									</div>
 								</div>
 							</li>
 							<li className="system-item">
 								<div className="system-item__number">04</div>
 								<div className="system-item__content">
-									<div className="system-item__title">{t("home.experience_item_4_title")}</div>
-									<div className="system-item__subtitle">{t("home.experience_item_4_subtitle")}</div>
+									<div className="system-item__title">
+										{t("home.experience_item_4_title")}
+									</div>
+									<div className="system-item__subtitle">
+										{t("home.experience_item_4_subtitle")}
+									</div>
 								</div>
 							</li>
 						</ul>
 					</div>
 					<div className="system-preview">
 						<div className="system-preview__box">
-							<img src={mapImage} alt={t("home.map_alt")} className="system-preview__map" />
+							<img
+								src={mapImage}
+								alt={t("home.map_alt")}
+								className="system-preview__map"
+							/>
 						</div>
 					</div>
 				</div>
 			</section>
 			<section className="home-info-grid">
 				<div className="home-info-card home-info-card--with-divider">
-					<h2 className="home-info-card__title">{t("home.access")}</h2>
+					<h2 className="home-info-card__title">
+						{t("home.access")}
+					</h2>
 					<address className="home-info-card__text home-info-card__address">
 						{t("home.address_name")}
 						<br />
@@ -192,28 +236,68 @@ export default function Home() {
 					</address>
 				</div>
 				<div className="home-info-card home-info-card--with-divider">
-					<h2 className="home-info-card__title">{t("home.schedule")}</h2>
+					<h2 className="home-info-card__title">
+						{t("home.schedule")}
+					</h2>
 					<div className="home-info-card__text home-info-card__schedule">
-						<div className="home-info-card__schedule-row"><span>{t("home.mon")}</span><span>11:00-21:00</span></div>
-						<div className="home-info-card__schedule-row"><span>{t("home.tue")}</span><span>11:00-21:00</span></div>
-						<div className="home-info-card__schedule-row"><span>{t("home.wed")}</span><span>11:00-21:00</span></div>
-						<div className="home-info-card__schedule-row"><span>{t("home.thu")}</span><span>11:00-22:00</span></div>
-						<div className="home-info-card__schedule-row"><span>{t("home.fri")}</span><span>11:00-23:00</span></div>
-						<div className="home-info-card__schedule-row"><span>{t("home.sat")}</span><span>12:00-23:00</span></div>
-						<div className="home-info-card__schedule-row"><span>{t("home.sun")}</span><span>{t("home.closed")}</span></div>
+						<div className="home-info-card__schedule-row">
+							<span>{t("home.mon")}</span>
+							<span>11:00-21:00</span>
+						</div>
+						<div className="home-info-card__schedule-row">
+							<span>{t("home.tue")}</span>
+							<span>11:00-21:00</span>
+						</div>
+						<div className="home-info-card__schedule-row">
+							<span>{t("home.wed")}</span>
+							<span>11:00-21:00</span>
+						</div>
+						<div className="home-info-card__schedule-row">
+							<span>{t("home.thu")}</span>
+							<span>11:00-22:00</span>
+						</div>
+						<div className="home-info-card__schedule-row">
+							<span>{t("home.fri")}</span>
+							<span>11:00-23:00</span>
+						</div>
+						<div className="home-info-card__schedule-row">
+							<span>{t("home.sat")}</span>
+							<span>12:00-23:00</span>
+						</div>
+						<div className="home-info-card__schedule-row">
+							<span>{t("home.sun")}</span>
+							<span>{t("home.closed")}</span>
+						</div>
 					</div>
 				</div>
 				<div className="home-info-card home-info-card--with-divider">
-					<h2 className="home-info-card__title">{t("home.contact")}</h2>
+					<h2 className="home-info-card__title">
+						{t("home.contact")}
+					</h2>
 					<div className="home-info-card__text">
-						<a href="mailto:mursu@mursusushi.zen" className="home-info-card__link">{t("home.contact_email")}</a>
+						<a
+							href="mailto:mursu@mursusushi.zen"
+							className="home-info-card__link"
+						>
+							{t("home.contact_email")}
+						</a>
 						<br />
-						<a href="tel:+358105150143" className="home-info-card__link">{t("home.contact_phone")}</a>
+						<a
+							href="tel:+358105150143"
+							className="home-info-card__link"
+						>
+							{t("home.contact_phone")}
+						</a>
 					</div>
 				</div>
 				<div className="home-info-card">
-					<h2 className="home-info-card__title">{t("home.transport")}</h2>
-					<div className="home-info-card__text">{t("home.transport_text")}<br /></div>
+					<h2 className="home-info-card__title">
+						{t("home.transport")}
+					</h2>
+					<div className="home-info-card__text">
+						{t("home.transport_text")}
+						<br />
+					</div>
 				</div>
 			</section>
 		</>

@@ -1,7 +1,11 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router";
-import { HiOutlineUser, HiOutlineShoppingBag, HiOutlineSun } from "react-icons/hi2";
+import {
+	HiOutlineUser,
+	HiOutlineShoppingBag,
+	HiOutlineSun,
+} from "react-icons/hi2";
 import NavBase from "../../shared/nav/NavBase";
 import { useCartContext } from "../../../hooks/contextHooks/cart";
 import { useAuth } from "../../../contexts/AuthContext";
@@ -33,9 +37,9 @@ export default function CustomerNavbar({ onToggleTheme }) {
 	const { user } = useAuth();
 
 	const userLinkContent = user?.photo_url ? (
-		<img 
-			src={user.photo_url} 
-			alt="User Profile" 
+		<img
+			src={user.photo_url}
+			alt="User Profile"
 			className="nav__avatar-img"
 		/>
 	) : (
@@ -43,15 +47,15 @@ export default function CustomerNavbar({ onToggleTheme }) {
 	);
 
 	const rightItems = [
-		{ 
-			to: user ? "/user-profile" : "/auth", 
-			content: userLinkContent, 
-			isIcon: !user?.photo_url 
+		{
+			to: user ? "/user-profile" : "/auth",
+			content: userLinkContent,
+			isIcon: !user?.photo_url,
 		},
-		{ 
-			to: "/cart", 
-			content: <HiOutlineShoppingBag size={20} />, 
-			isIcon: true 
+		{
+			to: "/cart",
+			content: <HiOutlineShoppingBag size={20} />,
+			isIcon: true,
 		},
 	];
 

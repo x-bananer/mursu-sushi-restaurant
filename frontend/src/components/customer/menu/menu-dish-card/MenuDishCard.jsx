@@ -23,11 +23,18 @@ export default function MenuDishCard({
 	const isLightCard = index % 2 === 0;
 	const isFavorite = item?.is_favorite;
 	const cardVariant = isFavorite ? "accent" : isLightCard ? "light" : "dark";
-	const heartButtonVariant = isFavorite ? "accent" : isLightCard ? "dark" : "light";
+	const heartButtonVariant = isFavorite
+		? "accent"
+		: isLightCard
+			? "dark"
+			: "light";
 	const addButtonVariant = isLightCard ? "dark" : "light";
 	const counterVariant = isLightCard ? "light" : "dark";
 
-	const cartItem = (cart?.items || []).find((currentItem) => currentItem.dish?.id === item?.id) || null;
+	const cartItem =
+		(cart?.items || []).find(
+			(currentItem) => currentItem.dish?.id === item?.id,
+		) || null;
 	const quantity = cartItem ? cartItem.quantity : 0;
 
 	useEffect(() => {

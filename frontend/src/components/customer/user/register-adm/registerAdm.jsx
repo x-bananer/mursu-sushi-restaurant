@@ -5,7 +5,7 @@ import Button from "../../../shared/button/Button";
 import Loader from "../../../shared/loader/Loader";
 import ErrorState from "../../../shared/error-state/ErrorState";
 import { useRegisterUser } from "../../../../hooks/apiHooks/auth";
-import { useNavigate } from 'react-router';
+import { useNavigate } from "react-router";
 
 export default function RegisterAdmin({ onSuccess }) {
 	const { t } = useTranslation();
@@ -42,8 +42,8 @@ export default function RegisterAdmin({ onSuccess }) {
 				adminSecret: form.secret,
 			});
 			if (res?.token) {
-        		navigate("/adm");
-      		}
+				navigate("/adm");
+			}
 			onSuccess?.();
 		} catch (err) {
 			console.error(err);
@@ -58,12 +58,7 @@ export default function RegisterAdmin({ onSuccess }) {
 	return (
 		<form onSubmit={handleSubmit}>
 			{/* ERROR STATE */}
-			{error && (
-				<ErrorState
-					message={error}
-					onRetry={handleSubmit}
-				/>
-			)}
+			{error && <ErrorState message={error} onRetry={handleSubmit} />}
 
 			<InputField
 				label={t("auth.admin_name")}
@@ -97,10 +92,7 @@ export default function RegisterAdmin({ onSuccess }) {
 			/>
 
 			<div className="auth-card__actions">
-				<Button
-					variant="accent"
-					type="submit"
-				>
+				<Button variant="accent" type="submit">
 					{t("auth.register")}
 				</Button>
 			</div>

@@ -21,21 +21,11 @@ import {
 
 export default function WeeklySpecial() {
 	const { t } = useTranslation();
-	const {
-		dishes,
-		loading: dishesLoading,
-		error: dishesError,
-	} = useDishes();
+	const { dishes, loading: dishesLoading, error: dishesError } = useDishes();
 
-	const {
-		save,
-		loading: saveLoading,
-	} = useSaveDailySpecial();
+	const { save, loading: saveLoading } = useSaveDailySpecial();
 
-	const {
-		remove,
-		loading: deleteLoading,
-	} = useDeleteDailySpecial();
+	const { remove, loading: deleteLoading } = useDeleteDailySpecial();
 
 	const {
 		list,
@@ -45,11 +35,7 @@ export default function WeeklySpecial() {
 
 	const week = getCurrentWeekDates();
 
-	const {
-		inputs,
-		setInputs,
-		handleInputChange,
-	} = useForm(() => {}, {});
+	const { inputs, setInputs, handleInputChange } = useForm(() => {}, {});
 
 	const [savingDay, setSavingDay] = useState(null);
 	const [toast, setToast] = useState(null);
@@ -65,14 +51,14 @@ export default function WeeklySpecial() {
 
 				specials.forEach((special) => {
 					// timezone-safe YYYY-MM-DD conversion
-					const dateKey = new Date(special.valid_on)
-						.toLocaleDateString("sv-SE");
+					const dateKey = new Date(
+						special.valid_on,
+					).toLocaleDateString("sv-SE");
 
 					mapped[dateKey] = String(special.dish_id);
 				});
 
 				setInputs(mapped);
-
 			} catch (err) {
 				console.error("Failed to load specials:", err);
 			}
@@ -91,11 +77,7 @@ export default function WeeklySpecial() {
 	}
 
 	if (dishesError || specialsError) {
-		return (
-			<ErrorState
-				message={dishesError || specialsError}
-			/>
-		);
+		return <ErrorState message={dishesError || specialsError} />;
 	}
 
 	if (!dishes.length) {
@@ -166,17 +148,10 @@ export default function WeeklySpecial() {
 
 			<div className="weekly-grid">
 				{week.map((day) => (
-					<div
-						key={day.date}
-						className="weekly-card"
-					>
-						<h3 className="weekly-card__title">
-							{day.label}
-						</h3>
+					<div key={day.date} className="weekly-card">
+						<h3 className="weekly-card__title">{day.label}</h3>
 
-						<p className="weekly-card__date">
-							{day.date}
-						</p>
+						<p className="weekly-card__date">{day.date}</p>
 
 						{/* Dish selector */}
 						<select
@@ -185,15 +160,10 @@ export default function WeeklySpecial() {
 							onChange={handleInputChange}
 							disabled={savingDay === day.date}
 						>
-							<option value="">
-								{t("admin.select_dish")}
-							</option>
+							<option value="">{t("admin.select_dish")}</option>
 
 							{dishes.map((dish) => (
-								<option
-									key={dish.id}
-									value={dish.id}
-								>
+								<option key={dish.id} value={dish.id}>
 									{dish.name}
 								</option>
 							))}
@@ -204,10 +174,7 @@ export default function WeeklySpecial() {
 							<Button
 								variant="accent"
 								onClick={() => handleSave(day.date)}
-								disabled={
-									savingDay === day.date ||
-									saveLoading
-								}
+								disabled={savingDay === day.date || saveLoading}
 							>
 								{savingDay === day.date
 									? t("admin.saving")
@@ -218,8 +185,7 @@ export default function WeeklySpecial() {
 								variant="danger"
 								onClick={() => handleDelete(day.date)}
 								disabled={
-									savingDay === day.date ||
-									deleteLoading
+									savingDay === day.date || deleteLoading
 								}
 							>
 								{t("common.delete")}
@@ -229,12 +195,7 @@ export default function WeeklySpecial() {
 				))}
 			</div>
 
-			{toast && (
-				<Toast
-					message={toast}
-					onClose={() => setToast(null)}
-				/>
-			)}
+			{toast && <Toast message={toast} onClose={() => setToast(null)} />}
 		</section>
 	);
 }

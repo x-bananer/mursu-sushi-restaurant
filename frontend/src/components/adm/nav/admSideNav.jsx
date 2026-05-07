@@ -14,11 +14,31 @@ export default function AdminSideNav({ collapsed, setCollapsed }) {
 	const { t } = useTranslation();
 	const location = useLocation();
 	const sidebarItems = [
-		{ to: "/adm", label: t("admin.dashboard"), icon: <DashboardIcon className="admin-nav__icon" /> },
-		{ to: "/adm/orders", label: t("admin.live_orders"), icon: <LiveOrdersIcon className="admin-nav__icon" /> },
-		{ to: "/adm/menu", label: t("admin.menu_editor"), icon: <MenuEditorIcon className="admin-nav__icon" /> },
-		{ to: "/adm/special", label: t("admin.daily_special"), icon: <DailySpecialIcon className="admin-nav__icon" /> },
-		{ to: "/adm/customers", label: t("admin.customers"), icon: <CustomersIcon className="admin-nav__icon" /> },
+		{
+			to: "/adm",
+			label: t("admin.dashboard"),
+			icon: <DashboardIcon className="admin-nav__icon" />,
+		},
+		{
+			to: "/adm/orders",
+			label: t("admin.live_orders"),
+			icon: <LiveOrdersIcon className="admin-nav__icon" />,
+		},
+		{
+			to: "/adm/menu",
+			label: t("admin.menu_editor"),
+			icon: <MenuEditorIcon className="admin-nav__icon" />,
+		},
+		{
+			to: "/adm/special",
+			label: t("admin.daily_special"),
+			icon: <DailySpecialIcon className="admin-nav__icon" />,
+		},
+		{
+			to: "/adm/customers",
+			label: t("admin.customers"),
+			icon: <CustomersIcon className="admin-nav__icon" />,
+		},
 	];
 
 	return (

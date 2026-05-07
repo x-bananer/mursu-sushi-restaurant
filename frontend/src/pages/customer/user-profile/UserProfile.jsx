@@ -17,7 +17,8 @@ import "./user-profile.css";
 export default function UserProfile() {
 	const { t } = useTranslation();
 	const { user, logout } = useAuth();
-	const { getProfile, updateProfile, deleteAccount, isLoading, error } = useUser();
+	const { getProfile, updateProfile, deleteAccount, isLoading, error } =
+		useUser();
 
 	const [profile, setProfile] = useState(user);
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -43,7 +44,10 @@ export default function UserProfile() {
 				setIsEditModalOpen(false);
 			}
 		} catch (err) {
-			setToast({ message: err.message || t("profile.update_failed"), type: "error" });
+			setToast({
+				message: err.message || t("profile.update_failed"),
+				type: "error",
+			});
 		} finally {
 			setIsSaving(false);
 		}
@@ -62,7 +66,13 @@ export default function UserProfile() {
 	};
 
 	if (isLoading && !profile) {
-		return <Loader size={48} text={t("profile.loading")} className="page-loader" />;
+		return (
+			<Loader
+				size={48}
+				text={t("profile.loading")}
+				className="page-loader"
+			/>
+		);
 	}
 
 	if (error && !profile) {
@@ -74,7 +84,9 @@ export default function UserProfile() {
 	}
 
 	const displayName = profile?.name || t("common.guest");
-	const regDate = profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : "";
+	const regDate = profile?.created_at
+		? new Date(profile.created_at).toLocaleDateString()
+		: "";
 	const metaText = profile?.email
 		? `${profile.email} ${regDate ? `• ${t("profile.joined")} ${regDate}` : ""}`
 		: "";
@@ -101,7 +113,10 @@ export default function UserProfile() {
 						</div>
 					</div>
 					<div className="profile__actions">
-						<Button variant="light" onClick={() => setIsEditModalOpen(true)}>
+						<Button
+							variant="light"
+							onClick={() => setIsEditModalOpen(true)}
+						>
 							{t("profile.edit_profile")}
 						</Button>
 						<Button variant="gray" onClick={logout}>
@@ -119,12 +134,18 @@ export default function UserProfile() {
 					<div className="profile__stats-side">
 						{profile?.is_stamp_discount_active === 0 ? (
 							<section className="profile-stat-card profile-stat-card--light">
-								<p className="profile-stat-card__label">{t("profile.no_active_discount")}</p>
+								<p className="profile-stat-card__label">
+									{t("profile.no_active_discount")}
+								</p>
 							</section>
 						) : (
 							<section className="profile-stat-card">
-								<p className="profile-stat-card__label">{t("profile.next_purchase_discount")}</p>
-								<p className="profile-stat-card__value">{t("profile.milestone_discount")}</p>
+								<p className="profile-stat-card__label">
+									{t("profile.next_purchase_discount")}
+								</p>
+								<p className="profile-stat-card__value">
+									{t("profile.milestone_discount")}
+								</p>
 							</section>
 						)}
 					</div>

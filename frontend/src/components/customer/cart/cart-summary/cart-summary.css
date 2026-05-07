@@ -76,13 +76,13 @@
 }
 
 .cart-summary__plate {
-    padding: 12px 16px;
-    background: var(--color-light-light-gray);
-    color: var(--color-gray);
-    font-family: var(--font-button);
-    font-size: 14px;
-    margin-top: 12px;
-    text-align: center;
+  padding: 12px 16px;
+  background: var(--color-light-light-gray);
+  color: var(--color-gray);
+  font-family: var(--font-button);
+  font-size: 14px;
+  margin-top: 12px;
+  text-align: center;
 }
 
 .cart-summary__auth-link.btn--link {
