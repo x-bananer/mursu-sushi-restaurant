@@ -255,7 +255,7 @@ This command runs the full integration suite (`tests/integration/*`): 6 suits, 1
 
 12. Go to `/adm/orders` and use the orders dashboard to process your order (change the order status from the order card). You can stay logged in as a customer in another browser window, create an order and watch `/order-tracker` update instantly as the admin changes statuses.
 
-13.Go to `/adm/menu` and edit dishes or mark them as unavailable.
+13. Go to `/adm/menu` and edit dishes or mark them as unavailable.
 In another browser window, verify that these dish changes are reflected on the customer `/menu` page.
 
 14. Go to `/adm/special` and change the special dish for today or other days.
