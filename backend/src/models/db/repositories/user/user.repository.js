@@ -34,7 +34,7 @@ export async function getUserByEmail(email) {
  * @returns {Promise<number>} inserted user id
  */
 export async function createUser(data) {
-	const roleId = data.roleId || 1;
+	const roleId = Number(data.roleId ?? data.role_id ?? 1);
 
 	const result = await execute(
 		`
