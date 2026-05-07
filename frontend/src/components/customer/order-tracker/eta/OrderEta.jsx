@@ -1,4 +1,5 @@
 import "./order-eta.css";
+import { useTranslation } from "react-i18next";
 
 /* ----------------------------
    Formatters
@@ -71,15 +72,64 @@ const ETA = {
    Component
 ----------------------------- */
 export default function OrderETA({ eta, serviceType, durationMins }) {
+  const { t } = useTranslation();
   console.log('serviceType: ', serviceType);
   console.log('eta?.leaveAt: ', eta?.deliveredAt );
   if (serviceType === 'restaurant') serviceType = 'dine_in';
-  const etaUI = ETA[serviceType] || ETA.default;
+  const etaLocalized = {
+    delivery: {
+      row1: {
+        before: t("order_tracker.eta_delivery_row1_before"),
+        value: (eta) => formatTime(eta?.readyAt),
+        after: "",
+      },
+      row2: {
+        before: t("order_tracker.eta_delivery_row2_before"),
+        value: (eta) => formatTime(eta?.deliveredAt),
+        after: "",
+      },
+    },
+    pickup: {
+      row1: {
+        before: t("order_tracker.eta_pickup_row1_before"),
+        value: (eta) => formatTime(eta?.readyAt),
+        after: t("order_tracker.eta_pickup_row1_after"),
+      },
+      row2: {
+        before: t("order_tracker.eta_pickup_row2_before"),
+        value: (eta, durationMins) => `${durationMins ?? eta?.travel?.durationMins ?? "--"}`,
+        unit: t("order_tracker.min"),
+        after: t("order_tracker.eta_pickup_row2_after"),
+      },
+    },
+    dine_in: {
+      row1: {
+        before: t("order_tracker.eta_dine_row1_before"),
+        value: (eta) => formatTime(eta?.readyAt),
+        after: t("order_tracker.eta_dine_row1_after"),
+      },
+      row2: {
+        before: t("order_tracker.eta_dine_row2_before"),
+        value: (eta, durationMins) => `${durationMins ?? eta?.travel?.durationMins ?? "--"}`,
+        unit: t("order_tracker.min"),
+        after: t("order_tracker.eta_dine_row2_after"),
+      },
+    },
+    default: {
+      row1: {
+        before: t("order_tracker.eta_default_row1_before"),
+        value: (eta) => `${eta?.travel?.durationMins ?? "--"}`,
+        unit: t("order_tracker.min"),
+        after: "",
+      },
+    },
+  };
+  const etaUI = etaLocalized[serviceType] || etaLocalized.default;
 
   if (!eta) {
     return (
       <div className="order__ready-wrapper">
-        <p className="order__ready-label">Estimating time...</p>
+        <p className="order__ready-label">{t("order_tracker.estimating")}</p>
       </div>
     );
   }

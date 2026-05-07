@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router";
 import { HiOutlineUser, HiOutlineShoppingBag, HiOutlineSun } from "react-icons/hi2";
 import NavBase from "../../shared/nav/NavBase";
@@ -23,10 +24,9 @@ const Logo = () => (
 );
 
 export default function CustomerNavbar({ onToggleTheme }) {
+	const { t, i18n } = useTranslation();
 	const location = useLocation();
-	const [language, setLanguage] = React.useState(
-		localStorage.getItem("locale") || 'en',
-	);
+	const language = i18n.resolvedLanguage === "fi" ? "fi" : "en";
 	const languageFlag = language === "fi" ? "🇫🇮" : "🇬🇧";
 
 	const { cartItemsCount } = useCartContext();
@@ -60,12 +60,12 @@ export default function CustomerNavbar({ onToggleTheme }) {
 			left={[
 				{
 					to: "/menu",
-					content: "MENU",
+					content: t("nav.menu"),
 					isActive: location.pathname === "/menu",
 				},
 				{
 					to: "/combo-builder",
-					content: "BUILD A SET",
+					content: t("nav.combo_builder"),
 					isActive: location.pathname === "/combo-builder",
 				},
 			]}
@@ -77,21 +77,19 @@ export default function CustomerNavbar({ onToggleTheme }) {
 						className="nav__link nav__theme-toggle"
 						type="button"
 						onClick={onToggleTheme}
-						aria-label="Toggle theme"
-						title="Toggle theme"
+						aria-label={t("nav.toggle_theme")}
+						title={t("nav.toggle_theme")}
 					>
 						<HiOutlineSun size={24} />
 					</button>
 					<button
 						className="nav__link"
 						type="button"
-						onClick={() =>
-							setLanguage((l) => {
-								const newLocale = l === "en" ? "fi" : "en";
-								localStorage.setItem("locale", newLocale);
-								return newLocale;
-							})
-						}
+						onClick={() => {
+							const newLocale = language === "en" ? "fi" : "en";
+							localStorage.setItem("locale", newLocale);
+							i18n.changeLanguage(newLocale);
+						}}
 					>
 						{languageFlag} {language.toUpperCase()}
 					</button>

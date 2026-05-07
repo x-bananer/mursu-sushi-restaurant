@@ -1,20 +1,23 @@
+import { useTranslation } from "react-i18next";
+
 export default function LiveOrdersCard({ order, onAction }) {
+  const { t } = useTranslation();
   const status = order.status?.type;
 
   let actionLabel = "";
   let nextStatus = null;
 
   if (status === "pending") {
-    actionLabel = "Accept Order";
+    actionLabel = t("admin.accept_order");
     nextStatus = "confirmed";
   } else if (status === "confirmed") {
-    actionLabel = "Mark Preparing";
+    actionLabel = t("admin.mark_preparing");
     nextStatus = "preparing";
   } else if (status === "preparing") {
-    actionLabel = "Mark Ready";
+    actionLabel = t("admin.mark_ready");
     nextStatus = "ready";
   } else if (status === "ready") {
-    actionLabel = "Mark Delivered";
+    actionLabel = t("admin.mark_delivered");
     nextStatus = "delivered";
   }
 
@@ -24,7 +27,7 @@ export default function LiveOrdersCard({ order, onAction }) {
     const name =
       type === "dish"
         ? item.dish?.name
-        : "Custom Combo";
+        : t("admin.custom_combo");
 
     return (
       <li key={item.id} className="order-card__item">

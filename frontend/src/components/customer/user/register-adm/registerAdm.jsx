@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import InputField from "../../../shared/input-field/InputField";
 import Button from "../../../shared/button/Button";
 import Loader from "../../../shared/loader/Loader";
@@ -7,6 +8,7 @@ import { useRegisterUser } from "../../../../hooks/apiHooks/auth";
 import { useNavigate } from 'react-router';
 
 export default function RegisterAdmin({ onSuccess }) {
+	const { t } = useTranslation();
 	const { register, loading, error } = useRegisterUser();
 	const navigate = useNavigate();
 
@@ -29,7 +31,7 @@ export default function RegisterAdmin({ onSuccess }) {
 
 		try {
 			if (!form.secret) {
-				alert("Admin secret is required");
+				alert(t("auth.alert_admin_secret_required"));
 				return;
 			}
 			const res = await register({
@@ -50,7 +52,7 @@ export default function RegisterAdmin({ onSuccess }) {
 
 	// LOADING STATE
 	if (loading) {
-		return <Loader text="Creating admin account..." />;
+		return <Loader text={t("auth.creating_admin")} />;
 	}
 
 	return (
@@ -64,14 +66,14 @@ export default function RegisterAdmin({ onSuccess }) {
 			)}
 
 			<InputField
-				label="ADMIN NAME"
+				label={t("auth.admin_name")}
 				name="name"
 				value={form.name}
 				onChange={handleChange}
 			/>
 
 			<InputField
-				label="EMAIL ADDRESS"
+				label={t("auth.email")}
 				type="email"
 				name="email"
 				value={form.email}
@@ -79,7 +81,7 @@ export default function RegisterAdmin({ onSuccess }) {
 			/>
 
 			<InputField
-				label="PASSWORD"
+				label={t("auth.password")}
 				type="password"
 				name="password"
 				value={form.password}
@@ -87,7 +89,7 @@ export default function RegisterAdmin({ onSuccess }) {
 			/>
 
 			<InputField
-				label="ADM SECRET"
+				label={t("auth.admin_secret")}
 				type="password"
 				name="secret"
 				value={form.secret}
@@ -99,7 +101,7 @@ export default function RegisterAdmin({ onSuccess }) {
 					variant="accent"
 					type="submit"
 				>
-					REGISTER
+					{t("auth.register")}
 				</Button>
 			</div>
 		</form>

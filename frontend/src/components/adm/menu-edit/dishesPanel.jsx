@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import CardBase from "../../shared/card-base/cardBase";
 import CategoryTabs from "../../shared/category-tabs/categoryTabs";
@@ -25,6 +26,7 @@ import {
 } from "../../../hooks/apiHooks/adm/dish";
 
 export default function DishesPanel() {
+  const { t } = useTranslation();
   // ───────── FILTERS ─────────
   const [activeCategory, setActiveCategory] = useState("all");
   const [search, setSearch] = useState("");
@@ -79,10 +81,10 @@ export default function DishesPanel() {
 
   // ───────── CONFIG ─────────
   const sortOptions = [
-    { value: "default", label: "Default" },
-    { value: "price_asc", label: "Price ↑" },
-    { value: "price_desc", label: "Price ↓" },
-    { value: "name", label: "Name" },
+    { value: "default", label: t("menu.sort_default") },
+    { value: "price_asc", label: t("menu.sort_price_asc") },
+    { value: "price_desc", label: t("menu.sort_price_desc") },
+    { value: "name", label: t("menu.sort_name") },
   ];
 
   // ───────── DEFAULT OBJECT ─────────
@@ -134,11 +136,11 @@ export default function DishesPanel() {
       try {
         await update(editing.id, form);
 
-        setToast("Dish updated");
+        setToast(t("admin.dish_updated"));
         closeModal();
       } catch (err) {
         setLocalDishes(previous);
-        setToast(err.message || "Something went wrong");
+        setToast(err.message || t("admin.generic_update_error"));
       }
     }
 
@@ -166,7 +168,7 @@ export default function DishesPanel() {
           )
         );
 
-        setToast("Dish created");
+        setToast(t("admin.dish_created"));
         closeModal();
       } catch (err) {
         setLocalDishes((prev) =>
@@ -175,7 +177,7 @@ export default function DishesPanel() {
           )
         );
 
-        setToast(err.message || "Something went wrong");
+        setToast(err.message || t("admin.generic_update_error"));
       }
     }
   };
@@ -192,10 +194,10 @@ export default function DishesPanel() {
     try {
       await remove(id);
 
-      setToast("Dish deleted");
+      setToast(t("admin.dish_deleted"));
     } catch (err) {
       setLocalDishes(previous);
-      setToast(err.message || "Something went wrong");
+      setToast(err.message || t("admin.generic_update_error"));
     }
   };
 
@@ -220,10 +222,10 @@ export default function DishesPanel() {
         is_available: !item.is_available,
       });
 
-      setToast("Dish updated");
+      setToast(t("admin.dish_updated"));
     } catch (err) {
       setLocalDishes(previous);
-      setToast(err.message || "Something went wrong");
+      setToast(err.message || t("admin.generic_update_error"));
     }
   };
 
@@ -243,14 +245,14 @@ export default function DishesPanel() {
         onSortChange={setSort}
         sortOptions={sortOptions}
         onCreate={openCreate}
-        createLabel="Add Dish"
+        createLabel={t("admin.add_dish")}
       />
 
       {/* STATES */}
       {loading && (
         <Loader
           isLight
-          text="Loading dishes..."
+          text={t("admin.loading_dishes")}
         />
       )}
 
@@ -284,7 +286,7 @@ export default function DishesPanel() {
 
           {filteredDishes.length === 0 && (
             <p className="menu-edit__empty">
-              No dishes found
+              {t("admin.menu_no_dishes")}
             </p>
           )}
         </section>
@@ -296,8 +298,8 @@ export default function DishesPanel() {
         onClose={closeModal}
         title={
           mode === "edit"
-            ? "Edit Dish"
-            : "Create Dish"
+            ? t("admin.edit_dish")
+            : t("admin.create_dish")
         }
       >
         <MenuItemForm

@@ -1,4 +1,5 @@
 import "./table-base.css";
+import { useTranslation } from "react-i18next";
 
 export default function TableBase({
   title,
@@ -7,6 +8,7 @@ export default function TableBase({
   data,
   renderRow,
 }) {
+  const { t } = useTranslation();
   return (
     <section className="table-wrapper">
       {title && <h3 className="menu-page__title">{title}</h3>}
@@ -20,7 +22,7 @@ export default function TableBase({
           {columns.map((col) => (
             <span key={col.key}>{col.label}</span>
           ))}
-          <span className="table__actions">Actions</span>
+          <span className="table__actions">{t("common.actions")}</span>
         </div>
 
         {/* ROWS */}

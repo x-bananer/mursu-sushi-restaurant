@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
 import './customers.css';
 import TableBase from "../../shared/table-base/tableBase";
@@ -10,6 +11,7 @@ import Loader from "../../shared/loader/Loader";
 import { fetchData } from "../../../utils/fetchData";
 
 export default function Customers() {
+  const { t } = useTranslation();
   const [users, setUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState("");
@@ -90,7 +92,7 @@ export default function Customers() {
         if (selectedUser && selectedUser.id === data.user.id) {
           setSelectedUser(data.user);
         }
-        setToast({ message: "Discount status updated." });
+        setToast({ message: t("admin.discount_updated") });
       }
     } catch (err) {
       setToast({ message: err.message, type: "error" });
@@ -116,7 +118,7 @@ export default function Customers() {
         setUsers(prev => prev.map(u => u.id === data.user.id ? data.user : u));
         setSelectedUser(data.user);
         setIsOverrideMode(false);
-        setToast({ message: "Manual override successful." });
+        setToast({ message: t("admin.manual_override_success") });
       }
     } catch (err) {
       setToast({ message: err.message, type: "error" });
@@ -137,40 +139,40 @@ export default function Customers() {
 
   let description = "";
   if (isLoading) {
-    description = "Loading users...";
+    description = t("admin.customers_loading");
   } else if (error) {
     description = error;
   } else if (users.length === 0) {
-    description = "No users found.";
+    description = t("admin.customers_none");
   } else if (filteredUsers.length === 0 && searchQuery) {
-    description = "No users match your search.";
+    description = t("admin.customers_no_match");
   }
 
   return (
     <>
       <div style={{ marginBottom: "2rem", maxWidth: "400px" }}>
         <InputField
-          placeholder="Search by name or email..."
+          placeholder={t("admin.customers_search_placeholder")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
 
-      {isLoading && <Loader text="Fetching customers..." />}
+      {isLoading && <Loader text={t("admin.customers_fetching")} />}
 
       {!isLoading && (
         <TableBase
-          title="Customers"
+          title={t("admin.customers")}
           description={description}
           columns={[
-            { key: "name", label: "Name" },
-            { key: "email", label: "Email" },
+            { key: "name", label: t("admin.customers_table_name") },
+            { key: "email", label: t("admin.customers_table_email") },
           ]}
           data={filteredUsers}
           renderRow={(user) => {
-            let discountLabel = "Activate discount";
+            let discountLabel = t("admin.discount_activate");
             if (user.is_stamp_discount_active) {
-              discountLabel = "Deactivate discount";
+              discountLabel = t("admin.discount_deactivate");
             }
 
             return (
@@ -184,7 +186,7 @@ export default function Customers() {
                     variant="dark"
                     onClick={() => handleViewDetails(user.id)}
                   >
-                    View details
+                    {t("admin.view_details")}
                   </Button>
                   <Button
                     size="small"
@@ -204,34 +206,34 @@ export default function Customers() {
       <Modal
         isOpen={Boolean(selectedUser)}
         onClose={handleCloseDetails}
-        title="Customer details"
+        title={t("admin.customer_details")}
       >
         {selectedUser && (
           <div className="customer-details">
-            <p><strong>Name:</strong> {selectedUser.name}</p>
-            <p><strong>Email:</strong> {selectedUser.email}</p>
-            <p><strong>Role:</strong> {selectedUser.role_id === 2 ? "Admin" : "Customer"}</p>
+            <p><strong>{t("admin.name_label")}</strong> {selectedUser.name}</p>
+            <p><strong>{t("admin.email_label")}</strong> {selectedUser.email}</p>
+            <p><strong>{t("admin.role")}</strong> {selectedUser.role_id === 2 ? t("admin.role_admin") : t("admin.role_customer")}</p>
             
             <div style={{ marginTop: '1.5rem', borderTop: '1px solid #333', paddingTop: '1rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <p><strong>Stamps:</strong> {selectedUser.stamp_count}</p>
+                <p><strong>{t("admin.stamps")}</strong> {selectedUser.stamp_count}</p>
                 <Button 
                   size="small" 
                   variant="link" 
                   onClick={() => setIsOverrideMode(!isOverrideMode)}
                 >
                   <HiOutlineAdjustmentsHorizontal size={16} /> 
-                  {isOverrideMode ? " Cancel Override" : " Manual Override"}
+                  {isOverrideMode ? ` ${t("admin.cancel_override")}` : ` ${t("admin.manual_override")}`}
                 </Button>
               </div>
 
               {isOverrideMode && (
                 <div style={{ marginTop: '1rem', background: 'rgba(255,0,0,0.05)', padding: '1rem', borderRadius: '4px' }}>
                   <p style={{ fontSize: '0.8rem', color: '#888', marginBottom: '0.5rem' }}>
-                    * Manual override should only be used as a fallback.
+                    {t("admin.manual_override_note")}
                   </p>
                   <InputField 
-                    label="Adjust Stamp Count"
+                    label={t("admin.adjust_stamp_count")}
                     type="number"
                     value={manualStamps}
                     onChange={(e) => setManualStamps(Number(e.target.value))}
@@ -242,13 +244,13 @@ export default function Customers() {
                     onClick={handleSaveOverride}
                     disabled={updatingUserId === selectedUser.id}
                   >
-                    {updatingUserId === selectedUser.id ? "Saving..." : "Apply Changes"}
+                    {updatingUserId === selectedUser.id ? t("admin.saving") : t("admin.apply_changes")}
                   </Button>
                 </div>
               )}
               
               <p style={{ marginTop: '0.5rem' }}>
-                <strong>Discount active:</strong> {selectedUser.is_stamp_discount_active ? "Yes" : "No"}
+                <strong>{t("admin.discount_active")}</strong> {selectedUser.is_stamp_discount_active ? t("common.yes") : t("common.no")}
               </p>
             </div>
           </div>

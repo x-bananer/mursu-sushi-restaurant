@@ -16,7 +16,8 @@
     "available": "Saatavilla",
     "disabled": "Poistettu käytöstä",
     "enable": "Ota käyttöön",
-    "disable": "Poista käytöstä"
+    "disable": "Poista käytöstä",
+    "unknown": "Tuntematon"
   },
   "auth": {
     "sign_in": "Kirjaudu sisään",
@@ -45,7 +46,8 @@
     "profile": "Profiili",
     "toggle_sidebar": "Näytä/piilota sivupalkki",
     "locale_en": "EN",
-    "locale_fi": "FI"
+    "locale_fi": "FI",
+    "toggle_theme": "Vaihda teema"
   },
   "home": {
     "hero_title_main": "Mursu Sushi",
@@ -116,7 +118,14 @@
     "fillings": "Täytteet",
     "base": "Pohja",
     "your_set": "Sinun Settisi",
-    "total": "Yhteensä"
+    "total": "Yhteensä",
+    "add_to_cart": "Lisää ostoskoriin",
+    "added_success": "Oshi-sushi-settisi lisättiin onnistuneesti ostoskoriin!",
+    "drop_to_add": "Pudota lisätäksesi ainesosa",
+    "drag_here": "Vedä ainesosat tähän",
+    "rules_line_1": "1 päällinen",
+    "rules_line_2": "enintään 3 täytettä",
+    "rules_line_3": "1 pohja"
   },
   "cart": {
     "title": "Ostoskori",
@@ -133,7 +142,14 @@
     "sign_in_prompt": "Kirjaudu sisään",
     "create_account_prompt": "luo tili",
     "unknown_dish": "Tuntematon annos",
-    "custom_set": "Oma setti #"
+    "custom_set": "Oma setti #",
+    "processing": "Käsitellään...",
+    "pay_total": "Maksa €{{total}}",
+    "payment_failed": "Maksu epäonnistui",
+    "payment_failed_retry": "Maksu epäonnistui. Yritä toista korttia.",
+    "or": "tai",
+    "checkout_hint": "jatkaaksesi kassalle",
+    "terms_caption": "Jatkamalla hyväksyt Mursun käyttöehdot ja tietosuojakäytännön."
   },
   "order_tracker": {
     "loading": "Ladataan tilausta...",
@@ -146,7 +162,35 @@
     "order_id": "Tilaus — id: {{id}}",
     "total_price": "Kokonaishinta",
     "restaurant": "Ravintola",
-    "you_are_here": "Olet tässä"
+    "you_are_here": "Olet tässä",
+    "mode_walk": "Kävely",
+    "mode_bike": "Pyörä",
+    "mode_car": "Auto",
+    "mode_transit": "Joukkoliikenne",
+    "rewards_note": "Kaikki aktiiviset edut ja alennukset lisätään automaattisesti tilaukseesi.",
+    "step_placed": "Tehty",
+    "step_confirmed": "Vahvistettu",
+    "step_preparing": "Valmistuksessa",
+    "step_ready": "Valmis",
+    "step_msg_placed": "Maksu vahvistettu Stripen kautta. Tilauksesi id on {{id}}.",
+    "step_msg_confirmed": "Keittiö on vastaanottanut tilauksesi.",
+    "step_msg_preparing": "Sushiasi valmistetaan nyt.",
+    "step_msg_ready_delivery": "Olemme tulossa luoksesi, valmistaudu vastaanottamaan toimitus.",
+    "step_msg_ready_pickup": "Tilauksesi on valmis, odotamme sinua noutamaan sen.",
+    "step_msg_ready_restaurant": "Nauti ateriastasi!",
+    "step_msg_ready_default": "Tilauksesi on valmis.",
+    "eta_delivery_row1_before": "Arvioitu valmiina klo:",
+    "eta_delivery_row2_before": "Toimitettu klo:",
+    "eta_pickup_row1_before": "Arvioitu valmiina klo:",
+    "eta_pickup_row1_after": "Varmista, että lähdet ajoissa!",
+    "eta_pickup_row2_before": "Sijainnistasi ravintolaan kestää noin",
+    "eta_pickup_row2_after": "saapua ravintolaan.",
+    "eta_dine_row1_before": "Pöytä valmis klo:",
+    "eta_dine_row1_after": "Varmista, että olet ravintolassa silloin!",
+    "eta_dine_row2_before": "Sijainnistasi ravintolaan kestää noin",
+    "eta_dine_row2_after": "saapua ravintolaan.",
+    "eta_default_row1_before": "Arvioitu aika minuutteina:",
+    "min": "min"
   },
   "profile": {
     "loading": "Ladataan profiilia...",
@@ -168,7 +212,15 @@
     "update_failed": "Profiilin päivitys epäonnistui",
     "delete_confirm": "Poistetaanko tilisi? Tätä ei voi perua.",
     "delete_failed": "Tilin poistaminen epäonnistui",
-    "customer_only_error": "Käyttäjätyypin tulee olla asiakastili."
+    "customer_only_error": "Käyttäjätyypin tulee olla asiakastili.",
+    "admin_only_error": "Käyttäjätyypin tulee olla ylläpitotili.",
+    "delete_account": "Poista tili",
+    "deleting": "Poistetaan...",
+    "discount_active_hint": "10% alennus on aktiivinen seuraavaa tilaustasi varten",
+    "stamps_left_hint_one": "{{count}} ostos lisää avataksesi 10% alennuksen seuraavaan tilaukseen",
+    "stamps_left_hint_other": "{{count}} ostosta lisää avataksesi 10% alennuksen seuraavaan tilaukseen",
+    "name_required_error": "Käyttäjällä täytyy olla nimi",
+    "email_required_error": "Käyttäjällä täytyy olla sähköposti"
   },
   "admin": {
     "dashboard": "Yhteenveto",
@@ -236,6 +288,19 @@
     "price": "Hinta",
     "bases": "Pohjat",
     "proteins": "Proteiinit",
-    "toppings": "Päälliset"
+    "toppings": "Päälliset",
+    "dish_updated": "Annos päivitetty",
+    "dish_created": "Annos luotu",
+    "dish_deleted": "Annos poistettu",
+    "ingredient_updated": "Ainesosa päivitetty",
+    "ingredient_created": "Ainesosa luotu",
+    "ingredient_deleted": "Ainesosa poistettu",
+    "generic_update_error": "Jokin meni pieleen",
+    "add_dish": "Lisää annos",
+    "edit_dish": "Muokkaa annosta",
+    "create_dish": "Luo annos",
+    "add_ingredient": "Lisää ainesosa",
+    "edit_ingredient": "Muokkaa ainesosaa",
+    "create_ingredient": "Luo ainesosa"
   }
 }

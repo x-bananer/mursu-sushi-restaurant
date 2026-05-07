@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { HiOutlineUser } from "react-icons/hi2";
 import Button from "../../components/shared/button/Button";
 import Modal from "../../components/shared/modal/modal";
@@ -13,6 +14,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useUser } from "../../hooks/apiHooks/user";
 
 export default function AdmProfile() {
+    const { t } = useTranslation();
     const { user, logout } = useAuth();
     const { getProfile, updateProfile, deleteAccount, isLoading, error } = useUser();
 
@@ -36,30 +38,30 @@ export default function AdmProfile() {
             const updatedUser = await updateProfile(payload, photoFile);
             if (updatedUser) {
                 setProfile(updatedUser);
-                setToast({ message: "Profile updated successfully!" });
+                setToast({ message: t("profile.updated_success") });
                 setIsEditModalOpen(false);
             }
         } catch (err) {
-            setToast({ message: err.message || "Failed to update profile", type: "error" });
+            setToast({ message: err.message || t("profile.update_failed"), type: "error" });
         } finally {
             setIsSaving(false);
         }
     };
 
     const handleDeleteAccount = async () => {
-        const confirmed = window.confirm("Delete your account? This cannot be undone.");
+        const confirmed = window.confirm(t("profile.delete_confirm"));
         if (!confirmed) return;
 
         setIsDeleting(true);
         const success = await deleteAccount();
         if (!success) {
-            setToast({ message: "Failed to delete account", type: "error" });
+            setToast({ message: t("profile.delete_failed"), type: "error" });
             setIsDeleting(false);
         }
     };
 
     if (isLoading && !profile) {
-        return <Loader size={48} text="Loading profile..." className="page-loader" />;
+        return <Loader size={48} text={t("profile.loading")} className="page-loader" />;
     }
 
     if (error && !profile) {
@@ -68,13 +70,13 @@ export default function AdmProfile() {
 
     if (profile && profile.role_id !== 2) {
 	    return (
-		    <ErrorState message="User type must be administrative account." />
+		    <ErrorState message={t("profile.admin_only_error")} />
 	    );
     }
 
-    const displayName = profile?.name ||  <ErrorState message="User must have a name" />;
+    const displayName = profile?.name || <ErrorState message={t("profile.name_required_error")} />;
     const regDate = profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : "";
-    const metaText = profile?.email ? `${profile.email} ${regDate ? `• Joined ${regDate}` : ""}` : <ErrorState message="User must have an email" />;
+    const metaText = profile?.email ? `${profile.email} ${regDate ? `• ${t("profile.joined")} ${regDate}` : ""}` : <ErrorState message={t("profile.email_required_error")} />;
 
     return (
         <div className="profile">
@@ -102,13 +104,13 @@ export default function AdmProfile() {
                             variant="light"
                             onClick={() => setIsEditModalOpen(true)}
                         >
-                            Edit Profile
+                            {t("profile.edit_profile")}
                         </Button>
                         <Button
                             variant="gray"
                             onClick={logout}
                         >
-                            Logout
+                            {t("profile.logout")}
                         </Button>
                     </div>
                 </section>
@@ -118,7 +120,7 @@ export default function AdmProfile() {
             <Modal
                 isOpen={isEditModalOpen}
                 onClose={() => setIsEditModalOpen(false)}
-                title="Edit Profile"
+                title={t("profile.edit_profile")}
             >
                 <ProfileEditForm
                     user={profile}

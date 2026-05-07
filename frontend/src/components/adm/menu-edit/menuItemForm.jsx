@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import Button from "../../shared/button/Button";
 import InputField from "../../shared/input-field/InputField";
 import useForm from "../../../hooks/formHooks";
@@ -8,6 +9,7 @@ export default function MenuItemForm({
   categories = [],
   onSubmit,
 }) {
+  const { t } = useTranslation();
   const { inputs, handleInputChange, handleSubmit } = useForm(
     onSubmit,
     {
@@ -26,14 +28,14 @@ export default function MenuItemForm({
         name="name"
         value={inputs.name}
         onChange={handleInputChange}
-        placeholder="Name"
+        placeholder={t("admin.name_label").replace(":", "")}
       />
 
       <InputField
         name="price"
         value={inputs.price}
         onChange={handleInputChange}
-        placeholder="Price"
+        placeholder={t("admin.price")}
       />
 
       {type === "dish" && (
@@ -41,7 +43,7 @@ export default function MenuItemForm({
           name="description"
           value={inputs.description}
           onChange={handleInputChange}
-          placeholder="Description"
+          placeholder={t("menu.subtitle")}
         />
       )}
 
@@ -52,7 +54,7 @@ export default function MenuItemForm({
           value={inputs.ingredient_type_id}
           onChange={handleInputChange}
         >
-          <option value="">Select type</option>
+          <option value="">{t("admin.select_dish")}</option>
           {categories.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}
@@ -63,7 +65,7 @@ export default function MenuItemForm({
       )}
 
       <Button type="submit" variant="accent">
-        Save
+        {t("common.save")}
       </Button>
     </form>
   );

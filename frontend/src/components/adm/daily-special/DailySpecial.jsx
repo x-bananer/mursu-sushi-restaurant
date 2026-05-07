@@ -1,5 +1,6 @@
 import "./daily-special.css";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { getCurrentWeekDates } from "../../../utils/admHelpers";
 
@@ -17,6 +18,7 @@ import {
 } from "../../../hooks/apiHooks/adm/dailySpecial";
 
 export default function WeeklySpecial() {
+  const { t } = useTranslation();
   const { dishes, loading, error } = useDishes();
 
   const week = getCurrentWeekDates();
@@ -29,10 +31,8 @@ export default function WeeklySpecial() {
   const [savingDay, setSavingDay] = useState(null);
   const [toast, setToast] = useState(null);
 
-  /* ── STATES ───────────────────────────── */
-
   if (loading) {
-    return <Loader text="Loading dishes..." />;
+    return <Loader text={t("admin.loading_dishes")} />;
   }
 
   if (error) {
@@ -42,19 +42,17 @@ export default function WeeklySpecial() {
   if (!dishes.length) {
     return (
       <EmptyState
-        title="No dishes available"
-        description="Create dishes before assigning weekly specials."
+        title={t("admin.no_dishes_title")}
+        description={t("admin.no_dishes_description")}
       />
     );
   }
-
-  /* ── HANDLERS ───────────────────────────── */
 
   const handleSave = async (date) => {
     const dishId = inputs[date];
 
     if (!dishId) {
-      setToast("Please select a dish first");
+      setToast(t("admin.select_dish_first"));
       return;
     }
 
@@ -63,9 +61,9 @@ export default function WeeklySpecial() {
 
       await save(dishId, date);
 
-      setToast("Special saved");
+      setToast(t("admin.special_saved"));
     } catch (err) {
-      setToast(err.message || "Failed to save");
+      setToast(err.message || t("admin.special_save_failed"));
     } finally {
       setSavingDay(null);
     }
@@ -75,43 +73,36 @@ export default function WeeklySpecial() {
     const dishId = inputs[date];
 
     if (!dishId) {
-      setToast("Nothing to delete");
+      setToast(t("admin.nothing_to_delete"));
       return;
     }
 
     try {
       await remove(dishId);
 
-      setToast("Special deleted");
+      setToast(t("admin.special_deleted"));
     } catch (err) {
-      setToast(err.message || "Failed to delete");
+      setToast(err.message || t("admin.special_delete_failed"));
     }
   };
 
-  /* ── UI ───────────────────────────── */
-
   return (
     <section className="admin-main" id="page-weekly-special">
-      <h2 className="admin-section-title">Weekly Specials</h2>
+      <h2 className="admin-section-title">{t("admin.weekly_specials")}</h2>
 
       <div className="weekly-grid">
         {week.map((day) => (
           <div key={day.date} className="weekly-card">
-            <h3 className="weekly-card__title">
-              {day.label}
-            </h3>
+            <h3 className="weekly-card__title">{day.label}</h3>
 
-            <p className="weekly-card__date">
-              {day.date}
-            </p>
+            <p className="weekly-card__date">{day.date}</p>
 
-            {/* Dish selector */}
             <select
               name={day.date}
               value={inputs[day.date] || ""}
               onChange={handleInputChange}
             >
-              <option value="">Select dish</option>
+              <option value="">{t("admin.select_dish")}</option>
               {dishes.map((dish) => (
                 <option key={dish.id} value={dish.id}>
                   {dish.name}
@@ -119,31 +110,27 @@ export default function WeeklySpecial() {
               ))}
             </select>
 
-            {/* Actions */}
             <div className="weekly-card__actions">
               <Button
                 variant="accent"
                 onClick={() => handleSave(day.date)}
                 disabled={savingDay === day.date}
               >
-                {savingDay === day.date ? "Saving..." : "Save"}
+                {savingDay === day.date ? t("admin.saving") : t("common.save")}
               </Button>
 
               <Button
                 variant="danger"
                 onClick={() => handleDelete(day.date)}
               >
-                Delete
+                {t("common.delete")}
               </Button>
             </div>
           </div>
         ))}
       </div>
 
-      <Toast
-        message={toast}
-        onClose={() => setToast(null)}
-      />
+      <Toast message={toast} onClose={() => setToast(null)} />
     </section>
   );
 }

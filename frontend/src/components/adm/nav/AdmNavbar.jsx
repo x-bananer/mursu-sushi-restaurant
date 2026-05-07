@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 import NavBase from "../../shared/nav/NavBase";
 import { UserIcon } from "../..//shared/nav/icons";
 
@@ -20,12 +21,29 @@ const Logo = () => (
 );
 
 export default function AdminNavbar() {
+	const { i18n } = useTranslation();
+	const language = i18n.resolvedLanguage === "fi" ? "fi" : "en";
+	const languageFlag = language === "fi" ? "🇫🇮" : "🇬🇧";
+
 	return (
 		<NavBase
 			center={<Logo />}
 			right={[
 				{ to: "/adm/profile", content: <UserIcon />, isIcon: true },
 			]}
+			extraRight={
+				<button
+					className="nav__link"
+					type="button"
+					onClick={() => {
+						const newLocale = language === "en" ? "fi" : "en";
+						localStorage.setItem("locale", newLocale);
+						i18n.changeLanguage(newLocale);
+					}}
+				>
+					{languageFlag} {language.toUpperCase()}
+				</button>
+			}
 		/>
 	);
 }

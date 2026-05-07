@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router";
 import "../../shared/nav/nav.css";
 import {
@@ -9,16 +10,16 @@ import {
 	CustomersIcon,
 } from "../../shared/nav/icons";
 
-const sidebarItems = [
-	{ to: "/adm", label: "Dashboard", icon: <DashboardIcon className="admin-nav__icon" /> },
-	{ to: "/adm/orders", label: "Live Orders", icon: <LiveOrdersIcon className="admin-nav__icon" /> },
-	{ to: "/adm/menu", label: "Menu Editor", icon: <MenuEditorIcon className="admin-nav__icon" /> },
-	{ to: "/adm/special", label: "Daily Special", icon: <DailySpecialIcon className="admin-nav__icon" /> },
-	{ to: "/adm/customers", label: "Customers", icon: <CustomersIcon className="admin-nav__icon" /> },
-];
-
 export default function AdminSideNav({ collapsed, setCollapsed }) {
+	const { t } = useTranslation();
 	const location = useLocation();
+	const sidebarItems = [
+		{ to: "/adm", label: t("admin.dashboard"), icon: <DashboardIcon className="admin-nav__icon" /> },
+		{ to: "/adm/orders", label: t("admin.live_orders"), icon: <LiveOrdersIcon className="admin-nav__icon" /> },
+		{ to: "/adm/menu", label: t("admin.menu_editor"), icon: <MenuEditorIcon className="admin-nav__icon" /> },
+		{ to: "/adm/special", label: t("admin.daily_special"), icon: <DailySpecialIcon className="admin-nav__icon" /> },
+		{ to: "/adm/customers", label: t("admin.customers"), icon: <CustomersIcon className="admin-nav__icon" /> },
+	];
 
 	return (
 		<>
@@ -47,7 +48,7 @@ export default function AdminSideNav({ collapsed, setCollapsed }) {
 			<button
 				className="sidebar-toggle-btn"
 				onClick={() => setCollapsed((c) => !c)}
-				aria-label="Toggle sidebar"
+				aria-label={t("nav.toggle_sidebar")}
 				style={{ left: collapsed ? "48px" : "180px" }}
 			>
 				<svg

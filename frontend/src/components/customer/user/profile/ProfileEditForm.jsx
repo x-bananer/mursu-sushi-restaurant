@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import InputField from "../../../shared/input-field/InputField";
 import Button from "../../../shared/button/Button";
 import useForm from "../../../../hooks/formHooks";
@@ -7,6 +8,7 @@ import useForm from "../../../../hooks/formHooks";
  * Reusable form for editing user profile details.
  */
 export default function ProfileEditForm({ user, onSave, onDelete, isSaving, isDeleting }) {
+	const { t } = useTranslation();
 	const {
 		inputs,
 		handleInputChange,
@@ -36,14 +38,14 @@ export default function ProfileEditForm({ user, onSave, onDelete, isSaving, isDe
 	return (
 		<form className="profile-edit-form" onSubmit={handleSubmit}>
 			<InputField
-				label="Name"
+				label={t("profile.name")}
 				name="name"
 				value={inputs.name}
 				onChange={handleInputChange}
 				required
 			/>
 			<InputField
-				label="Email"
+				label={t("profile.email")}
 				name="email"
 				type="email"
 				value={inputs.email}
@@ -51,15 +53,15 @@ export default function ProfileEditForm({ user, onSave, onDelete, isSaving, isDe
 				required
 			/>
 			<InputField
-				label="New Password (optional)"
+				label={t("profile.new_password_optional")}
 				name="password"
 				type="password"
 				value={inputs.password}
 				onChange={handleInputChange}
-				placeholder="Leave empty to keep current"
+				placeholder={t("profile.new_password_placeholder")}
 			/>
 			<InputField
-				label="Photo"
+				label={t("profile.photo")}
 				name="photo"
 				type="file"
 				accept="image/*"
@@ -72,7 +74,7 @@ export default function ProfileEditForm({ user, onSave, onDelete, isSaving, isDe
 					type="submit"
 					disabled={isSaving || isDeleting}
 				>
-					{isSaving ? "Saving..." : "Save Changes"}
+					{isSaving ? t("admin.saving") : t("common.save")}
 				</Button>
 				<Button
 					variant="gray"
@@ -80,7 +82,7 @@ export default function ProfileEditForm({ user, onSave, onDelete, isSaving, isDe
 					disabled={isSaving || isDeleting}
 					onClick={onDelete}
 				>
-					{isDeleting ? "Deleting..." : "Delete Account"}
+					{isDeleting ? t("profile.deleting") : t("profile.delete_account")}
 				</Button>
 			</div>
 		</form>

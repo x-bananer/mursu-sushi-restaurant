@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import TableBase from "../../shared/table-base/tableBase";
 import CategoryTabs from "../../shared/category-tabs/categoryTabs";
@@ -23,6 +24,7 @@ import {
 } from "../../../hooks/apiHooks/adm/comboIngredients";
 
 export default function IngredientsPanel() {
+  const { t } = useTranslation();
   // ───────── UI STATE ─────────
   const [toast, setToast] = useState(null);
   const [modal, setModal] = useState(false);
@@ -81,16 +83,16 @@ export default function IngredientsPanel() {
 
   // ───────── CONFIG ─────────
   const sortOptions = [
-    { value: "default", label: "Default" },
-    { value: "price_asc", label: "Price ↑" },
-    { value: "price_desc", label: "Price ↓" },
-    { value: "name", label: "Name" },
+    { value: "default", label: t("menu.sort_default") },
+    { value: "price_asc", label: t("menu.sort_price_asc") },
+    { value: "price_desc", label: t("menu.sort_price_desc") },
+    { value: "name", label: t("menu.sort_name") },
   ];
 
   const columns = [
-    { key: "name", label: "Ingredient" },
-    { key: "price", label: "Price" },
-    { key: "category", label: "Category" },
+    { key: "name", label: t("admin.ingredient") },
+    { key: "price", label: t("admin.price") },
+    { key: "category", label: t("admin.type") },
   ];
 
   // ───────── EMPTY FORM ─────────
@@ -139,11 +141,11 @@ export default function IngredientsPanel() {
 
       try {
         await update(editing.id, form);
-        setToast("Ingredient updated");
+        setToast(t("admin.ingredient_updated"));
         closeModal();
       } catch (err) {
         setLocalIngredients(previous);
-        setToast(err.message || "Something went wrong");
+        setToast(err.message || t("admin.generic_update_error"));
       }
     } else {
       // optimistic create
@@ -168,7 +170,7 @@ export default function IngredientsPanel() {
           )
         );
 
-        setToast("Ingredient created");
+        setToast(t("admin.ingredient_created"));
         closeModal();
       } catch (err) {
         setLocalIngredients((prev) =>
@@ -177,7 +179,7 @@ export default function IngredientsPanel() {
           )
         );
 
-        setToast(err.message || "Something went wrong");
+        setToast(err.message || t("admin.generic_update_error"));
       }
     }
   };
@@ -193,10 +195,10 @@ export default function IngredientsPanel() {
 
     try {
       await remove(id);
-      setToast("Ingredient deleted");
+      setToast(t("admin.ingredient_deleted"));
     } catch (err) {
       setLocalIngredients(previous);
-      setToast(err.message || "Something went wrong");
+      setToast(err.message || t("admin.generic_update_error"));
     }
   };
 
@@ -221,10 +223,10 @@ export default function IngredientsPanel() {
         is_available: !item.is_available,
       });
 
-      setToast("Ingredient updated");
+      setToast(t("admin.ingredient_updated"));
     } catch (err) {
       setLocalIngredients(previous);
-      setToast(err.message || "Something went wrong");
+      setToast(err.message || t("admin.generic_update_error"));
     }
   };
 
@@ -245,15 +247,15 @@ export default function IngredientsPanel() {
         onSortChange={setSort}
         sortOptions={sortOptions}
         onCreate={openCreate}
-        createLabel="Add Ingredient"
-        placeholder="Search ingredients..."
+        createLabel={t("admin.add_ingredient")}
+        placeholder={t("admin.menu_search_ingredients")}
       />
 
       {/* ───────── STATES ───────── */}
       {loading && (
         <Loader
           isLight
-          text="Loading ingredients..."
+          text={t("combo.loading")}
         />
       )}
 
@@ -285,7 +287,7 @@ export default function IngredientsPanel() {
               {/* CATEGORY */}
               <span>
                 <span className="badge badge--neutral">
-                  {categoryMap[item.ingredient_type_id] || "Unknown"}
+                  {categoryMap[item.ingredient_type_id] || t("common.unknown")}
                 </span>
               </span>
 
@@ -307,8 +309,8 @@ export default function IngredientsPanel() {
         onClose={closeModal}
         title={
           mode === "edit"
-            ? "Edit Ingredient"
-            : "Create Ingredient"
+            ? t("admin.edit_ingredient")
+            : t("admin.create_ingredient")
         }
       >
         <MenuItemForm

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import InputField from "../../../shared/input-field/InputField";
 import Button from "../../../shared/button/Button";
 import Loader from "../../../shared/loader/Loader";
@@ -7,6 +8,7 @@ import { useRegisterUser } from "../../../../hooks/apiHooks/auth";
 import { useNavigate } from 'react-router';
 
 export default function RegisterUser() {
+	const { t } = useTranslation();
 	const { register, loading, error } = useRegisterUser();
 	const navigate = useNavigate();
 
@@ -33,7 +35,7 @@ export default function RegisterUser() {
 		console.log('name: ', name);
 
 		if (!name) {
-			alert("Name is required");
+			alert(t("auth.alert_name_required"));
 			return;
 		}
 
@@ -54,7 +56,7 @@ export default function RegisterUser() {
 
 	// LOADING STATE
 	if (loading) {
-		return <Loader text="Creating account..." />;
+		return <Loader text={t("auth.creating_account")} />;
 	}
 
 	return (
@@ -69,14 +71,14 @@ export default function RegisterUser() {
 
 			<div className="auth-card__row">
 				<InputField
-					label="FIRST NAME"
+					label={t("auth.first_name")}
 					name="firstName"
 					value={form.firstName}
 					onChange={handleChange}
 				/>
 
 				<InputField
-					label="LAST NAME"
+					label={t("auth.last_name")}
 					name="lastName"
 					value={form.lastName}
 					onChange={handleChange}
@@ -84,7 +86,7 @@ export default function RegisterUser() {
 			</div>
 
 			<InputField
-				label="EMAIL ADDRESS"
+				label={t("auth.email")}
 				type="email"
 				name="email"
 				value={form.email}
@@ -92,7 +94,7 @@ export default function RegisterUser() {
 			/>
 
 			<InputField
-				label="PASSWORD"
+				label={t("auth.password")}
 				type="password"
 				name="password"
 				value={form.password}
@@ -105,7 +107,7 @@ export default function RegisterUser() {
 					className="auth-card__btn"
 					type="submit"
 				>
-					CREATE ACCOUNT
+					{t("auth.register")}
 				</Button>
 			</div>
 		</form>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import InputField from "../../shared/input-field/InputField";
 import Button from "../../shared/button/Button";
 
@@ -11,6 +12,8 @@ export default function MenuToolbar({
   createLabel = "+ Create",
   variant = "long",
 }) {
+  const { t } = useTranslation();
+
   return (
     <div
       className={`menu-toolbar--long ${
@@ -57,7 +60,7 @@ export default function MenuToolbar({
           onChange={(e) =>
             onSearchChange(e.target.value)
           }
-          placeholder="Search Item..."
+          placeholder={t("common.search")}
         />
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import LiveOrdersColumn from "./LiveOrdersColumn";
 import "./live-orders.css";
 
@@ -17,6 +18,7 @@ const getNextStatus = (status) => {
 };
 
 export default function LiveOrders() {
+  const { t } = useTranslation();
   const { orders: initialOrders } = useAdmOrders();
   const [orders, setOrders] = useState([]);
   const { updateStatus } = useUpdateOrderStatus();
@@ -112,21 +114,21 @@ export default function LiveOrders() {
   return (
     <div className="order-board">
       <LiveOrdersColumn
-        title="Pending"
+        title={t("admin.pending")}
         status="pending"
         orders={pendingOrders}
         onAction={handleAction}
       />
 
       <LiveOrdersColumn
-        title="Preparing"
+        title={t("admin.preparing")}
         status="preparing"
         orders={preparingOrders}
         onAction={handleAction}
       />
 
       <LiveOrdersColumn
-        title="Ready"
+        title={t("admin.ready")}
         status="ready"
         orders={readyOrders}
         onAction={handleAction}

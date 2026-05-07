@@ -1,4 +1,5 @@
 import './combo-summary.css';
+import { useTranslation } from "react-i18next";
 
 import Button from '../../../shared/button/Button';
 import Toast from '../../../shared/toast/Toast';
@@ -17,6 +18,7 @@ export default function ComboSummary({
     onMoveIngredient,
     onClearSelectedIngredients,
 }) {
+    const { t } = useTranslation();
     const [successMessage, setSuccessMessage] = useState('');
     const { addComboToCart, cartActionLoading, cartActionError } = useCartContext();
 
@@ -69,13 +71,13 @@ export default function ComboSummary({
         if (!cart) return;
 
         onClearSelectedIngredients();
-        setSuccessMessage('Your oshi-sushi set has been successfully added to the cart!');
+        setSuccessMessage(t("combo.added_success"));
     };
 
     return (
         <aside className="combo-summary">
             <div className="combo-summary__container">
-                <h2 className="combo-summary__title">Your Set</h2>
+                <h2 className="combo-summary__title">{t("combo.your_set")}</h2>
                 <div
                     ref={(node) => {
                         ingredientDropRef(node);
@@ -94,14 +96,14 @@ export default function ComboSummary({
                     ))}
 
                     <div className="combo-summary__drop-hint">
-                        <p>{isActive ? 'Drop to add ingredient' : 'Drag ingredients here'}</p>
+                        <p>{isActive ? t("combo.drop_to_add") : t("combo.drag_here")}</p>
                         {selectedIngredients.length === 0 && (
                             <p className="combo-summary__rules">
-                                1 topping
+                                {t("combo.rules_line_1")}
                                 <br />
-                                up to 3 fillings
+                                {t("combo.rules_line_2")}
                                 <br />
-                                1 base
+                                {t("combo.rules_line_3")}
                             </p>
                         )}
                     </div>
@@ -109,7 +111,7 @@ export default function ComboSummary({
                 {selectedIngredients.length > 0 &&
                     <>
                         <div className="combo-summary__total">
-                            <span className="combo-summary__total-label">Total</span>
+                            <span className="combo-summary__total-label">{t("combo.total")}</span>
                             <span className="combo-summary__total-value">
                                 € {Number(combo?.total_price ?? 0)}
                             </span>
@@ -121,7 +123,7 @@ export default function ComboSummary({
                     disabled={cartActionLoading || selectedIngredients.length === 0}
                     className="combo-summary__button"
                 >
-                    Add to cart
+                    {t("combo.add_to_cart")}
                 </Button>
                 {comboError && <ErrorState message={comboError} />}
                 {cartActionError && <ErrorState message={cartActionError} />}
