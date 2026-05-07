@@ -138,6 +138,15 @@ export async function createDailySpecial(req, res, next) {
 	}
 }
 
+export async function listDailySpecials(req, res, next) {
+	try {
+		const specials = await dishService.getAllDailySpecials();
+		return res.json({ specials });
+	} catch (err) {
+		next(err);
+	}
+}
+
 export async function updateDailySpecial(req, res, next) {
 	try {
 		const dishId = Number(req.params.id);

@@ -139,6 +139,19 @@ export async function getDailySpecial() {
 	});
 }
 
+export async function getAllDailySpecials() {
+	const specials = await dailySpecialRepo.getAllDailySpecials();
+
+	return specials.map((d) => {
+		return {
+			...d,
+			price: Number(d.price),
+			is_available: Boolean(d.is_available),
+			badges: normalizeBadges(d.badges),
+		};
+	});
+}
+
 export async function getUserFavorites(userId) {
 	const favorites = await userFavoriteRepo.getUserFavorites(userId);
 
