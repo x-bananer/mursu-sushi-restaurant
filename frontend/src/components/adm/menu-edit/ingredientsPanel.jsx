@@ -46,7 +46,7 @@ export default function IngredientsPanel() {
     ingredients,
     loading,
     error,
-  } = useComboIngredients();
+  } = useComboIngredients({ onlyAvailable: false });
 
   const {
     categories,
