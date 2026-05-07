@@ -1,8 +1,115 @@
-/* ── form group ──────────────────────────────── */
+/* ── Weekly Special Page ──────────────────────────────── */
 
-.admin-form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-    max-width: 480px;
+#page-weekly-special {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
+
+/* ── Weekly Grid ──────────────────────────────── */
+
+.weekly-grid {
+  display: grid;
+
+  /* Desktop: full week */
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 16px;
+  width: 100%;
+  align-items: stretch;
+}
+
+
+/* ── Card ──────────────────────────────── */
+
+.weekly-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 16px;
+
+  border: 1px solid var(--color-dark-gray);
+  background: transparent;
+
+  min-height: 220px;
+
+  transition: border-color 0.15s ease;
+}
+
+.weekly-card:hover {
+  border-color: var(--color-gray);
+}
+
+
+/* ── Card Header ──────────────────────────────── */
+
+.weekly-card__title {
+  font-family: var(--font-button);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.weekly-card__date {
+  font-size: 12px;
+  color: var(--color-light-gray);
+}
+
+
+/* ── Select (styled to match system) ──────────────────────────────── */
+
+.weekly-card select {
+  width: 100%;
+  padding: 10px 12px;
+
+  background: transparent;
+  color: var(--text-color);
+
+  border: 1px solid var(--color-dark-gray);
+
+  font-size: 12px;
+  text-transform: uppercase;
+
+  outline: none;
+
+  transition: border-color 0.15s ease;
+}
+
+.weekly-card select:focus {
+  border-color: var(--color-gray);
+}
+
+
+/* ── Actions ──────────────────────────────── */
+
+.weekly-card__actions {
+  margin-top: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+
+/* ── Tablet ──────────────────────────────── */
+
+@media (max-width: 1080px) {
+  .weekly-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+
+/* ── Mobile ──────────────────────────────── */
+
+@media (max-width: 768px) {
+  .weekly-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .weekly-card {
+    min-height: unset;
+  }
+}
+

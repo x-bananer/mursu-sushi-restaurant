@@ -240,6 +240,22 @@ export async function createDailySpecial(req, res, next) {
 }
 
 /**
+ * @api {get} /api/v1/adm/dishes/specials List daily specials
+ * @apiName ListDailySpecials
+ * @apiGroup DishesAdmin
+ * @apiHeader {String} Authorization Bearer JWT token (admin)
+ * @apiSuccess {Object[]} specials List of specials
+ */
+export async function listDailySpecials(req, res, next) {
+	try {
+		const specials = await dishService.getAllDailySpecials();
+		return res.json({ specials });
+	} catch (err) {
+		next(err);
+	}
+}
+
+/**
  * @api {patch} /api/v1/adm/dishes/:id/special Update daily special
  * @apiName UpdateDailySpecial
  * @apiGroup DishesAdmin

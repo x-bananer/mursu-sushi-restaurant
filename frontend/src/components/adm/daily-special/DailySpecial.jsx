@@ -1,87 +1,149 @@
 import "./daily-special.css";
 import { useState } from "react";
 
-import InputField from "../../shared/input-field/InputField";
+import { getCurrentWeekDates } from "../../../utils/admHelpers";
+
 import Button from "../../shared/button/Button";
+import Loader from "../../shared/loader/Loader";
+import ErrorState from "../../shared/error-state/errorState";
+import EmptyState from "../../shared/empty-state/emptyState";
+import Toast from "../../shared/toast/Toast";
 
-export default function DailySpecial() {
-  const [form, setForm] = useState({
-    name: "",
-    description: "",
-    price: "",
-  });
+import useForm from "../../../hooks/formHooks";
+import { useDishes } from "../../../hooks/apiHooks/dish";
+import {
+  useSaveDailySpecial,
+  useDeleteDailySpecial,
+} from "../../../hooks/apiHooks/adm/dailySpecial";
 
-  const [loading, setLoading] = useState(false);
+export default function WeeklySpecial() {
+  const { dishes, loading, error } = useDishes();
 
-  const handleChange = (field) => (e) => {
-    const value = e.target.value;
+  const week = getCurrentWeekDates();
 
-    setForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  const { save } = useSaveDailySpecial();
+  const { remove } = useDeleteDailySpecial();
 
-  const handleSave = async () => {
-    const name = form.name.trim();
-    const description = form.description.trim();
-    const price = parseFloat(form.price);
+  const { inputs, handleInputChange } = useForm(() => {}, {});
 
-    if (!name || !description || isNaN(price)) {
-      alert("Please fill all fields correctly");
+  const [savingDay, setSavingDay] = useState(null);
+  const [toast, setToast] = useState(null);
+
+  /* ── STATES ───────────────────────────── */
+
+  if (loading) {
+    return <Loader text="Loading dishes..." />;
+  }
+
+  if (error) {
+    return <ErrorState message={error} />;
+  }
+
+  if (!dishes.length) {
+    return (
+      <EmptyState
+        title="No dishes available"
+        description="Create dishes before assigning weekly specials."
+      />
+    );
+  }
+
+  /* ── HANDLERS ───────────────────────────── */
+
+  const handleSave = async (date) => {
+    const dishId = inputs[date];
+
+    if (!dishId) {
+      setToast("Please select a dish first");
       return;
     }
 
     try {
-      setLoading(true);
+      setSavingDay(date);
 
-      console.log("Saving special:", {
-        name,
-        description,
-        price,
-      });
+      await save(dishId, date);
 
-      // await api.post("/daily-special", { name, description, price });
-
+      setToast("Special saved");
+    } catch (err) {
+      setToast(err.message || "Failed to save");
     } finally {
-      setLoading(false);
+      setSavingDay(null);
     }
   };
 
+  const handleDelete = async (date) => {
+    const dishId = inputs[date];
+
+    if (!dishId) {
+      setToast("Nothing to delete");
+      return;
+    }
+
+    try {
+      await remove(dishId);
+
+      setToast("Special deleted");
+    } catch (err) {
+      setToast(err.message || "Failed to delete");
+    }
+  };
+
+  /* ── UI ───────────────────────────── */
+
   return (
-    <section className="admin-main" id="page-daily-special">
-      <h2 className="admin-section-title">Daily Special</h2>
+    <section className="admin-main" id="page-weekly-special">
+      <h2 className="admin-section-title">Weekly Specials</h2>
 
-      <div className="admin-form-group">
-        <InputField
-          label="Name"
-          value={form.name}
-          onChange={handleChange("name")}
-          placeholder="E.g. Dragon Roll Omakase"
-        />
+      <div className="weekly-grid">
+        {week.map((day) => (
+          <div key={day.date} className="weekly-card">
+            <h3 className="weekly-card__title">
+              {day.label}
+            </h3>
 
-        <InputField
-          label="Description"
-          value={form.description}
-          onChange={handleChange("description")}
-          placeholder="Short description of the special"
-        />
+            <p className="weekly-card__date">
+              {day.date}
+            </p>
 
-        <InputField
-          label="Price (€)"
-          value={form.price}
-          onChange={handleChange("price")}
-          placeholder="0.00"
-        />
+            {/* Dish selector */}
+            <select
+              name={day.date}
+              value={inputs[day.date] || ""}
+              onChange={handleInputChange}
+            >
+              <option value="">Select dish</option>
+              {dishes.map((dish) => (
+                <option key={dish.id} value={dish.id}>
+                  {dish.name}
+                </option>
+              ))}
+            </select>
 
-        <Button
-          variant="accent"
-          onClick={handleSave}
-          disabled={loading}
-        >
-          {loading ? "Saving..." : "Save Special"}
-        </Button>
+            {/* Actions */}
+            <div className="weekly-card__actions">
+              <Button
+                variant="accent"
+                onClick={() => handleSave(day.date)}
+                disabled={savingDay === day.date}
+              >
+                {savingDay === day.date ? "Saving..." : "Save"}
+              </Button>
+
+              <Button
+                variant="danger"
+                onClick={() => handleDelete(day.date)}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        ))}
       </div>
+
+      <Toast
+        message={toast}
+        onClose={() => setToast(null)}
+      />
     </section>
   );
 }
