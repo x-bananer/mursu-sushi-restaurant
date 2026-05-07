@@ -11,9 +11,7 @@ Demo video: https://youtu.be/jREubOZPitI
 
 ## Deployed application
 
-Deployed app link:
-
-TODO: add deployed frontend URL here
+### [MursuSushi](https://mursu-sushi-restaurant.vercel.app/)
 
 ## Evaluation and Support
 
