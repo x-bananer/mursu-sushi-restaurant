@@ -203,3 +203,9 @@ v/
 backend/uploads/**
 !backend/uploads/.gitkeep
 !backend/uploads/users/.gitkeep
+
+# Generated API documentation
+backend/docs/api/
+
+# Vite cache
+**/.vite/
