@@ -3,6 +3,16 @@
 **Mursu Sushi Restaurant** is a fullstack student project for the course **Web‑projekti TX00EY24-3012**.
 This is a web application for a sushi restaurant: a client-facing site where users can browse the menu and place orders, with an admin panel for managing menu items, orders, and restaurant data.
 
+Watch the demo video to see the full customer and admin flow in action, including menu browsing, combo builder, checkout, live order tracking, and admin management tools.
+
+Demo video: https://youtu.be/jREubOZPitI
+
+## Deployed application
+
+Deployed app link:
+
+TODO: add deployed frontend URL here
+
 ## Evaluation and Support
 
 If you are a developer and want to evaluate the project, please use the evaluation form:
@@ -13,12 +23,6 @@ If you want to provide feedback, have questions or need help, please use this su
 
 https://forms.gle/kPwvDc3ysCv5uBqy5
 
-## Deployed application
-
-Deployed app link:
-
-TODO: add deployed frontend URL here
-
 ## Maintainers and contributors
 
 Team #8
@@ -27,6 +31,8 @@ Team #8
 - Veikka Liukkonen
 - Unna Postila
 - Luara Moreira Da Silva
+
+# About application
 
 ## Application idea and target audience
 
@@ -155,12 +161,6 @@ Target audience:
 
 Public API docs:
 https://x-bananer.github.io/mursu-sushi-restaurant/
-
-## Demo
-
-A short demo video showing the main user flows (menu, cart, checkout, order tracking, admin panel) will be added here.
-
-TODO: add demo video link (YouTube).
 
 ## Testing guide
 
