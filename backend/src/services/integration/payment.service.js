@@ -60,8 +60,6 @@ export const payWithStripe = async (userId, sessionId, checkoutData, locale) => 
 				confirm: true,
 			});
 
-			console.log(paymentIntent, 'paymentIntent');
-
 			providerRef = paymentIntent.id;
 			isPaymentFailed = paymentIntent.status !== 'succeeded';
 		} catch (error) {
