@@ -32,6 +32,35 @@ export async function getDailySpecial() {
 	return rows;
 }
 
+export async function getAllDailySpecials() {
+	const rows = await select(`
+		SELECT
+			daily_specials.id,
+			daily_specials.valid_on,
+			dishes.id AS dish_id,
+			dishes.name,
+			dishes.category_id,
+			dishes.description,
+			dishes.price,
+			dishes.is_available,
+			dishes.created_at,
+			JSON_ARRAYAGG(
+				JSON_OBJECT(
+					"id", badge.id,
+					"name", badge.name
+				)
+			) AS badges
+		FROM daily_specials
+		JOIN dishes ON dishes.id = daily_specials.dish_id
+		LEFT JOIN dish_badges ON dish_badges.dish_id = dishes.id
+		LEFT JOIN badge ON badge.id = dish_badges.badge_id
+		GROUP BY daily_specials.id, daily_specials.valid_on, dishes.id
+		ORDER BY daily_specials.valid_on ASC, daily_specials.id ASC;
+	`);
+
+	return rows;
+}
+
 export async function createDailySpecial({ dishId, validOn }) {
 	const result = await execute(
 		`
