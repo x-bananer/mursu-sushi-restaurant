@@ -15,7 +15,7 @@ export default function ActionButtons({
           className="btn--xsmall"
           onClick={onToggle}
         >
-          {isActive ? "Disable" : "Enable"}
+          {isActive ? "Not available" : "available"}
         </Button>
       )}
 
