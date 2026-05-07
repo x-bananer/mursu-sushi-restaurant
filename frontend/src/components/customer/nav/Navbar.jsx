@@ -22,7 +22,7 @@ const Logo = () => (
 	</Link>
 );
 
-export default function CustomerNavbar({ isLightTheme = false, onToggleTheme }) {
+export default function CustomerNavbar({ onToggleTheme }) {
 	const location = useLocation();
 	const [language, setLanguage] = React.useState(
 		localStorage.getItem("locale") || 'en',

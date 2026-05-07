@@ -1,6 +1,6 @@
 import "./order-tracker.css";
 import { useEffect, useState } from "react";
-
+import { useTranslation } from "react-i18next";
 import { FiClock } from "react-icons/fi";
 
 import OrderSteps from "../../../components/customer/order-tracker/order-steps/OrderSteps";
@@ -25,33 +25,24 @@ import ErrorState from "../../../components/shared/error-state/ErrorState";
 import EmptyState from "../../../components/shared/empty-state/EmptyState";
 
 export default function OrderTracker() {
+  const { t } = useTranslation();
   const { order, loading, error } = useActiveOrder();
   const status = useOrderStream(order?.id);
   const { history, loadTracking } = useOrderTracking(order?.id);
-  const { lat, lon, loading: geoLoading, error: geoError} = useGeolocation();
-  const {etaEstimation, etaLoading, etaError} = useEtaEstimation(order?.id, lat, lon);
+  const { lat, lon } = useGeolocation();
+  const { etaEstimation } = useEtaEstimation(order?.id, lat, lon);
   const [selectedMode, setSelectedMode] = useState(null);
-  const {
-    route, routeLoading, routeError
-  } = useRouteByMode(order?.id, lat, lon, selectedMode);
+  const { route } = useRouteByMode(order?.id, lat, lon, selectedMode);
 
   useEffect(() => {
     if (!status?.status?.type) return;
     loadTracking();
-  }, [status]);
-
-  console.group("ORDER TRACKER DEBUG");
-  console.log("Order:", order);
-  console.log("Status:", status);
-  console.log("Geolocation ", { lat, lon, geoLoading, geoError });
-  console.log("ETA:", {etaEstimation, etaLoading, etaError});
-  console.log("ROUTE BY MODE:", {route, routeLoading, routeError});
-  console.groupEnd();
+  }, [status, loadTracking]);
 
   if (loading) {
     return (
       <div className="order">
-        <Loader text="Loading order..." />
+        <Loader text={t("order_tracker.loading")} />
       </div>
     );
   }
@@ -68,8 +59,8 @@ export default function OrderTracker() {
     return (
       <div className="order">
         <EmptyState
-          title="No active orders"
-          description="Go to menu and place your order, Make sure you checkout in your cart."
+          title={t("order_tracker.no_active_title")}
+          description={t("order_tracker.no_active_description")}
         />
       </div>
     );
@@ -77,9 +68,8 @@ export default function OrderTracker() {
 
   return (
     <div className="order">
-      {/* HERO */}
       <div className="order__hero">
-        <h1 className="order__title">Track Order</h1>
+        <h1 className="order__title">{t("order_tracker.title")}</h1>
 
         <div className="order__hero-right">
           <div className="status-badge">
@@ -104,7 +94,6 @@ export default function OrderTracker() {
             onSelectMode={setSelectedMode}
           />
 
-          {/* ETA */}
           <OrderETA
             eta={etaEstimation}
             serviceType={order.delivery_type.type}

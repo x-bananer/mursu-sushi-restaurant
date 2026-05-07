@@ -1,5 +1,6 @@
 import "./menu.css";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import CategoryTabs from "../../../components/shared/category-tabs/categoryTabs";
 import SpecialCard from "../../../components/customer/menu/special-card/specialCard";
@@ -16,6 +17,7 @@ import { useDishes, useDishCategories, useDailySpecial, useDishFavorites } from 
 import { useCartContext } from "../../../hooks/contextHooks/cart";
 
 export default function Menu() {
+	const { t } = useTranslation();
 	const [activeCategory, setActiveCategory] = useState("all");
 	const [search, setSearch] = useState("");
 	const [sort, setSort] = useState("default");
@@ -48,27 +50,27 @@ export default function Menu() {
 	const unavailableItems = filteredItems.filter((item) => !item.is_available);
 
 	const sortOptions = [
-		{ value: "default", label: "Default" },
-		{ value: "price_asc", label: "Price ↑" },
-		{ value: "price_desc", label: "Price ↓" },
-		{ value: "name", label: "Name" },
+		{ value: "default", label: t("menu.sort_default") },
+		{ value: "price_asc", label: t("menu.sort_price_asc") },
+		{ value: "price_desc", label: t("menu.sort_price_desc") },
+		{ value: "name", label: t("menu.sort_name") },
 	];
 
 	return (
 		<div className="menu-page">
 			<section className="menu-page__hero">
 				<div className="menu-page__hero-main">
-					<h1 className="menu-page__title">Today’s menu</h1>
+					<h1 className="menu-page__title">{t("menu.title")}</h1>
 					<p className="menu-page__subtitle">
-						Browse the menu, choose your favorites, and add them to cart.
+						{t("menu.subtitle")}
 					</p>
 				</div>
 
 				<aside className="menu-page__hero-side">
 					<SpecialCard
 						item={{
-							title: specialDish?.name ?? "Daily Special",
-							description: specialDish?.description ?? "No special dish today.",
+							title: specialDish?.name ?? t("menu.daily_special_fallback_title"),
+							description: specialDish?.description ?? t("menu.daily_special_fallback_description"),
 						}}
 					/>
 				</aside>
@@ -81,7 +83,7 @@ export default function Menu() {
 					<InputField
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
-						placeholder="Search dishes..."
+						placeholder={t("menu.search_placeholder")}
 					/>
 				</div>
 
@@ -100,13 +102,13 @@ export default function Menu() {
 				</div>
 			</div>
 
-			{loading && <Loader isLight text="Loading menu..." />}
+			{loading && <Loader isLight text={t("menu.loading")} />}
 			{error && <ErrorState isLight message={error} onRetry={() => window.location.reload()} />}
 			{!loading && !error && filteredItems.length === 0 && (
 				<EmptyState
 					isLight
-					title="No dishes found"
-					description="Try another category or adjust your search."
+					title={t("menu.empty_title")}
+					description={t("menu.empty_description")}
 				/>
 			)}
 
@@ -138,7 +140,7 @@ export default function Menu() {
 
 					{unavailableItems.length > 0 && (
 						<section className="menu-section">
-							<h2 className="menu-section__title">Out of Stock</h2>
+							<h2 className="menu-section__title">{t("menu.out_of_stock")}</h2>
 							<section className="menu-grid menu-grid--unavailable">
 								{unavailableItems.map((item, index) => (
 									<MenuDishCard

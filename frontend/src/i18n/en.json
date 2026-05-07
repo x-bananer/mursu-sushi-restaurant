@@ -151,6 +151,7 @@
   "profile": {
     "loading": "Loading profile...",
     "edit_profile": "Edit Profile",
+    "logout": "Logout",
     "name": "Name",
     "email": "Email",
     "photo": "Photo",
@@ -159,14 +160,19 @@
     "loyalty_stamps": "Loyalty Stamps",
     "next_milestone": "Next Milestone",
     "milestone_discount": "10% off",
+    "no_active_discount": "You have no active discount",
+    "next_purchase_discount": "Next purchase you will get",
     "rewards_earned": "Rewards Earned",
+    "joined": "Joined",
     "updated_success": "Profile updated successfully!",
     "update_failed": "Failed to update profile",
     "delete_confirm": "Delete your account? This cannot be undone.",
-    "delete_failed": "Failed to delete account"
+    "delete_failed": "Failed to delete account",
+    "customer_only_error": "User type must be customer account."
   },
   "admin": {
     "dashboard": "Dashboard",
+    "live_order_board": "Live Order Board",
     "live_orders": "Live Orders",
     "menu_editor": "Menu Editor",
     "daily_special": "Daily Special",

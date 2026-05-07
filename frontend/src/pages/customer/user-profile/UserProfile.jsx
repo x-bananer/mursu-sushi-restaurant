@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { HiOutlineUser } from "react-icons/hi2";
 import Button from "../../../components/shared/button/Button";
 import Modal from "../../../components/shared/modal/modal";
@@ -14,12 +15,11 @@ import { useUser } from "../../../hooks/apiHooks/user";
 import "./user-profile.css";
 
 export default function UserProfile() {
+	const { t } = useTranslation();
 	const { user, logout } = useAuth();
-	console.log('user: ', user);
 	const { getProfile, updateProfile, deleteAccount, isLoading, error } = useUser();
 
 	const [profile, setProfile] = useState(user);
-	console.log('profile: ', profile);
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
@@ -39,30 +39,30 @@ export default function UserProfile() {
 			const updatedUser = await updateProfile(payload, photoFile);
 			if (updatedUser) {
 				setProfile(updatedUser);
-				setToast({ message: "Profile updated successfully!" });
+				setToast({ message: t("profile.updated_success") });
 				setIsEditModalOpen(false);
 			}
 		} catch (err) {
-			setToast({ message: err.message || "Failed to update profile", type: "error" });
+			setToast({ message: err.message || t("profile.update_failed"), type: "error" });
 		} finally {
 			setIsSaving(false);
 		}
 	};
 
 	const handleDeleteAccount = async () => {
-		const confirmed = window.confirm("Delete your account? This cannot be undone.");
+		const confirmed = window.confirm(t("profile.delete_confirm"));
 		if (!confirmed) return;
 
 		setIsDeleting(true);
 		const success = await deleteAccount();
 		if (!success) {
-			setToast({ message: "Failed to delete account", type: "error" });
+			setToast({ message: t("profile.delete_failed"), type: "error" });
 			setIsDeleting(false);
 		}
 	};
 
 	if (isLoading && !profile) {
-		return <Loader size={48} text="Loading profile..." className="page-loader" />;
+		return <Loader size={48} text={t("profile.loading")} className="page-loader" />;
 	}
 
 	if (error && !profile) {
@@ -70,14 +70,14 @@ export default function UserProfile() {
 	}
 
 	if (profile && profile.role_id !== 1) {
-		return (
-			<ErrorState message="User type must be customer account." />
-		);
+		return <ErrorState message={t("profile.customer_only_error")} />;
 	}
 
-	const displayName = profile?.name || "Guest";
+	const displayName = profile?.name || t("common.guest");
 	const regDate = profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : "";
-	const metaText = profile?.email ? `${profile.email} ${regDate ? `• Joined ${regDate}` : ""}` : "";
+	const metaText = profile?.email
+		? `${profile.email} ${regDate ? `• ${t("profile.joined")} ${regDate}` : ""}`
+		: "";
 
 	return (
 		<div className="profile">
@@ -101,17 +101,11 @@ export default function UserProfile() {
 						</div>
 					</div>
 					<div className="profile__actions">
-						<Button
-							variant="light"
-							onClick={() => setIsEditModalOpen(true)}
-						>
-							Edit Profile
+						<Button variant="light" onClick={() => setIsEditModalOpen(true)}>
+							{t("profile.edit_profile")}
 						</Button>
-						<Button
-							variant="gray"
-							onClick={logout}
-						>
-							Logout
+						<Button variant="gray" onClick={logout}>
+							{t("profile.logout")}
 						</Button>
 					</div>
 				</section>
@@ -125,23 +119,22 @@ export default function UserProfile() {
 					<div className="profile__stats-side">
 						{profile?.is_stamp_discount_active === 0 ? (
 							<section className="profile-stat-card profile-stat-card--light">
-								<p className="profile-stat-card__label">You have no active discount</p>
+								<p className="profile-stat-card__label">{t("profile.no_active_discount")}</p>
 							</section>
-							) : (
-								<section className="profile-stat-card">
-									<p className="profile-stat-card__label">Next puchase you will get</p>
-									<p className="profile-stat-card__value">10% off</p>
-								</section>
-							)}
+						) : (
+							<section className="profile-stat-card">
+								<p className="profile-stat-card__label">{t("profile.next_purchase_discount")}</p>
+								<p className="profile-stat-card__value">{t("profile.milestone_discount")}</p>
+							</section>
+						)}
 					</div>
 				</section>
-
 			</div>
 
 			<Modal
 				isOpen={isEditModalOpen}
 				onClose={() => setIsEditModalOpen(false)}
-				title="Edit Profile"
+				title={t("profile.edit_profile")}
 			>
 				<ProfileEditForm
 					user={profile}

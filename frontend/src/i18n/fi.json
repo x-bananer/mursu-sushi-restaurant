@@ -151,6 +151,7 @@
   "profile": {
     "loading": "Ladataan profiilia...",
     "edit_profile": "Muokkaa profiilia",
+    "logout": "Kirjaudu ulos",
     "name": "Nimi",
     "email": "Sähköposti",
     "photo": "Kuva",
@@ -159,14 +160,19 @@
     "loyalty_stamps": "Kanta-asiakasleimat",
     "next_milestone": "Seuraava Virstanpylväs",
     "milestone_discount": "10% alennus",
+    "no_active_discount": "Sinulla ei ole aktiivista alennusta",
+    "next_purchase_discount": "Seuraavasta ostosta saat",
     "rewards_earned": "Ansaitut Palkinnot",
+    "joined": "Liittynyt",
     "updated_success": "Profiili päivitetty onnistuneesti!",
     "update_failed": "Profiilin päivitys epäonnistui",
     "delete_confirm": "Poistetaanko tilisi? Tätä ei voi perua.",
-    "delete_failed": "Tilin poistaminen epäonnistui"
+    "delete_failed": "Tilin poistaminen epäonnistui",
+    "customer_only_error": "Käyttäjätyypin tulee olla asiakastili."
   },
   "admin": {
     "dashboard": "Yhteenveto",
+    "live_order_board": "Live-tilaustaulu",
     "live_orders": "Live-tilaukset",
     "menu_editor": "Menun Muokkaus",
     "daily_special": "Päivän Erikoisuus",

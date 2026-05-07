@@ -3,42 +3,44 @@ import "./combo-builder.css";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
-import { useComboIngredients } from '../../../hooks/apiHooks/combo';
+import { useComboIngredients } from "../../../hooks/apiHooks/combo";
 
-import ComboSection from '../../../components/customer/combo/combo-section/ComboSection';
-import ComboSummary from '../../../components/customer/combo/combo-summary/ComboSummary';
-import Loader from '../../../components/shared/loader/Loader';
-import ErrorState from '../../../components/shared/error-state/ErrorState';
-import EmptyState from '../../../components/shared/empty-state/EmptyState';
+import ComboSection from "../../../components/customer/combo/combo-section/ComboSection";
+import ComboSummary from "../../../components/customer/combo/combo-summary/ComboSummary";
+import Loader from "../../../components/shared/loader/Loader";
+import ErrorState from "../../../components/shared/error-state/ErrorState";
+import EmptyState from "../../../components/shared/empty-state/EmptyState";
 
 export default function ComboBuilder() {
+	const { t } = useTranslation();
 	const { ingredients, loading, error } = useComboIngredients();
 	const [selectedIngredients, setSelectedIngredients] = useState([]);
 
-	const base = ingredients.filter((i) => i.type?.type === 'base');
-	const fillings = ingredients.filter((i) => i.type?.type === 'filling');
-	const toppings = ingredients.filter((i) => i.type?.type === 'topping');
+	const base = ingredients.filter((i) => i.type?.type === "base");
+	const fillings = ingredients.filter((i) => i.type?.type === "filling");
+	const toppings = ingredients.filter((i) => i.type?.type === "topping");
 
 	const addIngredient = (ingredient) => {
 		setSelectedIngredients((prev) => {
 			const ingredientWithUid = { ...ingredient, uid: `${Date.now()}-${Math.random()}` };
 			const type = ingredient?.type?.type;
 
-			if (type === 'topping') {
-				const notToppingIngredients = prev.filter((item) => item?.type?.type !== 'topping');
+			if (type === "topping") {
+				const notToppingIngredients = prev.filter((item) => item?.type?.type !== "topping");
 				return [...notToppingIngredients, ingredientWithUid];
 			}
 
-			if (type === 'filling') {
-				const fillingIngredients = prev.filter((item) => item?.type?.type === 'filling');
-				const notFillingIngredients = prev.filter((item) => item?.type?.type !== 'filling');
+			if (type === "filling") {
+				const fillingIngredients = prev.filter((item) => item?.type?.type === "filling");
+				const notFillingIngredients = prev.filter((item) => item?.type?.type !== "filling");
 				const newFillingIngredients = [ingredientWithUid, ...fillingIngredients].slice(0, 3);
 				return [...notFillingIngredients, ...newFillingIngredients];
 			}
 
-			if (type === 'base') {
-				const notBaseIngredients = prev.filter((item) => item?.type?.type !== 'base');
+			if (type === "base") {
+				const notBaseIngredients = prev.filter((item) => item?.type?.type !== "base");
 				return [...notBaseIngredients, ingredientWithUid];
 			}
 
@@ -52,8 +54,8 @@ export default function ComboBuilder() {
 
 	const moveIngredient = (ingredient) => {
 		setSelectedIngredients((prev) => {
-			const fillings = prev.filter((i) => i.type.type === 'filling');
-			const notFillings = prev.filter((i) => i.type.type !== 'filling');
+			const fillings = prev.filter((i) => i.type.type === "filling");
+			const notFillings = prev.filter((i) => i.type.type !== "filling");
 
 			const updatedFillings = [...fillings];
 			const [ingredientToMove] = updatedFillings.splice(ingredient.fromIndex, 1);
@@ -70,7 +72,7 @@ export default function ComboBuilder() {
 	if (loading) {
 		return (
 			<div className="combo-page combo-page--state">
-				<Loader text="Loading ingredients..." isLight />
+				<Loader text={t("combo.loading")} isLight />
 			</div>
 		);
 	}
@@ -87,8 +89,8 @@ export default function ComboBuilder() {
 		return (
 			<div className="combo-page combo-page--state">
 				<EmptyState
-					title="No ingredients yet"
-					description="Combo ingredients are temporarily unavailable."
+					title={t("combo.empty_title")}
+					description={t("combo.empty_description")}
 					isLight
 				/>
 			</div>
@@ -100,14 +102,12 @@ export default function ComboBuilder() {
 			<DndProvider backend={HTML5Backend}>
 				<div className="combo-page__main">
 					<div className="combo-page__hero">
-						<h1 className="combo-page__title">Build a Set</h1>
-						<p className="combo-page__subtitle">
-							Choose your layers for a custom oshi sushi set: <br></br> one perfect topping, up to three fillings, and a perfectly paired base
-						</p>
+						<h1 className="combo-page__title">{t("combo.title")}</h1>
+						<p className="combo-page__subtitle">{t("combo.subtitle")}</p>
 					</div>
 					{toppings.length > 0 && (
 						<ComboSection
-							title="Toppings"
+							title={t("combo.toppings")}
 							ingredients={toppings}
 							onAddIngredient={addIngredient}
 							selectedIngredients={selectedIngredients}
@@ -115,7 +115,7 @@ export default function ComboBuilder() {
 					)}
 					{fillings.length > 0 && (
 						<ComboSection
-							title="Fillings"
+							title={t("combo.fillings")}
 							ingredients={fillings}
 							onAddIngredient={addIngredient}
 							selectedIngredients={selectedIngredients}
@@ -123,7 +123,7 @@ export default function ComboBuilder() {
 					)}
 					{base.length > 0 && (
 						<ComboSection
-							title="Base"
+							title={t("combo.base")}
 							ingredients={base}
 							onAddIngredient={addIngredient}
 							selectedIngredients={selectedIngredients}

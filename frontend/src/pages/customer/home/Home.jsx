@@ -1,10 +1,12 @@
 import "./home.css";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import bonsaiImage from "../../../assets/images/Bonsai.png";
 import mapImage from "../../../assets/images/Map.png";
 
 export default function Home() {
-	const titleList = ["Mursu Sushi", "Sushi, crafted with intent"];
+	const { t } = useTranslation();
+	const titleList = [t("home.hero_title_main"), t("home.hero_title_alt")];
 	const [titleId, setTitleId] = useState(0);
 	const [titleAnim, setTitleAnim] = useState("reveal");
 	const [isMobileTitle, setIsMobileTitle] = useState(false);
@@ -119,153 +121,99 @@ export default function Home() {
 					<span className="home-hero__title-text">{titleList[titleId]}</span>
 				</h1>
 				<div className="home-hero__description">
-					<p className="home-hero__line home-hero__line--1">
-						Mursu Sushi is not just a sushi restaurant. It is a story.
-					</p>
-					<p className="home-hero__line home-hero__line--2">
-						When we started our exquisite voyage into the world of the utmost delicate tastes, we did not think it would become something of this magnitude.
-					</p>
-					<p className="home-hero__line home-hero__line--4">
-						Be it visiting our restaurant or ordering online, our number one priority is ensuring that our customers get the best dining experience possible.
-					</p>
-					<p className="home-hero__line home-hero__line--6">
-						Mursu Sushi, the taste of excellence.
-					</p>
+					<p className="home-hero__line home-hero__line--1">{t("home.hero_line_1")}</p>
+					<p className="home-hero__line home-hero__line--2">{t("home.hero_line_2")}</p>
+					<p className="home-hero__line home-hero__line--4">{t("home.hero_line_3")}</p>
+					<p className="home-hero__line home-hero__line--6">{t("home.hero_line_4")}</p>
 				</div>
 				<div className="home-hero__actions">
 					<a href="/menu" className="btn btn--light">
-						View Menu
+						{t("home.view_menu")}
 					</a>
 					<a href="/combo-builder" className="btn">
-						Build A Set
+						{t("home.build_set")}
 					</a>
 				</div>
 			</div>
 			<section className="home-bonsai">
-				<img
-					src={bonsaiImage}
-					alt="Bonsai"
-					className="home-bonsai__image"
-				/>
+				<img src={bonsaiImage} alt={t("home.bonsai_alt")} className="home-bonsai__image" />
 			</section>
 			<section ref={systemCoreRef} className="system-core light-theme">
 				<div className="system-core__container">
 					<div className="system-core__content">
-						<h2 className="system-core__header">THE MURSU EXPERIENCE</h2>
+						<h2 className="system-core__header">{t("home.experience_title")}</h2>
 						<ul className="system-core__list">
 							<li className="system-item">
 								<div className="system-item__number">01</div>
 								<div className="system-item__content">
-									<div className="system-item__title">
-										BUILD YOUR OWN COMBOS
-									</div>
-									<div className="system-item__subtitle">
-										Create your set with ingredients and extras you actually want.
-									</div>
+									<div className="system-item__title">{t("home.experience_item_1_title")}</div>
+									<div className="system-item__subtitle">{t("home.experience_item_1_subtitle")}</div>
 								</div>
 							</li>
 							<li className="system-item">
 								<div className="system-item__number">02</div>
 								<div className="system-item__content">
-									<div className="system-item__title">
-										PICK YOUR FAVORITE DISHES
-									</div>
-									<div className="system-item__subtitle">
-										Save favorites and get back to your go-to choices faster.
-									</div>
+									<div className="system-item__title">{t("home.experience_item_2_title")}</div>
+									<div className="system-item__subtitle">{t("home.experience_item_2_subtitle")}</div>
 								</div>
 							</li>
 							<li className="system-item">
 								<div className="system-item__number">03</div>
 								<div className="system-item__content">
-									<div className="system-item__title">
-										APPLY THE LOYALTY PROGRAM
-									</div>
-									<div className="system-item__subtitle">
-										Collect stamps with each order and unlock discounts.
-									</div>
+									<div className="system-item__title">{t("home.experience_item_3_title")}</div>
+									<div className="system-item__subtitle">{t("home.experience_item_3_subtitle")}</div>
 								</div>
 							</li>
 							<li className="system-item">
 								<div className="system-item__number">04</div>
 								<div className="system-item__content">
-									<div className="system-item__title">
-										TRACK YOUR ORDER LIVE
-									</div>
-									<div className="system-item__subtitle">
-										See real-time status updates from kitchen to delivery.
-									</div>
+									<div className="system-item__title">{t("home.experience_item_4_title")}</div>
+									<div className="system-item__subtitle">{t("home.experience_item_4_subtitle")}</div>
 								</div>
 							</li>
 						</ul>
 					</div>
 					<div className="system-preview">
 						<div className="system-preview__box">
-							<img src={mapImage} alt="Mursu map" className="system-preview__map" />
+							<img src={mapImage} alt={t("home.map_alt")} className="system-preview__map" />
 						</div>
 					</div>
 				</div>
 			</section>
 			<section className="home-info-grid">
 				<div className="home-info-card home-info-card--with-divider">
-					<h2 className="home-info-card__title">ACCESS</h2>
+					<h2 className="home-info-card__title">{t("home.access")}</h2>
 					<address className="home-info-card__text home-info-card__address">
-						MURSU SUSHI
+						{t("home.address_name")}
 						<br />
-						Unioninkatu<br />
-						HELSINKI, FIN 00170
+						{t("home.address_street")}
+						<br />
+						{t("home.address_city")}
 					</address>
 				</div>
 				<div className="home-info-card home-info-card--with-divider">
-					<h2 className="home-info-card__title">SCHEDULE</h2>
+					<h2 className="home-info-card__title">{t("home.schedule")}</h2>
 					<div className="home-info-card__text home-info-card__schedule">
-						<div className="home-info-card__schedule-row">
-							<span>MON</span>
-							<span>11:00—21:00</span>
-						</div>
-						<div className="home-info-card__schedule-row">
-							<span>TUE</span>
-							<span>11:00—21:00</span>
-						</div>
-						<div className="home-info-card__schedule-row">
-							<span>WED</span>
-							<span>11:00—21:00</span>
-						</div>
-						<div className="home-info-card__schedule-row">
-							<span>THU</span>
-							<span>11:00—22:00</span>
-						</div>
-						<div className="home-info-card__schedule-row">
-							<span>FRI</span>
-							<span>11:00—23:00</span>
-						</div>
-						<div className="home-info-card__schedule-row">
-							<span>SAT</span>
-							<span>12:00—23:00</span>
-						</div>
-						<div className="home-info-card__schedule-row">
-							<span>SUN</span>
-							<span>CLOSED</span>
-						</div>
+						<div className="home-info-card__schedule-row"><span>{t("home.mon")}</span><span>11:00-21:00</span></div>
+						<div className="home-info-card__schedule-row"><span>{t("home.tue")}</span><span>11:00-21:00</span></div>
+						<div className="home-info-card__schedule-row"><span>{t("home.wed")}</span><span>11:00-21:00</span></div>
+						<div className="home-info-card__schedule-row"><span>{t("home.thu")}</span><span>11:00-22:00</span></div>
+						<div className="home-info-card__schedule-row"><span>{t("home.fri")}</span><span>11:00-23:00</span></div>
+						<div className="home-info-card__schedule-row"><span>{t("home.sat")}</span><span>12:00-23:00</span></div>
+						<div className="home-info-card__schedule-row"><span>{t("home.sun")}</span><span>{t("home.closed")}</span></div>
 					</div>
 				</div>
 				<div className="home-info-card home-info-card--with-divider">
-					<h2 className="home-info-card__title">CONTACT</h2>
+					<h2 className="home-info-card__title">{t("home.contact")}</h2>
 					<div className="home-info-card__text">
-						<a href="mailto:mursu@mursusushi.zen" className="home-info-card__link">
-							MURSU@MURSU.SUSHI
-						</a>
+						<a href="mailto:mursu@mursusushi.zen" className="home-info-card__link">{t("home.contact_email")}</a>
 						<br />
-						<a href="tel:+358105150143" className="home-info-card__link">
-							+358 10 515 0143
-						</a>
+						<a href="tel:+358105150143" className="home-info-card__link">{t("home.contact_phone")}</a>
 					</div>
 				</div>
 				<div className="home-info-card">
-					<h2 className="home-info-card__title">TRANSPORT</h2>
-					<div className="home-info-card__text">
-						10 MIN WALK from Central Railway Station <br />
-					</div>
+					<h2 className="home-info-card__title">{t("home.transport")}</h2>
+					<div className="home-info-card__text">{t("home.transport_text")}<br /></div>
 				</div>
 			</section>
 		</>
