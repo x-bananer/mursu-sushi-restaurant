@@ -3,7 +3,7 @@ import { fetchData } from "../../../utils/fetchData";
 
 /* ───────── GET INGREDIENT TYPES ───────── */
 
-export function useIngredientesCategories() {
+export function useIngredientsCategories() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

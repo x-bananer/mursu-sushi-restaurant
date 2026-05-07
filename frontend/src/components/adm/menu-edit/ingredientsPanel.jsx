@@ -16,7 +16,7 @@ import { useFilters } from "../../../hooks/useFilters";
 import { useComboIngredients } from "../../../hooks/apiHooks/combo";
 
 import {
-  useIngredientesCategories,
+  useIngredientsCategories,
   useUpdateIngredient,
   useDeleteIngredient,
   useCreateIngredient,
@@ -50,7 +50,7 @@ export default function IngredientsPanel() {
 
   const {
     categories,
-  } = useIngredientesCategories();
+  } = useIngredientsCategories();
 
   const { update } = useUpdateIngredient();
   const { remove } = useDeleteIngredient();
