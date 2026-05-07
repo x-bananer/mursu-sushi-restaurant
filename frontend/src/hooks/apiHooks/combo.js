@@ -13,7 +13,11 @@ const useComboIngredients = () => {
 				setError(null);
 
 				const response = await fetchData('/dishes/combo/ingredients');
-				setIngredients(response.ingredients ?? []);
+				const allIngredients = response?.ingredients ?? [];
+				const availableIngredients = allIngredients.filter((ingredient) => {
+					return Boolean(ingredient?.is_available);
+				});
+				setIngredients(availableIngredients);
 			} catch (err) {
 				setError(err.message);
 			} finally {
