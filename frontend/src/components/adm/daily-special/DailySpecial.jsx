@@ -1,6 +1,6 @@
 import "./daily-special.css";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useState, useEffect } from "react";
 
 import { getCurrentWeekDates } from "../../../utils/admHelpers";
 
@@ -12,125 +12,229 @@ import Toast from "../../shared/toast/Toast";
 
 import useForm from "../../../hooks/formHooks";
 import { useDishes } from "../../../hooks/apiHooks/dish";
+
 import {
-  useSaveDailySpecial,
-  useDeleteDailySpecial,
+	useSaveDailySpecial,
+	useDeleteDailySpecial,
+	useListDailySpecials,
 } from "../../../hooks/apiHooks/adm/dailySpecial";
 
 export default function WeeklySpecial() {
-  const { t } = useTranslation();
-  const { dishes, loading, error } = useDishes();
+	const {
+		dishes,
+		loading: dishesLoading,
+		error: dishesError,
+	} = useDishes();
 
-  const week = getCurrentWeekDates();
+	const {
+		save,
+		loading: saveLoading,
+	} = useSaveDailySpecial();
 
-  const { save } = useSaveDailySpecial();
-  const { remove } = useDeleteDailySpecial();
+	const {
+		remove,
+		loading: deleteLoading,
+	} = useDeleteDailySpecial();
 
-  const { inputs, handleInputChange } = useForm(() => {}, {});
+	const {
+		list,
+		loading: specialsLoading,
+		error: specialsError,
+	} = useListDailySpecials();
 
-  const [savingDay, setSavingDay] = useState(null);
-  const [toast, setToast] = useState(null);
+	const week = getCurrentWeekDates();
 
-  if (loading) {
-    return <Loader text={t("admin.loading_dishes")} />;
-  }
+	const {
+		inputs,
+		setInputs,
+		handleInputChange,
+	} = useForm(() => {}, {});
 
-  if (error) {
-    return <ErrorState message={error} />;
-  }
+	const [savingDay, setSavingDay] = useState(null);
+	const [toast, setToast] = useState(null);
 
-  if (!dishes.length) {
-    return (
-      <EmptyState
-        title={t("admin.no_dishes_title")}
-        description={t("admin.no_dishes_description")}
-      />
-    );
-  }
+	/* ── LOAD EXISTING SPECIALS ───────────────────────────── */
 
-  const handleSave = async (date) => {
-    const dishId = inputs[date];
+	useEffect(() => {
+		async function loadSpecials() {
+			try {
+				const specials = await list();
 
-    if (!dishId) {
-      setToast(t("admin.select_dish_first"));
-      return;
-    }
+				const mapped = {};
 
-    try {
-      setSavingDay(date);
+				specials.forEach((special) => {
+					// timezone-safe YYYY-MM-DD conversion
+					const dateKey = new Date(special.valid_on)
+						.toLocaleDateString("sv-SE");
 
-      await save(dishId, date);
+					mapped[dateKey] = String(special.dish_id);
+				});
 
-      setToast(t("admin.special_saved"));
-    } catch (err) {
-      setToast(err.message || t("admin.special_save_failed"));
-    } finally {
-      setSavingDay(null);
-    }
-  };
+				setInputs(mapped);
 
-  const handleDelete = async (date) => {
-    const dishId = inputs[date];
+			} catch (err) {
+				console.error("Failed to load specials:", err);
+			}
+		}
 
-    if (!dishId) {
-      setToast(t("admin.nothing_to_delete"));
-      return;
-    }
+		loadSpecials();
 
-    try {
-      await remove(dishId);
+		// run once on mount
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
-      setToast(t("admin.special_deleted"));
-    } catch (err) {
-      setToast(err.message || t("admin.special_delete_failed"));
-    }
-  };
+	/* ── STATES ───────────────────────────── */
 
-  return (
-    <section className="admin-main" id="page-weekly-special">
-      <h2 className="admin-section-title">{t("admin.weekly_specials")}</h2>
+	if (dishesLoading || specialsLoading) {
+		return <Loader text="Loading weekly specials..." />;
+	}
 
-      <div className="weekly-grid">
-        {week.map((day) => (
-          <div key={day.date} className="weekly-card">
-            <h3 className="weekly-card__title">{day.label}</h3>
+	if (dishesError || specialsError) {
+		return (
+			<ErrorState
+				message={dishesError || specialsError}
+			/>
+		);
+	}
 
-            <p className="weekly-card__date">{day.date}</p>
+	if (!dishes.length) {
+		return (
+			<EmptyState
+				title="No dishes available"
+				description="Create dishes before assigning weekly specials."
+			/>
+		);
+	}
 
-            <select
-              name={day.date}
-              value={inputs[day.date] || ""}
-              onChange={handleInputChange}
-            >
-              <option value="">{t("admin.select_dish")}</option>
-              {dishes.map((dish) => (
-                <option key={dish.id} value={dish.id}>
-                  {dish.name}
-                </option>
-              ))}
-            </select>
+	/* ── HANDLERS ───────────────────────────── */
 
-            <div className="weekly-card__actions">
-              <Button
-                variant="accent"
-                onClick={() => handleSave(day.date)}
-                disabled={savingDay === day.date}
-              >
-                {savingDay === day.date ? t("admin.saving") : t("common.save")}
-              </Button>
+	const handleSave = async (date) => {
+		const dishId = inputs[date];
 
-              <Button
-                variant="danger"
-                onClick={() => handleDelete(day.date)}
-              >
-                {t("common.delete")}
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
+		if (!dishId) {
+			setToast("Please select a dish first");
+			return;
+		}
 
-      <Toast message={toast} onClose={() => setToast(null)} />
-    </section>
-  );
+		try {
+			setSavingDay(date);
+
+			await save(Number(dishId), date);
+
+			setToast("Special saved successfully");
+		} catch (err) {
+			setToast(err.message || "Failed to save special");
+		} finally {
+			setSavingDay(null);
+		}
+	};
+
+	const handleDelete = async (date) => {
+		const dishId = inputs[date];
+
+		if (!dishId) {
+			setToast("Nothing to delete");
+			return;
+		}
+
+		try {
+			setSavingDay(date);
+
+			await remove(Number(dishId));
+
+			setInputs((prev) => ({
+				...prev,
+				[date]: "",
+			}));
+
+			setToast("Special deleted successfully");
+		} catch (err) {
+			setToast(err.message || "Failed to delete special");
+		} finally {
+			setSavingDay(null);
+		}
+	};
+
+	/* ── UI ───────────────────────────── */
+
+	return (
+		<section className="admin-main" id="page-weekly-special">
+			<h2 className="admin-section-title">
+				Weekly Specials
+			</h2>
+
+			<div className="weekly-grid">
+				{week.map((day) => (
+					<div
+						key={day.date}
+						className="weekly-card"
+					>
+						<h3 className="weekly-card__title">
+							{day.label}
+						</h3>
+
+						<p className="weekly-card__date">
+							{day.date}
+						</p>
+
+						{/* Dish selector */}
+						<select
+							name={day.date}
+							value={inputs[day.date] || ""}
+							onChange={handleInputChange}
+							disabled={savingDay === day.date}
+						>
+							<option value="">
+								Select dish
+							</option>
+
+							{dishes.map((dish) => (
+								<option
+									key={dish.id}
+									value={dish.id}
+								>
+									{dish.name}
+								</option>
+							))}
+						</select>
+
+						{/* Actions */}
+						<div className="weekly-card__actions">
+							<Button
+								variant="accent"
+								onClick={() => handleSave(day.date)}
+								disabled={
+									savingDay === day.date ||
+									saveLoading
+								}
+							>
+								{savingDay === day.date
+									? "Saving..."
+									: "Save"}
+							</Button>
+
+							<Button
+								variant="danger"
+								onClick={() => handleDelete(day.date)}
+								disabled={
+									savingDay === day.date ||
+									deleteLoading
+								}
+							>
+								Delete
+							</Button>
+						</div>
+					</div>
+				))}
+			</div>
+
+			{toast && (
+				<Toast
+					message={toast}
+					onClose={() => setToast(null)}
+				/>
+			)}
+		</section>
+	);
 }
+
