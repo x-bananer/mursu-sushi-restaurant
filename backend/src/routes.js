@@ -84,6 +84,12 @@ router.delete(
 router.patch("/adm/dishes/:id", auth, adminOnly, dishController.updateDish);
 router.delete("/adm/dishes/:id", auth, adminOnly, dishController.deleteDish);
 
+router.get(
+	"/adm/dishes/specials",
+	auth,
+	adminOnly,
+	dishController.listDailySpecials,
+);
 router.post(
 	"/adm/dishes/:id/special",
 	auth,

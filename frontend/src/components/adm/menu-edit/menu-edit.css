@@ -1,13 +1,100 @@
-/* ── Admin Edit ─────────────────────────────── */
-.menu-page__title--margin {
-  margin-bottom: 80px;
+/* ── Adm Edit ─────────────────────────────── */
+
+.menu-edit {
+  padding: auto;
+}
+.menu-edit .menu-toolbar {
+  width: 100%;
 }
 
-.table__actions {
+/* TITLE */
+.menu-edit__title {
+  text-align: center;
+  margin-bottom: 2px;
+  font-size: 80px;
+  font-weight: 600;
+}
+
+/* TOGGLE */
+.menu-edit__toggle {
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 1px;
+  margin-bottom: 2px;
 }
 
+.menu-edit__toggle-btn {
+  min-width: 160px;
+}
+
+/* CONTENT */
+.menu-edit__content {
+  width: 100%;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background: transparent;
+  border: none;
+  outline: none;
+
+  font: inherit;
+  color: inherit;
+
+  width: 100%;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+
+  .menu-edit {
+    padding: 16px;
+  }
+
+  .menu-edit__title {
+    font-size: 52px;
+  }
+
+  .menu-edit__toggle {
+    flex-wrap: wrap;
+  }
+
+  .menu-edit__toggle-btn {
+    min-width: 140px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+
+  .menu-edit {
+    padding: 12px;
+  }
+
+  .menu-edit__title {
+    font-size: 36px;
+    line-height: 1;
+  }
+
+  .menu-edit__toggle {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .menu-edit__toggle-btn {
+    width: 100%;
+  }
+
+  .menu-toolbar {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .menu-toolbar__group {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}

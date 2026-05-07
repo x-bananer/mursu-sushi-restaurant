@@ -30,6 +30,31 @@ export function useSaveDailySpecial() {
   return { save, loading, error };
 }
 
+export function useListDailySpecials() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const list = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await fetchData("/adm/dishes/specials", {
+        method: "GET",
+      });
+
+      return response?.specials ?? [];
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { list, loading, error };
+}
+
 export function useUpdateDailySpecial() {
   const [loading, setLoading] = useState(false);
 
