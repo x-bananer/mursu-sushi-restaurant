@@ -3,6 +3,8 @@
 **Mursu Sushi Restaurant** is a fullstack student project for the course **Web‑projekti TX00EY24-3012**.
 This is a web application for a sushi restaurant: a client-facing site where users can browse the menu and place orders, with an admin panel for managing menu items, orders, and restaurant data.
 
+## Demo video
+
 Watch the demo video to see the full customer and admin flow in action, including menu browsing, combo builder, checkout, live order tracking, and admin management tools.
 
 Demo video: https://youtu.be/jREubOZPitI
