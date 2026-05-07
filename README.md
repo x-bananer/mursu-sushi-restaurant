@@ -240,7 +240,7 @@ This command runs the full integration suite (`tests/integration/*`): 6 suits, 1
 3. Add any dish to the cart. Check that the daily special dish gets a 10% discount when added to the cart.
 4. Verify price, dietary badges, search, sorting and filters in menu.
 5. Open `/combo-builder`, build a combo using drag-and-drop (or mobile selection), change ingredient order, verify that a combo cannot be added without required structure (base/filling/topping), and then add it to cart.
-6. Open `/auth`, register a new user.
+6. Open `/auth` and either register a new user or log in as a test user using `user@test.com` / `User12345!`.
 7. Open `/cart`, select delivery type, enter address if needed, and test checkout:
    - cart data for failed payment: use `4000 0000 0000 0002` and verify error is shown and order is not created.
    - cart data for successful payment : use `4242 4242 4242 4242` and verify order is created;
@@ -249,20 +249,20 @@ This command runs the full integration suite (`tests/integration/*`): 6 suits, 1
 
 **Admin**
 
-10. Go to /user-profile and log out using the Logout button. Then open /auth. Log in as an administrator using these credentials: `admin@test.com / Admin123!`. Alternatively, click “STAFF? ADMIN PANEL IS AT /ADMIN ↗” and register a new admin account (use `mursu` as the admin secret). 
+10. Go to `/user-profile` and log out using the Logout button. Then open `/auth`. Log in as an administrator using these credentials: `admin@test.com / Admin123!`. Alternatively, click “STAFF? ADMIN PANEL IS AT `/ADMIN` ↗” and register a new admin account (use `mursu` as the admin secret). 
 
-11. Verify that after admin login you are redirected to /adm. Try opening regular customer pages and confirm they are not accessible while you are logged in as admin.
+11. Verify that after admin login you are redirected to `/adm`. Try opening regular customer pages and confirm they are not accessible while you are logged in as admin.
 
-12. Go to /adm/orders and use the orders dashboard to process your order (change the order status from the order card). You can stay logged in as a customer in another browser window, create an order and watch /order-tracker update instantly as the admin changes statuses.
+12. Go to `/adm/orders` and use the orders dashboard to process your order (change the order status from the order card). You can stay logged in as a customer in another browser window, create an order and watch `/order-tracker` update instantly as the admin changes statuses.
 
-13.Go to /adm/menu and edit dishes or mark them as unavailable.
-In another browser window, verify that these dish changes are reflected on the customer /menu page.
+13.Go to `/adm/menu` and edit dishes or mark them as unavailable.
+In another browser window, verify that these dish changes are reflected on the customer `/menu` page.
 
-14. Go to /adm/special and change the special dish for today or other days.
-In another browser window, verify that the special dish badge is updated on the customer /menu page.
+14. Go to `/adm/special` and change the special dish for today or other days.
+In another browser window, verify that the special dish badge is updated on the customer `/menu` page.
 
-15. Go to /adm/customers and apply a discount to a user or edit their stamp count.
-In another browser window, verify for an authenticated customer that the stamp count has changed on /user-profile.
+15. Go to `/adm/customers` and apply a discount to a user or edit their stamp count.
+In another browser window, verify for an authenticated customer that the stamp count has changed on `/user-profile`.
 
 #### Responsiveness
 
