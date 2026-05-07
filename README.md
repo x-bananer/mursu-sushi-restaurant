@@ -32,8 +32,6 @@ Team #8
 - Unna Postila
 - Luara Moreira Da Silva
 
-# About application
-
 ## Application idea and target audience
 
 The application is a sushi restaurant website where a user can browse the menu, select dishes, build an order, pay online for it, and track its status. The main scenario is a fast and simple food ordering flow.
