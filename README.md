@@ -166,19 +166,19 @@ TODO: add demo video link (YouTube).
 
 You can test the application using the deployed version or by running it locally.
 
-### Deployed version (recommended)
+### Testing environment
+
+**Deployed version (recommended)**
 
 Open the deployed site:
 
 TODO add a link here
 
-After that, follow the instructions in [Testing](#testing).
+After that, follow the instructions in [Autonomous testing](#autonomous-testing).
 
-### Local version (for developers)
+**Local version (for developers)**
 
 Clone the repository and run the app in **two separate terminals**.
-
-#### Environment variables
 
 Create `.env` files from examples:
 
@@ -192,7 +192,7 @@ cp .env.example .env
 
 Adjust values if needed (API keys, DB settings).
 
-#### Backend
+Run backend:
 
 ```bash
 cd backend
@@ -204,7 +204,7 @@ npm run dev
 
 Backend runs at http://localhost:3000
 
-#### Frontend
+Run frontend:
 
 ```bash
 cd frontend
@@ -215,7 +215,7 @@ npm run dev
 
 Frontend runs at http://localhost:5173
 
-After startup, continue with [Testing](#testing).
+After startup, continue with [Autonomous testing](#autonomous-testing).
 
 ### Autonomous testing
 
