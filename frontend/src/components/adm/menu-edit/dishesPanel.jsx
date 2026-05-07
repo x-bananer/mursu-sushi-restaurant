@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import CardBase from "../../shared/card-base/cardBase";
 import CategoryTabs from "../../shared/category-tabs/categoryTabs";
@@ -38,6 +38,9 @@ export default function DishesPanel() {
   // ───────── FEEDBACK ─────────
   const [toast, setToast] = useState(null);
 
+  // ───────── LOCAL STATE (OPTIMISTIC) ─────────
+  const [localDishes, setLocalDishes] = useState([]);
+
   // ───────── API ─────────
   const {
     dishes,
@@ -55,13 +58,18 @@ export default function DishesPanel() {
   const { remove } = useDeleteDish();
   const { create } = useCreateDish();
 
+  // ───────── SYNC SERVER → LOCAL ─────────
+  useEffect(() => {
+    setLocalDishes(dishes || []);
+  }, [dishes]);
+
   // ───────── STATES ─────────
   const loading = dishesLoading || categoriesLoading;
   const error = dishesError || categoriesError;
 
   // ───────── FILTERED DATA ─────────
   const filteredDishes = useFilters({
-    items: dishes,
+    items: localDishes,
     activeCategory,
     search,
     sort,
@@ -105,32 +113,108 @@ export default function DishesPanel() {
     setEditing(null);
   };
 
+  // ───────── CREATE / UPDATE ─────────
   const handleSubmit = async (form) => {
-    try {
-      if (mode === "edit" && editing?.id != null) {
-        await update(editing.id, form);
-        setToast("Dish updated");
-      } else {
-        await create(form);
-        setToast("Dish created");
-      }
+    // ───── EDIT ─────
+    if (mode === "edit" && editing?.id != null) {
+      const previous = [...localDishes];
 
-      closeModal();
-    } catch (err) {
-      setToast(err.message);
+      // optimistic update
+      setLocalDishes((prev) =>
+        prev.map((item) =>
+          item.id === editing.id
+            ? {
+                ...item,
+                ...form,
+              }
+            : item
+        )
+      );
+
+      try {
+        await update(editing.id, form);
+
+        setToast("Dish updated");
+        closeModal();
+      } catch (err) {
+        setLocalDishes(previous);
+        setToast(err.message || "Something went wrong");
+      }
+    }
+
+    // ───── CREATE ─────
+    else {
+      const tempDish = {
+        id: crypto.randomUUID(),
+        ...form,
+      };
+
+      // optimistic create
+      setLocalDishes((prev) => [
+        tempDish,
+        ...prev,
+      ]);
+
+      try {
+        const created = await create(form);
+
+        setLocalDishes((prev) =>
+          prev.map((item) =>
+            item.id === tempDish.id
+              ? created
+              : item
+          )
+        );
+
+        setToast("Dish created");
+        closeModal();
+      } catch (err) {
+        setLocalDishes((prev) =>
+          prev.filter(
+            (item) => item.id !== tempDish.id
+          )
+        );
+
+        setToast(err.message || "Something went wrong");
+      }
     }
   };
 
+  // ───────── DELETE ─────────
   const handleDelete = async (id) => {
+    const previous = [...localDishes];
+
+    // optimistic delete
+    setLocalDishes((prev) =>
+      prev.filter((item) => item.id !== id)
+    );
+
     try {
       await remove(id);
+
       setToast("Dish deleted");
     } catch (err) {
-      setToast(err.message);
+      setLocalDishes(previous);
+      setToast(err.message || "Something went wrong");
     }
   };
 
+  // ───────── TOGGLE ─────────
   const handleToggle = async (item) => {
+    const previous = [...localDishes];
+
+    // optimistic toggle
+    setLocalDishes((prev) =>
+      prev.map((dish) =>
+        dish.id === item.id
+          ? {
+              ...dish,
+              is_available: !dish.is_available,
+            }
+          : dish
+      )
+    );
+
     try {
       await update(item.id, {
         is_available: !item.is_available,
@@ -138,13 +222,13 @@ export default function DishesPanel() {
 
       setToast("Dish updated");
     } catch (err) {
-      setToast(err.message);
+      setLocalDishes(previous);
+      setToast(err.message || "Something went wrong");
     }
   };
 
   return (
     <section className="menu-edit__section">
-
       {/* FILTERS */}
       <CategoryTabs
         categories={categories}
@@ -210,7 +294,11 @@ export default function DishesPanel() {
       <Modal
         isOpen={modal}
         onClose={closeModal}
-        title={mode === "edit" ? "Edit Dish" : "Create Dish"}
+        title={
+          mode === "edit"
+            ? "Edit Dish"
+            : "Create Dish"
+        }
       >
         <MenuItemForm
           type="dish"

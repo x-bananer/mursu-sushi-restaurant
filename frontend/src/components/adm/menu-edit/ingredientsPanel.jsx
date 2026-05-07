@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import TableBase from "../../shared/table-base/tableBase";
 import CategoryTabs from "../../shared/category-tabs/categoryTabs";
@@ -33,24 +33,45 @@ export default function IngredientsPanel() {
   // currently editing ingredient
   const [editing, setEditing] = useState(null);
 
+  // local optimistic state
+  const [localIngredients, setLocalIngredients] = useState([]);
+
   // filters
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [sort, setSort] = useState("default");
 
   // ───────── API ─────────
-  const { ingredients, loading, error } = useComboIngredients();
+  const {
+    ingredients,
+    loading,
+    error,
+  } = useComboIngredients();
 
-  const { categories } = useIngredientesCategories();
-  console.log(categories);
+  const {
+    categories,
+  } = useIngredientesCategories();
 
   const { update } = useUpdateIngredient();
   const { remove } = useDeleteIngredient();
   const { create } = useCreateIngredient();
 
+  // ───────── SYNC SERVER → LOCAL ─────────
+  useEffect(() => {
+    setLocalIngredients(ingredients || []);
+  }, [ingredients]);
+
+  // ───────── CATEGORY MAP ─────────
+  const categoryMap = useMemo(() => {
+    return categories.reduce((acc, category) => {
+      acc[category.id] = category.name;
+      return acc;
+    }, {});
+  }, [categories]);
+
   // ───────── FILTERS ─────────
   const filtered = useFilters({
-    items: ingredients,
+    items: localIngredients,
     activeCategory: category,
     search,
     sort,
@@ -99,32 +120,102 @@ export default function IngredientsPanel() {
     setEditing(null);
   };
 
+  // ───────── CREATE ─────────
   const handleSubmit = async (form) => {
-    try {
-      if (mode === "edit" && editing?.id != null) {
+    if (mode === "edit" && editing?.id != null) {
+      // optimistic update
+      const previous = [...localIngredients];
+
+      setLocalIngredients((prev) =>
+        prev.map((item) =>
+          item.id === editing.id
+            ? {
+                ...item,
+                ...form,
+              }
+            : item
+        )
+      );
+
+      try {
         await update(editing.id, form);
         setToast("Ingredient updated");
-      } else {
-        await create(form);
-        setToast("Ingredient created");
+        closeModal();
+      } catch (err) {
+        setLocalIngredients(previous);
+        setToast(err.message || "Something went wrong");
       }
+    } else {
+      // optimistic create
+      const tempIngredient = {
+        id: crypto.randomUUID(),
+        ...form,
+      };
 
-      closeModal();
-    } catch (err) {
-      setToast(err.message);
+      setLocalIngredients((prev) => [
+        tempIngredient,
+        ...prev,
+      ]);
+
+      try {
+        const created = await create(form);
+
+        setLocalIngredients((prev) =>
+          prev.map((item) =>
+            item.id === tempIngredient.id
+              ? created
+              : item
+          )
+        );
+
+        setToast("Ingredient created");
+        closeModal();
+      } catch (err) {
+        setLocalIngredients((prev) =>
+          prev.filter(
+            (item) => item.id !== tempIngredient.id
+          )
+        );
+
+        setToast(err.message || "Something went wrong");
+      }
     }
   };
 
+  // ───────── DELETE ─────────
   const handleDelete = async (id) => {
+    const previous = [...localIngredients];
+
+    // optimistic delete
+    setLocalIngredients((prev) =>
+      prev.filter((item) => item.id !== id)
+    );
+
     try {
       await remove(id);
       setToast("Ingredient deleted");
     } catch (err) {
-      setToast(err.message);
+      setLocalIngredients(previous);
+      setToast(err.message || "Something went wrong");
     }
   };
 
+  // ───────── TOGGLE ─────────
   const handleToggle = async (item) => {
+    const previous = [...localIngredients];
+
+    // optimistic toggle
+    setLocalIngredients((prev) =>
+      prev.map((i) =>
+        i.id === item.id
+          ? {
+              ...i,
+              is_available: !i.is_available,
+            }
+          : i
+      )
+    );
+
     try {
       await update(item.id, {
         is_available: !item.is_available,
@@ -132,7 +223,8 @@ export default function IngredientsPanel() {
 
       setToast("Ingredient updated");
     } catch (err) {
-      setToast(err.message);
+      setLocalIngredients(previous);
+      setToast(err.message || "Something went wrong");
     }
   };
 
@@ -182,20 +274,22 @@ export default function IngredientsPanel() {
               className="table__row"
               key={item.id}
             >
+              {/* NAME */}
               <span>{item.name}</span>
 
+              {/* PRICE */}
               <span>
                 €{Number(item.price).toFixed(2)}
               </span>
 
+              {/* CATEGORY */}
               <span>
                 <span className="badge badge--neutral">
-                  {categories?.find(
-                    (c) => c.id === item.ingredient_type_id
-                  )?.name || "Unknown"}
+                  {categoryMap[item.ingredient_type_id] || "Unknown"}
                 </span>
               </span>
 
+              {/* ACTIONS */}
               <ActionButtons
                 isActive={item.is_available}
                 onEdit={() => openEdit(item)}
