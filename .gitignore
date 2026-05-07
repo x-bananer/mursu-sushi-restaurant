@@ -206,3 +206,6 @@ backend/uploads/**
 
 # Generated API documentation
 backend/docs/api/
+
+# Vite cache
+**/.vite/
