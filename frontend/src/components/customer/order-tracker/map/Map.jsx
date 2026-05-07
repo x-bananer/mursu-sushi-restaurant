@@ -1,5 +1,6 @@
 import "./map.css";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -67,6 +68,7 @@ function LocateButton({ onLocate }) {
    Map
 ----------------------------- */
 export default function Map({mode, restaurantCoords, userCoords, geometry, legs}) {
+  const { t } = useTranslation();
   // Convert coords - leaflet format
   const orderPosition = restaurantCoords
     ? [restaurantCoords.lat, restaurantCoords.lon]
@@ -96,13 +98,13 @@ export default function Map({mode, restaurantCoords, userCoords, geometry, legs}
 
         {/* Restaurant Marker */}
         <Marker position={orderPosition}>
-          <Popup>Restaurant</Popup>
+          <Popup>{t("order_tracker.restaurant")}</Popup>
         </Marker>
 
         {/* User Marker */}
         {userPosition && (
           <Marker position={userPosition}>
-            <Popup>You are here</Popup>
+            <Popup>{t("order_tracker.you_are_here")}</Popup>
           </Marker>
         )}
 

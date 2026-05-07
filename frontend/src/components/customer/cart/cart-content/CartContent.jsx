@@ -1,5 +1,6 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { useCartContext } from "../../../../hooks/contextHooks/cart";
 import { usePayment } from "../../../../hooks/apiHooks/cart";
@@ -18,6 +19,7 @@ import './cart-content.css';
 const EMPTY_ITEMS = [];
 
 export default function CartContent() {
+	const { t } = useTranslation();
 	const stripe = useStripe();
 	const elements = useElements();
 
@@ -78,7 +80,7 @@ export default function CartContent() {
 
 	if (loadLoading) {
 		return (
-			<Loader isLight text="Loading cart..." />
+			<Loader isLight text={t("cart.loading")} />
 		);
 	}
 
@@ -92,8 +94,8 @@ export default function CartContent() {
 		return (
 			<EmptyState
 				isLight
-				title="Your cart is empty"
-				description="Add dishes from the menu or build a custom set."
+				title={t("cart.empty_title")}
+				description={t("cart.empty_description")}
 			/>
 		);
 	}
@@ -143,7 +145,7 @@ export default function CartContent() {
 		});
 
 		if (error) {
-			setPayError(error.message || 'Payment failed');
+			setPayError(error.message || t("cart.payment_failed"));
 			return;
 		}
 
@@ -158,7 +160,7 @@ export default function CartContent() {
 		}
 
 		if (result?.payment?.status === 'failed') {
-			setPayError('Payment failed. Please try another card.');
+			setPayError(t("cart.payment_failed_retry"));
 			return;
 		}
 
@@ -172,7 +174,7 @@ export default function CartContent() {
 		<div className="cart-content">
 			<div className="cart-content__container">
 				<section className="cart-content__section">
-					<h1 className="cart-content__title">Cart</h1>
+					<h1 className="cart-content__title">{t("cart.title")}</h1>
 					<div className="cart-content__items">
 						{
 							items.map((item) => {

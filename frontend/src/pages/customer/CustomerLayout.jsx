@@ -32,7 +32,6 @@ export default function CustomerLayout() {
 			<>
 				<header className="header">
 					<Navbar
-						isLightTheme={isLightTheme}
 						onToggleTheme={() => setIsLightTheme((prev) => !prev)}
 					/>
 				</header>

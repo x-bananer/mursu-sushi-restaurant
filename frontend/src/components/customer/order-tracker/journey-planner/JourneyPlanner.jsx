@@ -1,14 +1,15 @@
 import "./journey-planner.css";
+import { useTranslation } from "react-i18next";
 
 import { FiChevronDown } from "react-icons/fi";
 import { FaWalking, FaBicycle, FaCar, FaBus } from "react-icons/fa";
 import { Icon } from "leaflet";
 
 const MODES = [
-  { key: "walk", label: "Walk", icon: FaWalking },
-  { key: "bike", label: "Bike", icon: FaBicycle },
-  { key: "car", label: "Car", icon: FaCar },
-  { key: "transit", label: "Transit", icon: FaBus },
+  { key: "walk", label: "mode_walk", icon: FaWalking },
+  { key: "bike", label: "mode_bike", icon: FaBicycle },
+  { key: "car", label: "mode_car", icon: FaCar },
+  { key: "transit", label: "mode_transit", icon: FaBus },
 ];
 
 export default function JourneyPlanner({
@@ -17,13 +18,14 @@ export default function JourneyPlanner({
   selectedMode,
   onSelectMode,
 }) {
+  const { t } = useTranslation();
   if (serviceType === "delivery") return null;
   const activeMode = selectedMode ?? recommendedMode;
 
   return (
     <details className="accordion" open>
       <summary className="accordion__header">
-        <span className="accordion__title">Plan Journey</span>
+        <span className="accordion__title">{t("order_tracker.plan_journey")}</span>
 
         <span className="accordion__icon">
           <FiChevronDown size={14} />
@@ -45,10 +47,10 @@ export default function JourneyPlanner({
                 type="button"
                 onClick={() => onSelectMode?.(key)}
                 aria-pressed={isActive}
-                aria-label={label}
+                aria-label={t(`order_tracker.${label}`)}
               >
                 <Icon className="journey__mode-icon" />
-                <span className="journey__mode-label">{label}</span>
+                <span className="journey__mode-label">{t(`order_tracker.${label}`)}</span>
               </button>
             );
           })}

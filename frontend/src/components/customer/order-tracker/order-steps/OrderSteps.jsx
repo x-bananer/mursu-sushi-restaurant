@@ -1,38 +1,6 @@
 import "./order-steps.css";
+import { useTranslation } from "react-i18next";
 import { FiChevronDown } from "react-icons/fi";
-
-const STEPS = [
-  {
-    key: "pending",
-    label: "Placed",
-    message: (formattedTime, orderId) =>
-      `${formattedTime} — Payment confirmed via Stripe. Your order id is ${orderId}.`,
-  },
-  {
-    key: "confirmed",
-    label: "Confirmed",
-    message: (formattedTime) =>  `${formattedTime} — Kitchen has received your order.`,
-  },
-  {
-    key: "preparing",
-    label: "Preparing",
-    message: (formattedTime) =>  `${formattedTime} — Your sushi is now being processed.`,
-  },
-  {
-    key: "ready",
-    label: "Ready",
-    message: (formattedTime, orderId, serviceType) => {
-      const messages = {
-        delivery:
-           `${formattedTime} — We are now coming to you, be ready to receive your delivery.`,
-        pickup:  `${formattedTime} — We are ready, just waiting for you now.`,
-        restaurant:  `${formattedTime} — Enjoy your meal!`,
-      };
-
-      return messages[serviceType] || "— Your order is ready.";
-    },
-  },
-];
 
 function formatTime(time) {
   if (!time) return "";
@@ -48,6 +16,39 @@ export default function OrderSteps({
   orderId,
   serviceType,
 }) {
+  const { t } = useTranslation();
+  const STEPS = [
+    {
+      key: "pending",
+      label: t("order_tracker.step_placed"),
+      message: (formattedTime, orderId) =>
+        `${formattedTime} — ${t("order_tracker.step_msg_placed", { id: orderId })}`,
+    },
+    {
+      key: "confirmed",
+      label: t("order_tracker.step_confirmed"),
+      message: (formattedTime) =>  `${formattedTime} — ${t("order_tracker.step_msg_confirmed")}`,
+    },
+    {
+      key: "preparing",
+      label: t("order_tracker.step_preparing"),
+      message: (formattedTime) =>  `${formattedTime} — ${t("order_tracker.step_msg_preparing")}`,
+    },
+    {
+      key: "ready",
+      label: t("order_tracker.step_ready"),
+      message: (formattedTime, orderId, serviceType) => {
+        const messages = {
+          delivery:
+             `${formattedTime} — ${t("order_tracker.step_msg_ready_delivery")}`,
+          pickup:  `${formattedTime} — ${t("order_tracker.step_msg_ready_pickup")}`,
+          restaurant:  `${formattedTime} — ${t("order_tracker.step_msg_ready_restaurant")}`,
+        };
+
+        return messages[serviceType] || `— ${t("order_tracker.step_msg_ready_default")}`;
+      },
+    },
+  ];
   console.group("ORDER STEPS DEBUG");
   console.log("history:", history);
   console.log("orderId ", orderId);
@@ -79,7 +80,7 @@ export default function OrderSteps({
   return (
     <details className="accordion" open>
       <summary className="accordion__header">
-        <span className="accordion__title">Order Status</span>
+        <span className="accordion__title">{t("order_tracker.order_status")}</span>
 
         <span className="accordion__icon">
           <FiChevronDown size={14} />

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import InputField from "../../../shared/input-field/InputField";
 import Button from "../../../shared/button/Button";
 import Loader from "../../../shared/loader/Loader";
@@ -7,6 +8,7 @@ import { useLogin } from "../../../../hooks/apiHooks/auth";
 import { useNavigate } from 'react-router';
 
 export default function Login({ onForgot, onAdminRegister }) {
+	const { t } = useTranslation();
 	const { login, loading, error } = useLogin();
   const navigate = useNavigate();
 
@@ -44,7 +46,7 @@ export default function Login({ onForgot, onAdminRegister }) {
 
 	// LOADING STATE
 	if (loading) {
-		return <Loader text="Signing you in..." />;
+		return <Loader text={t("auth.signing_in")} />;
 	}
 
 	return (
@@ -58,7 +60,7 @@ export default function Login({ onForgot, onAdminRegister }) {
 			)}
 
 			<InputField
-				label="EMAIL ADDRESS"
+				label={t("auth.email")}
 				type="email"
 				name="email"
 				value={form.email}
@@ -66,7 +68,7 @@ export default function Login({ onForgot, onAdminRegister }) {
 			/>
 
 			<InputField
-				label="PASSWORD"
+				label={t("auth.password")}
 				type="password"
 				name="password"
 				value={form.password}
@@ -75,7 +77,7 @@ export default function Login({ onForgot, onAdminRegister }) {
 
 			<div className="auth-card__actions">
 				<Button variant="light" className="auth-card__btn" type="submit">
-					SIGN IN
+					{t("auth.sign_in")}
 				</Button>
 			</div>
 
@@ -93,7 +95,7 @@ export default function Login({ onForgot, onAdminRegister }) {
 					className="auth-card__link"
 					onClick={onAdminRegister}
 				>
-					STAFF? Sign in HERE ↗
+					{t("auth.staff_admin_link")}
 				</button>
 			</div>
 		</form>

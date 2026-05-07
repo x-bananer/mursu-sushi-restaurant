@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useTranslation } from "react-i18next";
 import { FaCar, FaUtensils, FaWalking } from 'react-icons/fa'
 
 import './cart-delivery.css'
@@ -13,6 +14,7 @@ export default function CartDelivery({
     setAddress,
     setSelectedDeliveryType,
 }) {
+    const { t } = useTranslation();
     const { deliveryTypes, deliveryTypesLoading, deliveryTypesError } = useDeliveryTypes();
 
     const activeTypeId = deliveryTypeId ?? deliveryTypes[0]?.id ?? null;
@@ -32,9 +34,9 @@ export default function CartDelivery({
 
     return (
         <div className="cart-delivery">
-            <h2 className="cart-delivery__title">Delivery</h2>
+            <h2 className="cart-delivery__title">{t("cart.delivery_title")}</h2>
             <div className="cart-delivery__options">
-                {deliveryTypesLoading && <span className="cart-delivery__label">Loading...</span>}
+                {deliveryTypesLoading && <span className="cart-delivery__label">{t("cart.delivery_loading")}</span>}
                 {deliveryTypesError && <span className="cart-delivery__label">{deliveryTypesError}</span>}
                 {!deliveryTypesLoading && !deliveryTypesError && deliveryTypes.map((type) => (
                     <button
@@ -50,7 +52,7 @@ export default function CartDelivery({
             </div>
             {isDeliverySelected && (
                 <InputField
-                    placeholder="Enter the delivery address"
+                    placeholder={t("cart.delivery_address_placeholder")}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                 />

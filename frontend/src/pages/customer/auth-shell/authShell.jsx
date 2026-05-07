@@ -1,5 +1,6 @@
 import "./auth-shell.css";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Navigate } from "react-router";
 import { useAuth } from "../../../contexts/AuthContext";
 
@@ -11,6 +12,7 @@ import ForgotPassword from "../../../components/customer/user/forgot-password/fo
 import Modal from "../../../components/shared/modal/modal.jsx";
 
 export default function Auth() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [mode, setMode] = useState("login");
   const [activeModal, setActiveModal] = useState(null); // "forgot" | "admin"
@@ -23,8 +25,6 @@ export default function Auth() {
   return (
     <main className="layout page auth-wrapper">
       <div className="auth-card">
-
-        {/* ───── TABS ───── */}
         <div className="auth-card__tabs">
           <div
             className={`auth-card__tab ${
@@ -34,7 +34,7 @@ export default function Auth() {
             }`}
             onClick={() => setMode("login")}
           >
-            SIGN IN
+            {t("auth.sign_in")}
           </div>
 
           <div
@@ -45,11 +45,10 @@ export default function Auth() {
             }`}
             onClick={() => setMode("register")}
           >
-            CREATE ACCOUNT
+            {t("auth.register")}
           </div>
         </div>
 
-        {/* ───── BODY ───── */}
         <div className="auth-card__body">
           {mode === "login" && (
             <Login
@@ -62,22 +61,18 @@ export default function Auth() {
         </div>
       </div>
 
-      {/* ───── MODALS ───── */}
-
-      {/* FORGOT PASSWORD */}
       <Modal
         isOpen={activeModal === "forgot"}
         onClose={() => setActiveModal(null)}
-        title="Reset Password"
+        title={t("auth.reset_password")}
       >
         <ForgotPassword onClose={() => setActiveModal(null)} />
       </Modal>
 
-      {/* ADMIN REGISTER */}
       <Modal
         isOpen={activeModal === "admin"}
         onClose={() => setActiveModal(null)}
-        title="Admin Sign"
+        title={t("auth.admin_sign")}
       >
         <RegisterAdmin onSuccess={() => setActiveModal(null)} />
       </Modal>
