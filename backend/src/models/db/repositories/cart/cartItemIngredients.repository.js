@@ -9,7 +9,12 @@ import { select, execute } from '../../db.js';
  * @param {Object} cartItemIngredientData
  * @returns {Promise<number>}
  */
-export const createCartItemIngredient = async ({ cart_item_id, ingredient_id, quantity, position }) => {
+export const createCartItemIngredient = async ({
+	cart_item_id,
+	ingredient_id,
+	quantity,
+	position,
+}) => {
 	const result = await execute(
 		`
     INSERT INTO cart_item_ingredient
@@ -20,7 +25,7 @@ export const createCartItemIngredient = async ({ cart_item_id, ingredient_id, qu
 	);
 
 	return result.insertId;
-}
+};
 
 /**
  * GET CART ITEM INGREDIENTS BY CART ITEM ID
@@ -44,7 +49,7 @@ export const getCartItemIngredientsByCartItemId = async (cartItemId) => {
 	);
 
 	return /** @type {CartItemIngredient[]} */ (rows);
-}
+};
 
 /**
  * GET CART ITEM INGREDIENTS BY CART ITEM IDS
@@ -74,7 +79,7 @@ export const getCartItemIngredientsByCartItemIds = async (cartItemIds) => {
 	);
 
 	return /** @type {CartItemIngredient[]} */ (rows);
-}
+};
 
 /**
  * GET INGREDIENTS BY IDS
@@ -98,7 +103,7 @@ export const getIngredientsByIds = async (ingredientIds) => {
 	);
 
 	return rows;
-}
+};
 
 /**
  * DELETE CART ITEM INGREDIENT
@@ -113,4 +118,4 @@ export const deleteCartItemIngredient = async (cartItemIngredientId) => {
     `,
 		[cartItemIngredientId]
 	);
-}
+};

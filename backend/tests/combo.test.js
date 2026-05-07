@@ -36,7 +36,10 @@ async function run() {
 	if (!ingredientsRes.response.ok) {
 		throw new Error(`GET /dishes/combo/ingredients failed: ${ingredientsRes.response.status}`);
 	}
-	if (!Array.isArray(ingredientsRes.body?.ingredients) || ingredientsRes.body.ingredients.length === 0) {
+	if (
+		!Array.isArray(ingredientsRes.body?.ingredients) ||
+		ingredientsRes.body.ingredients.length === 0
+	) {
 		throw new Error('Ingredients payload is invalid.');
 	}
 	console.log(JSON.stringify(ingredientsRes.body, null, 2));
@@ -49,7 +52,9 @@ async function run() {
 		body: JSON.stringify({ ingredients: validIngredients }),
 	});
 	if (!validPreviewRes.response.ok) {
-		throw new Error(`POST /dishes/combo/preview (valid) failed: ${validPreviewRes.response.status}`);
+		throw new Error(
+			`POST /dishes/combo/preview (valid) failed: ${validPreviewRes.response.status}`
+		);
 	}
 	if (!validPreviewRes.body?.combo || Number(validPreviewRes.body.combo.total_price) <= 0) {
 		throw new Error('Valid combo preview payload is invalid.');
@@ -84,7 +89,11 @@ async function run() {
 	if (!createRes.response.ok) {
 		throw new Error(`POST /dishes/combo/create failed: ${createRes.response.status}`);
 	}
-	if (!createRes.body?.cart || !Array.isArray(createRes.body.cart.items) || createRes.body.cart.items.length === 0) {
+	if (
+		!createRes.body?.cart ||
+		!Array.isArray(createRes.body.cart.items) ||
+		createRes.body.cart.items.length === 0
+	) {
 		throw new Error('Create combo response payload is invalid.');
 	}
 	console.log(JSON.stringify(createRes.body, null, 2));

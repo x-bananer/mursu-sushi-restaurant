@@ -10,8 +10,8 @@ import { select, execute } from '../../db.js';
  * @returns {Promise<OrderItems[]>}
  */
 export async function getOrderItems(orderId) {
-  const rows = await select(
-    `
+	const rows = await select(
+		`
     SELECT
       order_items.*,
 
@@ -37,10 +37,10 @@ export async function getOrderItems(orderId) {
 
     WHERE order_items.order_id = ?
     `,
-    [orderId]
-  );
+		[orderId]
+	);
 
-  return /** @type {OrderItems[]} */ (rows);
+	return /** @type {OrderItems[]} */ (rows);
 }
 
 /**
@@ -49,12 +49,12 @@ export async function getOrderItems(orderId) {
  * @returns {Promise<OrderItems[]>}
  */
 export async function listItemsByOrderIds(orderIds) {
-  if (!orderIds.length) return [];
+	if (!orderIds.length) return [];
 
-  const placeholders = orderIds.map(() => '?').join(',');
+	const placeholders = orderIds.map(() => '?').join(',');
 
-  const rows = await select(
-    `
+	const rows = await select(
+		`
     SELECT
       order_items.*,
 
@@ -80,23 +80,23 @@ export async function listItemsByOrderIds(orderIds) {
 
     WHERE order_items.order_id IN (${placeholders})
     `,
-    orderIds
-  );
+		orderIds
+	);
 
-  return /** @type {OrderItems[]} */ (rows);
+	return /** @type {OrderItems[]} */ (rows);
 }
 
 /**
  * Create a single order item - bulk version (snapshot of cart item)
  */
 export async function createOrderItem(rows, conn) {
-  return await execute(
-    `
+	return await execute(
+		`
     INSERT INTO order_items
       (order_id, dish_id, name, quantity, price, item_type_id)
     VALUES ?
     `,
-    [rows],
-    conn
-  );
+		[rows],
+		conn
+	);
 }

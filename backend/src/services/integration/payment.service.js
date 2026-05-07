@@ -52,7 +52,9 @@ export const payWithStripe = async (userId, sessionId, checkoutData, locale) => 
 
 	if (!isPaymentFailed) {
 		try {
-			const paymentIntent = await new Stripe(process.env.STRIPE_SECRET_KEY).paymentIntents.create({
+			const paymentIntent = await new Stripe(
+				process.env.STRIPE_SECRET_KEY
+			).paymentIntents.create({
 				amount: Math.round(Number(cart.total_price) * 100),
 				currency: 'eur',
 				payment_method: checkoutData.payment_method_id || 'pm_card_visa',
@@ -91,10 +93,15 @@ export const payWithStripe = async (userId, sessionId, checkoutData, locale) => 
 		};
 	}
 
-	const order = await cartService.checkoutCartBySessionId(sessionId, userId, {
-		delivery_type_id: checkoutData.delivery_type_id,
-		address: checkoutData.address,
-	}, locale);
+	const order = await cartService.checkoutCartBySessionId(
+		sessionId,
+		userId,
+		{
+			delivery_type_id: checkoutData.delivery_type_id,
+			address: checkoutData.address,
+		},
+		locale
+	);
 
 	await paymentRepository.attachOrderToPayment(paymentId, userId, order.id);
 	await paymentRepository.updatePaymentStatusById(paymentId, userId, completedStatus.id);

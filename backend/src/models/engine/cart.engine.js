@@ -1,66 +1,70 @@
 // Validate cart items before total price calculation
 export const validateCart = (items) => {
-    const errors = [];
+	const errors = [];
 
-    if (!Array.isArray(items)) {
-        errors.push('items must be an array');
-    } else {
-        for (const item of items) {
-            const quantity = Number(item.quantity);
-            const price = Number(item.price);
+	if (!Array.isArray(items)) {
+		errors.push('items must be an array');
+	} else {
+		for (const item of items) {
+			const quantity = Number(item.quantity);
+			const price = Number(item.price);
 
-            if (Number.isNaN(quantity) || quantity <= 0) {
-                errors.push('quantity must be greater than 0');
-            }
+			if (Number.isNaN(quantity) || quantity <= 0) {
+				errors.push('quantity must be greater than 0');
+			}
 
-            if (Number.isNaN(price) || price <= 0) {
-                errors.push('item price must be a valid number');
-            }
-        }
-    }
+			if (Number.isNaN(price) || price <= 0) {
+				errors.push('item price must be a valid number');
+			}
+		}
+	}
 
-    return {
-        valid: errors.length === 0,
-        errors,
-    };
+	return {
+		valid: errors.length === 0,
+		errors,
+	};
 };
 
 // Calculate final cart total price from item prices and quantities and discounts
-export const calculateCartTotalPrice = (items, hasStampDiscount = false, dailySpecialDishIds = []) => {
-    const validation = validateCart(items);
-    
-    const DISCOUNT_PERCENT = 10;
+export const calculateCartTotalPrice = (
+	items,
+	hasStampDiscount = false,
+	dailySpecialDishIds = []
+) => {
+	const validation = validateCart(items);
 
-    if (!validation.valid) {
-        throw new Error(validation.errors.join(', '));
-    }
+	const DISCOUNT_PERCENT = 10;
 
-    let totalPrice = 0;
-    let dailySpecialDiscount = 0;
-    let stampDiscount = 0;
-    let totalDiscount = 0;
+	if (!validation.valid) {
+		throw new Error(validation.errors.join(', '));
+	}
 
-    for (const item of items) {
-        let itemPrice = Number(item.price) * Number(item.quantity);
+	let totalPrice = 0;
+	let dailySpecialDiscount = 0;
+	let stampDiscount = 0;
+	let totalDiscount = 0;
 
-        const isDailySpecialDish = dailySpecialDishIds.includes(item.dish_id);
+	for (const item of items) {
+		let itemPrice = Number(item.price) * Number(item.quantity);
 
-        if (isDailySpecialDish) {
-            const itemDailySpecialDiscount = itemPrice * DISCOUNT_PERCENT / 100;
-            dailySpecialDiscount += itemDailySpecialDiscount;
-            itemPrice -= itemDailySpecialDiscount;
-        }
+		const isDailySpecialDish = dailySpecialDishIds.includes(item.dish_id);
 
-        totalPrice += itemPrice;
-    }
+		if (isDailySpecialDish) {
+			const itemDailySpecialDiscount = (itemPrice * DISCOUNT_PERCENT) / 100;
+			dailySpecialDiscount += itemDailySpecialDiscount;
+			itemPrice -= itemDailySpecialDiscount;
+		}
 
-    stampDiscount = hasStampDiscount ? totalPrice * DISCOUNT_PERCENT / 100 : 0;
-    
-    totalDiscount = dailySpecialDiscount + stampDiscount;
-    totalPrice = totalPrice - stampDiscount;
+		totalPrice += itemPrice;
+	}
 
-    return {
-        totalPrice: Number(totalPrice.toFixed(2)),
-        discount: Number(totalDiscount.toFixed(2)),
-    };
+	stampDiscount = hasStampDiscount ? (totalPrice * DISCOUNT_PERCENT) / 100 : 0;
+
+	totalDiscount = dailySpecialDiscount + stampDiscount;
+	totalPrice = totalPrice - stampDiscount;
+
+	return {
+		totalPrice: Number(totalPrice.toFixed(2)),
+		discount: Number(totalDiscount.toFixed(2)),
+	};
 };

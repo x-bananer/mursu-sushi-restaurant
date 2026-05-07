@@ -47,16 +47,16 @@ const ORDER_SELECT = `
  * @returns {Promise<OrderRow|null>}
  */
 export async function getOrderById(orderId) {
-  const rows = await select(
-    `
+	const rows = await select(
+		`
     ${ORDER_SELECT}
     ${ORDER_BASE}
     WHERE orders.id = ?
     `,
-    [orderId]
-  );
+		[orderId]
+	);
 
-  return /** @type {OrderRow | null} */ (rows[0] || null);
+	return /** @type {OrderRow | null} */ (rows[0] || null);
 }
 
 /**
@@ -67,16 +67,16 @@ export async function getOrderById(orderId) {
  */
 
 export async function getActiveOrders() {
-  const rows = await select(
-    `
+	const rows = await select(
+		`
     ${ORDER_SELECT}
     ${ORDER_BASE}
     WHERE order_status.type IN ('pending', 'confirmed', 'preparing', 'ready')
     ORDER BY orders.created_at ASC
     `
-  );
+	);
 
-  return /** @type {Orders[] | null} */ (rows);
+	return /** @type {Orders[] | null} */ (rows);
 }
 
 /**
@@ -93,17 +93,17 @@ export async function getActiveOrders() {
  * @returns {Promise<number>}
  */
 export async function createOrder(data, conn) {
-  const result = await execute(
-    `
+	const result = await execute(
+		`
     INSERT INTO orders
     (user_id, status_id, delivery_type_id, is_paid, address, total_price)
     VALUES (?, 1, ?, 1, ?, ?)
     `,
-    [data.user_id, data.delivery_type_id, data.address, data.total_price],
-    conn
-  );
+		[data.user_id, data.delivery_type_id, data.address, data.total_price],
+		conn
+	);
 
-  return result.insertId;
+	return result.insertId;
 }
 
 /**
@@ -113,23 +113,23 @@ export async function createOrder(data, conn) {
  * @returns {Promise<void>}
  */
 export async function updateOrderStatus(orderId, statusId, conn) {
-  await execute(
-    `
+	await execute(
+		`
     UPDATE orders
     SET status_id = ?, updated_at = NOW()
     WHERE id = ?
     `,
-    [statusId, orderId],
-    conn
-  );
+		[statusId, orderId],
+		conn
+	);
 }
 
 /**
  * Order counts by status (dashboard stats)
  */
 export async function getOrderCountsByStatus() {
-  return await select(
-    `
+	return await select(
+		`
     SELECT
       order_status.type AS status,
       COUNT(*) AS count
@@ -141,7 +141,7 @@ export async function getOrderCountsByStatus() {
 
     GROUP BY order_status.type
     `
-  );
+	);
 }
 
 /**
@@ -153,8 +153,8 @@ export async function getOrderCountsByStatus() {
  * (latest active order)
  */
 export async function getActiveOrderByUser(userId) {
-  const rows = await select(
-    `
+	const rows = await select(
+		`
     ${ORDER_SELECT}
     ${ORDER_BASE}
     WHERE orders.user_id = ?
@@ -162,8 +162,8 @@ export async function getActiveOrderByUser(userId) {
     ORDER BY orders.created_at DESC
     LIMIT 1
     `,
-    [userId]
-  );
+		[userId]
+	);
 
-  return rows[0] || null;
+	return rows[0] || null;
 }

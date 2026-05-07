@@ -1,20 +1,29 @@
-import js from "@eslint/js";
-import globals from "globals";
-import { defineConfig, globalIgnores } from "eslint/config";
+import js from '@eslint/js';
+import globals from 'globals';
+import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
-	globalIgnores(["node_modules", "uploads", "coverage"]),
+	globalIgnores(['node_modules', 'uploads', 'coverage', 'docs']),
 	{
-		files: ["**/*.js"],
+		files: ['**/*.js'],
 		extends: [js.configs.recommended],
 		languageOptions: {
 			ecmaVersion: 2022,
-			sourceType: "module",
+			sourceType: 'module',
 			globals: globals.node,
 		},
 		rules: {
-			"no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
-			"no-console": "off",
+			'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+			'no-console': 'off',
+		},
+	},
+	{
+		files: ['tests/**/*.js'],
+		languageOptions: {
+			globals: {
+				...globals.node,
+				...globals.jest,
+			},
 		},
 	},
 ]);

@@ -2,17 +2,17 @@
 
 ## Features
 
-* MySQL database connection using `mysql2`
-* Connection pooling
-* Query helper utilities (`query`, `queryOne`)
-* Automated database setup (schema + seed data)
+- MySQL database connection using `mysql2`
+- Connection pooling
+- Query helper utilities (`query`, `queryOne`)
+- Automated database setup (schema + seed data)
 
 ## 🛠️ Tech Stack
 
-* Node.js
-* MySQL
-* dotenv
-* mysql2
+- Node.js
+- MySQL
+- dotenv
+- mysql2
 
 ## Get started
 
@@ -75,5 +75,5 @@ src/
 
 ## Notes
 
-* `multipleStatements: true` is enabled — be cautious with raw SQL input
-* Never commit your `.env` file
+- `multipleStatements: true` is enabled — be cautious with raw SQL input
+- Never commit your `.env` file

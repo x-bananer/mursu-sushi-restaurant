@@ -15,7 +15,7 @@ const EARTH_RADIUS_M = 6_371_000;
 // ── Core formula ──────────────────────────────────────────────────────────────
 
 function toRad(deg) {
-  return (deg * Math.PI) / 180;
+	return (deg * Math.PI) / 180;
 }
 
 /**
@@ -27,28 +27,25 @@ function toRad(deg) {
  * ); // - ~22 400 metres
  */
 export function distanceMetres(a, b) {
-  if (
-    typeof a?.lat !== 'number' || typeof a?.lon !== 'number' ||
-    typeof b?.lat !== 'number' || typeof b?.lon !== 'number'
-  ) {
-    throw new TypeError(
-      'distanceMetres: both arguments must be { lat: number, lon: number }'
-    );
-  }
+	if (
+		typeof a?.lat !== 'number' ||
+		typeof a?.lon !== 'number' ||
+		typeof b?.lat !== 'number' ||
+		typeof b?.lon !== 'number'
+	) {
+		throw new TypeError('distanceMetres: both arguments must be { lat: number, lon: number }');
+	}
 
-  const dLat = toRad(b.lat - a.lat);
-  const dLon = toRad(b.lon - a.lon);
+	const dLat = toRad(b.lat - a.lat);
+	const dLon = toRad(b.lon - a.lon);
 
-  const sinDLat = Math.sin(dLat / 2);
-  const sinDLon = Math.sin(dLon / 2);
+	const sinDLat = Math.sin(dLat / 2);
+	const sinDLon = Math.sin(dLon / 2);
 
-  const h =
-    sinDLat * sinDLat +
-    Math.cos(toRad(a.lat)) *
-    Math.cos(toRad(b.lat)) *
-    sinDLon * sinDLon;
+	const h =
+		sinDLat * sinDLat + Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * sinDLon * sinDLon;
 
-  return 2 * EARTH_RADIUS_M * Math.asin(Math.sqrt(h));
+	return 2 * EARTH_RADIUS_M * Math.asin(Math.sqrt(h));
 }
 
 /**
@@ -60,7 +57,7 @@ export function distanceMetres(a, b) {
  * ); // - ~0.19 km
  */
 export function distanceKm(a, b) {
-  return Math.round((distanceMetres(a, b) / 1000) * 100) / 100;
+	return Math.round((distanceMetres(a, b) / 1000) * 100) / 100;
 }
 
 /**
@@ -72,5 +69,5 @@ export function distanceKm(a, b) {
  *   > 1 200 m - transit (HSL tram/bus makes more sense)
  */
 export function recommendedMode(from, to, walkThresholdM = 1200) {
-  return distanceMetres(from, to) <= walkThresholdM ? 'walk' : 'transit';
+	return distanceMetres(from, to) <= walkThresholdM ? 'walk' : 'transit';
 }

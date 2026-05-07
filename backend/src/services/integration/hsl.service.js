@@ -19,7 +19,7 @@ dotenv.config();
 
 const HSL_BASE_URL = process.env.HSL_BASE_URL;
 
-const TIMEOUT_MS  = 8000;
+const TIMEOUT_MS = 8000;
 const MAX_RETRIES = 2;
 
 const API_KEY = process.env.HSL_API_KEY || null;
@@ -27,20 +27,20 @@ const API_KEY = process.env.HSL_API_KEY || null;
 // ── Mode mapping ──────────────────────────────────────────────────────────────
 
 const MODE_MAP = {
-  walk:    'WALK',
-  bike:    'BICYCLE',
-  transit: 'TRANSIT',
-  bus:     'BUS',
-  tram:    'TRAM',
-  subway:  'SUBWAY',
-  rail:    'RAIL',
-  ferry:   'FERRY',
+	walk: 'WALK',
+	bike: 'BICYCLE',
+	transit: 'TRANSIT',
+	bus: 'BUS',
+	tram: 'TRAM',
+	subway: 'SUBWAY',
+	rail: 'RAIL',
+	ferry: 'FERRY',
 };
 
 // ── GraphQL query ─────────────────────────────────────────────────────────────
 
 function buildQuery(from, to, transportMode, numItineraries = 1) {
-  return `{
+	return `{
     plan(
       from: { lat: ${from.lat}, lon: ${from.lon} }
       to:   { lat: ${to.lat},   lon: ${to.lon}   }
@@ -67,143 +67,142 @@ function buildQuery(from, to, transportMode, numItineraries = 1) {
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function normalizePlaceName(name, fallback) {
-  if (!name) return fallback;
-  if (name === 'Origin') return 'Start';
-  if (name === 'Destination') return 'End';
-  return name;
+	if (!name) return fallback;
+	if (name === 'Origin') return 'Start';
+	if (name === 'Destination') return 'End';
+	return name;
 }
 
 function decodeGeometry(leg) {
-  const encoded = leg.legGeometry?.points;
+	const encoded = leg.legGeometry?.points;
 
-  if (!encoded || typeof encoded !== 'string') return [];
+	if (!encoded || typeof encoded !== 'string') return [];
 
-  try {
-    return polyline.decode(encoded); // [[lat, lon], ...]
-  } catch {
-    console.warn('[HSL] polyline decode failed for leg:', leg.mode);
-    return [];
-  }
+	try {
+		return polyline.decode(encoded); // [[lat, lon], ...]
+	} catch {
+		console.warn('[HSL] polyline decode failed for leg:', leg.mode);
+		return [];
+	}
 }
 
 function mapLeg(leg) {
-  const durationMins = Math.round((leg.endTime - leg.startTime) / 60000);
+	const durationMins = Math.round((leg.endTime - leg.startTime) / 60000);
 
-  return {
-    mode: leg.mode,
+	return {
+		mode: leg.mode,
 
-    durationMins: Math.max(0, durationMins),
-    distanceM:    Math.round(leg.distance ?? 0),
+		durationMins: Math.max(0, durationMins),
+		distanceM: Math.round(leg.distance ?? 0),
 
-    from: {
-      name: normalizePlaceName(leg.from?.name, 'Start'),
-      lat:  leg.from?.lat ?? 0,
-      lon:  leg.from?.lon ?? 0,
-    },
+		from: {
+			name: normalizePlaceName(leg.from?.name, 'Start'),
+			lat: leg.from?.lat ?? 0,
+			lon: leg.from?.lon ?? 0,
+		},
 
-    to: {
-      name: normalizePlaceName(leg.to?.name, 'End'),
-      lat:  leg.to?.lat ?? 0,
-      lon:  leg.to?.lon ?? 0,
-    },
+		to: {
+			name: normalizePlaceName(leg.to?.name, 'End'),
+			lat: leg.to?.lat ?? 0,
+			lon: leg.to?.lon ?? 0,
+		},
 
-    route: leg.route
-      ? {
-          shortName: leg.route.shortName ?? '',
-          longName:  leg.route.longName  ?? '',
-        }
-      : null,
+		route: leg.route
+			? {
+					shortName: leg.route.shortName ?? '',
+					longName: leg.route.longName ?? '',
+				}
+			: null,
 
-    geometry: decodeGeometry(leg),
-  };
+		geometry: decodeGeometry(leg),
+	};
 }
 
 // ── Request layer ─────────────────────────────────────────────────────────────
 
 async function hslRequest(query, attempt = 1, locale = 'en') {
-  const controller = new AbortController();
-  const timeout    = setTimeout(() => controller.abort(), TIMEOUT_MS);
+	const controller = new AbortController();
+	const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
-  try {
-    const headers = {
-      'Content-Type': 'application/json',
-    };
+	try {
+		const headers = {
+			'Content-Type': 'application/json',
+		};
 
-    if (API_KEY) {
-      headers['digitransit-subscription-key'] = API_KEY;
-    }
+		if (API_KEY) {
+			headers['digitransit-subscription-key'] = API_KEY;
+		}
 
-    console.debug('[HSL] request attempt:', attempt);
+		console.debug('[HSL] request attempt:', attempt);
 
-    const res = await fetch(HSL_BASE_URL, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ query }),
-      signal: controller.signal,
-    });
+		const res = await fetch(HSL_BASE_URL, {
+			method: 'POST',
+			headers,
+			body: JSON.stringify({ query }),
+			signal: controller.signal,
+		});
 
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(t(locale, 'integration', 'hsl_api_error'));
-    }
+		if (!res.ok) {
+			const text = await res.text();
+			throw new Error(
+				`${t(locale, 'integration', 'hsl_api_error')} (${res.status}): ${text}`
+			);
+		}
 
-    const json = await res.json();
+		const json = await res.json();
 
-    if (json.errors?.length) {
-      throw new Error(t(locale, 'integration', 'hsl_graphql_error'));
-    }
+		if (json.errors?.length) {
+			throw new Error(t(locale, 'integration', 'hsl_graphql_error'));
+		}
 
-    return json.data;
+		return json.data;
+	} catch (err) {
+		const retryable =
+			err.name === 'AbortError' ||
+			err.message.includes('fetch') ||
+			err.message.includes('network');
 
-  } catch (err) {
-    const retryable =
-      err.name === 'AbortError' ||
-      err.message.includes('fetch') ||
-      err.message.includes('network');
+		if (retryable && attempt <= MAX_RETRIES) {
+			await new Promise((r) => setTimeout(r, 500 * attempt));
+			return hslRequest(query, attempt + 1, locale);
+		}
 
-    if (retryable && attempt <= MAX_RETRIES) {
-      await new Promise(r => setTimeout(r, 500 * attempt));
-      return hslRequest(query, attempt + 1, locale);
-    }
-
-    throw err;
-
-  } finally {
-    clearTimeout(timeout);
-  }
+		throw err;
+	} finally {
+		clearTimeout(timeout);
+	}
 }
 
 // ── Public API ────────────────────────────────────────────────────────────────
 
 export async function getRoute({ from, to, mode, locale = 'en' }) {
-  if (!from || !to) {
-    throw new TypeError(t(locale, 'integration', 'hsl_route_coords_required'));
-  }
+	if (!from || !to) {
+		throw new TypeError(t(locale, 'integration', 'hsl_route_coords_required'));
+	}
 
-  const transportMode = MODE_MAP[mode];
+	const transportMode = MODE_MAP[mode];
 
-  if (!transportMode) {
-    throw new Error(t(locale, 'integration', 'hsl_unsupported_mode'));
-  }
+	if (!transportMode) {
+		throw new Error(t(locale, 'integration', 'hsl_unsupported_mode'));
+	}
 
-  try {
-    const data      = await hslRequest(buildQuery(from, to, transportMode), 1, locale);
-    const itinerary = data?.plan?.itineraries?.[0];
+	try {
+		const data = await hslRequest(buildQuery(from, to, transportMode), 1, locale);
+		const itinerary = data?.plan?.itineraries?.[0];
 
-    if (!itinerary) return null;
+		if (!itinerary) return null;
 
-    const legs = (itinerary.legs ?? []).map(mapLeg);
+		const legs = (itinerary.legs ?? []).map(mapLeg);
 
-    const distanceM = legs.reduce((sum, l) => sum + l.distanceM, 0);
+		const distanceM = legs.reduce((sum, l) => sum + l.distanceM, 0);
 
-    return {
-      durationMins: Math.round(itinerary.duration / 60),
-      distanceM,
-      legs,
-    };
-
-  } catch (err) {
-    console.error('[HSL] getRoute failed:', err.message);
-    return null;
-  }
+		return {
+			durationMins: Math.round(itinerary.duration / 60),
+			distanceM,
+			legs,
+		};
+	} catch (err) {
+		console.error('[HSL] getRoute failed:', err.message);
+		return null;
+	}
 }

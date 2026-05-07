@@ -35,7 +35,7 @@ export const getPaymentById = async (paymentId) => {
 	);
 
 	return /** @type {any|null} */ (rows[0] || null);
-}
+};
 
 /**
  * Initiate payment

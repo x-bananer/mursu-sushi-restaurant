@@ -20,7 +20,7 @@ export const createCartItem = async ({ cart_id, dish_id, quantity, price, item_t
 	);
 
 	return result.insertId;
-}
+};
 
 /**
  * GET CART ITEMS BY CART ID
@@ -51,7 +51,7 @@ export const getCartItemsByCartId = async (cartId) => {
 	);
 
 	return /** @type {CartItem[]} */ (rows);
-}
+};
 
 /**
  * GET DISH BY ID
@@ -70,7 +70,7 @@ export const getDishById = async (dishId) => {
 	);
 
 	return rows[0] ?? null;
-}
+};
 
 /**
  * UPDATE CART ITEM
@@ -86,7 +86,7 @@ export const updateCartItem = async ({ id, dish_id, quantity, price, item_type_i
     `,
 		[dish_id, quantity, price, item_type_id, id]
 	);
-}
+};
 
 /**
  * DELETE CART ITEM
@@ -101,7 +101,7 @@ export const deleteCartItem = async (cartItemId) => {
     `,
 		[cartItemId]
 	);
-}
+};
 
 /**
  * DELETE CART ITEMS BY CART ID
@@ -116,4 +116,4 @@ export const deleteCartItemsByCartId = async (cartId) => {
     `,
 		[cartId]
 	);
-}
+};

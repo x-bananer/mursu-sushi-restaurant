@@ -20,7 +20,7 @@ export const createCartBySessionId = async (sessionId) => {
 	);
 
 	return result.insertId;
-}
+};
 
 /**
  * GET CART BY SESSION ID
@@ -39,7 +39,7 @@ export const getCartBySessionId = async (sessionId) => {
 	);
 
 	return /** @type {Cart|null} */ (rows[0] ?? null);
-}
+};
 
 /**
  * UPDATE CART BY SESSION ID
@@ -55,7 +55,7 @@ export const updateCartBySessionId = async (sessionId) => {
     `,
 		[sessionId]
 	);
-}
+};
 
 /**
  * ATTACH USER ID TO CART BY SESSION ID
@@ -72,7 +72,7 @@ export const addUserIdToCart = async (sessionId, userId) => {
     `,
 		[userId, sessionId]
 	);
-}
+};
 
 /**
  * UPDATE CART SESSION ID BY USER ID
@@ -89,7 +89,7 @@ export const updateCartSessionIdByUserId = async (userId, sessionId) => {
     `,
 		[sessionId, userId]
 	);
-}
+};
 
 /**
  * DELETE CART BY ID
@@ -104,7 +104,7 @@ export const deleteCartById = async (cartId) => {
     `,
 		[cartId]
 	);
-}
+};
 
 /**
  * GET DELIVERY TYPES
@@ -119,4 +119,4 @@ export const getDeliveryTypes = async () => {
 	);
 
 	return rows;
-}
+};

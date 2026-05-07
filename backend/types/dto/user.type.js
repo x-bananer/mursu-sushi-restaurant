@@ -4,7 +4,7 @@
  * @property {string} name
  * @property {string} email
  * @property {import('../db/common.type.js').UserRole} role
-  * @property {string | null} photo_url
+ * @property {string | null} photo_url
  * @property {number} stamp_count
  * @property {boolean} stamp_discount_active
  */

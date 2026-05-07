@@ -1,29 +1,33 @@
-import request from "supertest";
-import app from "../../src/app.js";
+import request from 'supertest';
+import app from '../../src/app.js';
 
-describe("Combo API", () => {
+describe('Combo API', () => {
 	let validCombo = [];
 	let invalidCombo = [];
 	const sessionId = `${Date.now()}`;
 
-	test("GET /dishes/combo/ingredients returns 200", async () => {
-		const res = await request(app).get("/api/v1/dishes/combo/ingredients");
+	test('GET /dishes/combo/ingredients returns 200', async () => {
+		const res = await request(app).get('/api/v1/dishes/combo/ingredients');
 		expect(res.status).toBe(200);
 		const body = res.body;
 
 		expect(Array.isArray(body.ingredients)).toBe(true);
 
-		const base = body.ingredients.find((item) => {
+		const availableIngredients = body.ingredients.filter((item) => {
+			return Boolean(item?.is_available);
+		});
+
+		const base = availableIngredients.find((item) => {
 			return item.ingredient_type_id === 1;
 		});
 
-		const fillings = body.ingredients
+		const fillings = availableIngredients
 			.filter((item) => {
 				return item.ingredient_type_id === 2;
 			})
 			.slice(0, 3);
 
-		const topping = body.ingredients.find((item) => {
+		const topping = availableIngredients.find((item) => {
 			return item.ingredient_type_id === 3;
 		});
 
@@ -35,7 +39,7 @@ describe("Combo API", () => {
 			{
 				ingredient_id: base.id,
 				quantity: 1,
-				position: 1
+				position: 1,
 			},
 			...fillings.map((item, index) => ({
 				ingredient_id: item.id,
@@ -55,46 +59,46 @@ describe("Combo API", () => {
 		];
 	});
 
-	test("POST /dishes/combo/preview with valid payload returns 200", async () => {
-		const res = await request(app).post("/api/v1/dishes/combo/preview").send({
-			ingredients: validCombo
+	test('POST /dishes/combo/preview with valid payload returns 200', async () => {
+		const res = await request(app).post('/api/v1/dishes/combo/preview').send({
+			ingredients: validCombo,
 		});
 
 		expect(res.status).toBe(200);
 		const body = res.body;
 
-		expect(body).toHaveProperty("combo");
+		expect(body).toHaveProperty('combo');
 
 		expect(body.combo.total_price).toBeDefined();
-		expect(typeof body.combo.total_price).toBe("number");
+		expect(typeof body.combo.total_price).toBe('number');
 	});
 
-	test("POST /dishes/combo/create adds combo to cart", async () => {
+	test('POST /dishes/combo/create adds combo to cart', async () => {
 		const res = await request(app)
-			.post("/api/v1/dishes/combo/create")
-			.set("x-session-id", sessionId)
+			.post('/api/v1/dishes/combo/create')
+			.set('x-session-id', sessionId)
 			.send({
-				ingredients: validCombo
+				ingredients: validCombo,
 			});
 
 		expect(res.status).toBe(200);
 
-		const cart = await request(app).get("/api/v1/cart").set("x-session-id", sessionId);
+		const cart = await request(app).get('/api/v1/cart').set('x-session-id', sessionId);
 
 		expect(cart.status).toBe(200);
 		const body = cart.body;
 
-		expect(body).toHaveProperty("cart");
+		expect(body).toHaveProperty('cart');
 
 		expect(Array.isArray(body.cart.items)).toBe(true);
-		
+
 		expect(body.cart.items.length).toBeGreaterThan(0);
 	});
 
-	test("POST /dishes/combo/create with invalid payload returns 400", async () => {
+	test('POST /dishes/combo/create with invalid payload returns 400', async () => {
 		const res = await request(app)
-			.post("/api/v1/dishes/combo/create")
-			.set("x-session-id", sessionId)
+			.post('/api/v1/dishes/combo/create')
+			.set('x-session-id', sessionId)
 			.send({
 				ingredients: invalidCombo,
 			});

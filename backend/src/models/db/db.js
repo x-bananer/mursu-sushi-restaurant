@@ -1,4 +1,4 @@
-import { pool } from "./connection.js";
+import { pool } from './connection.js';
 
 /**
  * Select and execute wrappers allow pool for simple queries and conn for multi-step transaction
@@ -20,7 +20,7 @@ export async function select(sql, params = [], conn = null) {
 	const [rows] = await executor.query(sql, params);
 
 	if (!Array.isArray(rows)) {
-		throw new Error("Expected SELECT query to return rows.");
+		throw new Error('Expected SELECT query to return rows.');
 	}
 
 	return /** @type {T[]} */ (rows);
@@ -38,7 +38,7 @@ export async function execute(sql, params = [], conn = null) {
 	const [result] = await executor.query(sql, params);
 
 	if (Array.isArray(result)) {
-		throw new Error("Expected ResultSetHeader but got rows.");
+		throw new Error('Expected ResultSetHeader but got rows.');
 	}
 
 	return /** @type {ResultSetHeader} */ (result);
