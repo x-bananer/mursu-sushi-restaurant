@@ -25,6 +25,7 @@ import Customers from "./components/adm/customers/Customers";
 import DailySpecial from "./components/adm/daily-special/DailySpecial";
 import LiveOrders from "./components/adm/live-orders/LiveOrders";
 import MenuEdit from "./components/adm/menu-edit/MenuEdit";
+import AdmProfile from "./components/adm/AdmProfile";
 
 function App() {
 	return (
@@ -38,21 +39,21 @@ function App() {
 						<Route path="/combo-builder" element={<ComboBuilder />} />
 						<Route path="/cart" element={<Cart />} />
 						<Route path="/auth" element={<AuthShell />} />
-						<Route 
-							path="/order-tracker" 
+						<Route
+							path="/order-tracker"
 							element={
 								<ProtectedRoute>
 									<OrderTracker />
 								</ProtectedRoute>
-							} 
+							}
 						/>
-						<Route 
-							path="/user-profile" 
+						<Route
+							path="/user-profile"
 							element={
 								<ProtectedRoute>
 									<UserProfile />
 								</ProtectedRoute>
-							} 
+							}
 						/>
 					</Route>
 
@@ -63,6 +64,7 @@ function App() {
 						</ProtectedRoute>
 					}>
 						<Route path="/adm" element={<Admin />} />
+						<Route path="/adm/profile" element={<AdmProfile />} />
 						<Route path="/adm/customers" element={<Customers />} />
 						<Route path="/adm/special" element={<DailySpecial />} />
 						<Route path="/adm/orders" element={<LiveOrders />} />
