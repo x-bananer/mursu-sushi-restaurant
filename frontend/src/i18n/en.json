@@ -29,7 +29,7 @@
     "first_name": "FIRST NAME",
     "last_name": "LAST NAME",
     "admin_name": "ADMIN NAME",
-    "admin_secret": "ADM SECRET",
+    "admin_secret": "ADMIN SECRET",
     "signing_in": "Signing you in...",
     "creating_account": "Creating account...",
     "creating_admin": "Creating admin account...",
@@ -138,7 +138,7 @@
   "order_tracker": {
     "loading": "Loading order...",
     "no_active_title": "No active orders",
-    "no_active_description": "Go to menu and place your order, Make sure you checkout in your cart.",
+    "no_active_description": "Go to menu and place your order. Make sure you checkout in your cart.",
     "title": "Track Order",
     "order_status": "Order Status",
     "plan_journey": "Plan Journey",
