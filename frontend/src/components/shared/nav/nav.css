@@ -352,3 +352,11 @@
     color: var(--color-white);
   }
 }
+
+.nav__theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+}

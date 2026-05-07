@@ -2,6 +2,7 @@
   --font-title: "Amatic SC", cursive;
   --font-text: "Space Grotesk", sans-serif;
   --font-button: "Inter", sans-serif;
+  
   --color-black: #131313;
   --color-white: #ffffff;
   --color-accent: #fedee3;
@@ -15,15 +16,22 @@
   --color-gray: #808080;
   --color-light-gray: #c6c6c6;
   --color-light-light-gray: #f3f3f3;
+  --title-fade-rgb: 0, 0, 0;
 
   --color-danger: #b00020;
 }
 
 .light-theme {
-  --background-color: #ffffff;
+  --color-black: #ffffff;
+  --color-white: #53434b;
+  --color-accent: #c69cb1;
+
+  --background-color: #fff7f8;
   --text-color: #131313;
 
+  --color-light-light-gray: #474747;
   --color-dark-gray: #c6c6c6;
   --color-gray: #808080;
   --color-light-gray: #474747;
+  --title-fade-rgb: 255, 255, 255;
 }

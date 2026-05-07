@@ -16,7 +16,8 @@ export default function Auth() {
   const [activeModal, setActiveModal] = useState(null); // "forgot" | "admin"
 
   if (user) {
-    return <Navigate to="/" replace />;
+    const targetPath = user?.role_id === 2 ? "/adm" : "/";
+    return <Navigate to={targetPath} replace />;
   }
 
   return (

@@ -12,7 +12,24 @@ function createHttpError(statusCode, message) {
 export async function previewCombo(ingredientsFromClient = [], withValidation = false, locale) {
     try {
         const ingredientsFromDb = await ingredientRepo.getIngredients();
-        const combo = comboEngine.buildCombo(ingredientsFromClient, ingredientsFromDb, withValidation);
+        const availableIngredients = ingredientsFromDb.filter((ingredient) => {
+            return Boolean(ingredient?.is_available);
+        });
+
+        if (Array.isArray(ingredientsFromClient) && ingredientsFromClient.length) {
+            for (const clientIngredient of ingredientsFromClient) {
+                const ingredientId = Number(clientIngredient?.ingredient_id);
+                const exists = availableIngredients.find((ingredient) => {
+                    return Number(ingredient.id) === ingredientId;
+                });
+
+                if (!exists) {
+                    throw createHttpError(400, t(locale, 'combo', 'ingredient_unavailable'));
+                }
+            }
+        }
+
+        const combo = comboEngine.buildCombo(ingredientsFromClient, availableIngredients, withValidation);
         return combo;
     } catch (error) {
         throw createHttpError(400, error?.message || t(locale, 'combo', 'invalid_combo_data'));
@@ -100,7 +117,7 @@ export async function createIngredient(payload = {}, locale) {
         price,
         ingredient_type_id: ingredientTypeId,
     });
-    
+
     return ingredientRepo.getIngredientById(ingredientId);
 }
 
@@ -110,6 +127,11 @@ export async function updateIngredient(ingredientId, payload = {}, locale) {
     }
 
     const updates = {};
+
+	if (payload.is_available !== undefined) {
+
+    	updates.is_available = Boolean(payload.is_available);
+	}
 
     if (payload.name !== undefined) {
         const name = String(payload.name).trim();

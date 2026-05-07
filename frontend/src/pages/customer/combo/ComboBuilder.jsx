@@ -105,24 +105,30 @@ export default function ComboBuilder() {
 							Choose your layers for a custom oshi sushi set: <br></br> one perfect topping, up to three fillings, and a perfectly paired base
 						</p>
 					</div>
-					<ComboSection
-						title="Toppings"
-						ingredients={toppings}
-						onAddIngredient={addIngredient}
-						selectedIngredients={selectedIngredients}
-					/>
-					<ComboSection
-						title="Fillings"
-						ingredients={fillings}
-						onAddIngredient={addIngredient}
-						selectedIngredients={selectedIngredients}
-					/>
-					<ComboSection
-						title="Base"
-						ingredients={base}
-						onAddIngredient={addIngredient}
-						selectedIngredients={selectedIngredients}
-					/>
+					{toppings.length > 0 && (
+						<ComboSection
+							title="Toppings"
+							ingredients={toppings}
+							onAddIngredient={addIngredient}
+							selectedIngredients={selectedIngredients}
+						/>
+					)}
+					{fillings.length > 0 && (
+						<ComboSection
+							title="Fillings"
+							ingredients={fillings}
+							onAddIngredient={addIngredient}
+							selectedIngredients={selectedIngredients}
+						/>
+					)}
+					{base.length > 0 && (
+						<ComboSection
+							title="Base"
+							ingredients={base}
+							onAddIngredient={addIngredient}
+							selectedIngredients={selectedIngredients}
+						/>
+					)}
 				</div>
 				<ComboSummary
 					selectedIngredients={selectedIngredients}

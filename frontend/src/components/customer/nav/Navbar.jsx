@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router";
-import { HiOutlineUser, HiOutlineShoppingBag } from "react-icons/hi2";
+import { HiOutlineUser, HiOutlineShoppingBag, HiOutlineSun } from "react-icons/hi2";
 import NavBase from "../../shared/nav/NavBase";
 import { useCartContext } from "../../../hooks/contextHooks/cart";
 import { useAuth } from "../../../contexts/AuthContext";
@@ -22,7 +22,7 @@ const Logo = () => (
 	</Link>
 );
 
-export default function CustomerNavbar() {
+export default function CustomerNavbar({ isLightTheme = false, onToggleTheme }) {
 	const location = useLocation();
 	const [language, setLanguage] = React.useState(
 		localStorage.getItem("locale") || 'en',
@@ -72,19 +72,30 @@ export default function CustomerNavbar() {
 			center={<Logo />}
 			right={rightItems}
 			extraRight={
-				<button
-					className="nav__link"
-					type="button"
-					onClick={() =>
-						setLanguage((l) => {
-							const newLocale = l === "en" ? "fi" : "en";
-							localStorage.setItem("locale", newLocale);
-							return newLocale;
-						})
-					}
-				>
-					{languageFlag} {language.toUpperCase()}
-				</button>
+				<>
+					<button
+						className="nav__link nav__theme-toggle"
+						type="button"
+						onClick={onToggleTheme}
+						aria-label="Toggle theme"
+						title="Toggle theme"
+					>
+						<HiOutlineSun size={24} />
+					</button>
+					<button
+						className="nav__link"
+						type="button"
+						onClick={() =>
+							setLanguage((l) => {
+								const newLocale = l === "en" ? "fi" : "en";
+								localStorage.setItem("locale", newLocale);
+								return newLocale;
+							})
+						}
+					>
+						{languageFlag} {language.toUpperCase()}
+					</button>
+				</>
 			}
 			badge={cartItemsCount}
 		/>
