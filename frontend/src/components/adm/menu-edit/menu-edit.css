@@ -49,7 +49,6 @@ select {
 
 /* Tablet */
 @media (max-width: 768px) {
-
   .menu-edit {
     padding: 16px;
   }
@@ -69,7 +68,6 @@ select {
 
 /* Mobile */
 @media (max-width: 640px) {
-
   .menu-edit {
     padding: 12px;
   }

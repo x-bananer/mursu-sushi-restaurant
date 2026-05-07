@@ -5,14 +5,14 @@ import Button from "../../../shared/button/Button";
 import Loader from "../../../shared/loader/Loader";
 import ErrorState from "../../../shared/error-state/errorState";
 import { useLogin } from "../../../../hooks/apiHooks/auth";
-import { useNavigate } from 'react-router';
+import { useNavigate } from "react-router";
 
 export default function Login({ onForgot, onAdminRegister }) {
 	const { t } = useTranslation();
 	const { login, loading, error } = useLogin();
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
-  console.log('login: ', login);
+	console.log("login: ", login);
 
 	const [form, setForm] = useState({
 		email: "",
@@ -30,18 +30,18 @@ export default function Login({ onForgot, onAdminRegister }) {
 		e.preventDefault();
 
 		try {
-		  const res = await login(form);
+			const res = await login(form);
 
-		  const role = res?.user?.role_id;
+			const role = res?.user?.role_id;
 
-		  if (role === 2) {
-			  navigate("/adm");
-		  } else {
-			  navigate("/user-profile");
-		  }
-	  } catch (err) {
-		console.error(err);
-	}
+			if (role === 2) {
+				navigate("/adm");
+			} else {
+				navigate("/user-profile");
+			}
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	// LOADING STATE
@@ -76,7 +76,11 @@ export default function Login({ onForgot, onAdminRegister }) {
 			/>
 
 			<div className="auth-card__actions">
-				<Button variant="light" className="auth-card__btn" type="submit">
+				<Button
+					variant="light"
+					className="auth-card__btn"
+					type="submit"
+				>
 					{t("auth.sign_in")}
 				</Button>
 			</div>

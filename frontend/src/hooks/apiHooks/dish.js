@@ -116,8 +116,12 @@ export function useDishFavorites() {
 			setError(null);
 
 			if (isFavorite) {
-				await fetchData(`/dishes/${dishId}/favorite`, { method: "DELETE" });
-				setFavoriteDishIds((prev) => prev.filter((id) => id !== dishId));
+				await fetchData(`/dishes/${dishId}/favorite`, {
+					method: "DELETE",
+				});
+				setFavoriteDishIds((prev) =>
+					prev.filter((id) => id !== dishId),
+				);
 				return { message: "Removed from favorites" };
 			}
 

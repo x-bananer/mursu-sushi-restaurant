@@ -8,7 +8,9 @@ export default function AdmPanel() {
 	return (
 		<section className="admin-main">
 			<AdmStatus />
-			<h2 className="admin-section-title">{t("admin.live_order_board")}</h2>
+			<h2 className="admin-section-title">
+				{t("admin.live_order_board")}
+			</h2>
 			<LiveOrders />
 		</section>
 	);

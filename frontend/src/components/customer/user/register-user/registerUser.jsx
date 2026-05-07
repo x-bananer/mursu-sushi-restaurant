@@ -5,14 +5,14 @@ import Button from "../../../shared/button/Button";
 import Loader from "../../../shared/loader/Loader";
 import ErrorState from "../../../shared/error-state/ErrorState";
 import { useRegisterUser } from "../../../../hooks/apiHooks/auth";
-import { useNavigate } from 'react-router';
+import { useNavigate } from "react-router";
 
 export default function RegisterUser() {
 	const { t } = useTranslation();
 	const { register, loading, error } = useRegisterUser();
 	const navigate = useNavigate();
 
-    console.log('register: ', register);
+	console.log("register: ", register);
 
 	const [form, setForm] = useState({
 		firstName: "",
@@ -32,7 +32,7 @@ export default function RegisterUser() {
 		e.preventDefault();
 
 		const name = `${form.firstName} ${form.lastName}`.trim();
-		console.log('name: ', name);
+		console.log("name: ", name);
 
 		if (!name) {
 			alert(t("auth.alert_name_required"));
@@ -45,7 +45,7 @@ export default function RegisterUser() {
 				email: form.email,
 				password: form.password,
 			});
-			
+
 			if (res?.token) {
 				navigate("/user-profile");
 			}
@@ -62,12 +62,7 @@ export default function RegisterUser() {
 	return (
 		<form onSubmit={handleSubmit}>
 			{/* ERROR STATE */}
-			{error && (
-				<ErrorState
-					message={error}
-					onRetry={handleSubmit}
-				/>
-			)}
+			{error && <ErrorState message={error} onRetry={handleSubmit} />}
 
 			<div className="auth-card__row">
 				<InputField

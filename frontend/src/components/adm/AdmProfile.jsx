@@ -14,130 +14,142 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useUser } from "../../hooks/apiHooks/user";
 
 export default function AdmProfile() {
-    const { t } = useTranslation();
-    const { user, logout } = useAuth();
-    const { getProfile, updateProfile, deleteAccount, isLoading, error } = useUser();
+	const { t } = useTranslation();
+	const { user, logout } = useAuth();
+	const { getProfile, updateProfile, deleteAccount, isLoading, error } =
+		useUser();
 
-    const [profile, setProfile] = useState(user);
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [toast, setToast] = useState(null);
+	const [profile, setProfile] = useState(user);
+	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+	const [isSaving, setIsSaving] = useState(false);
+	const [isDeleting, setIsDeleting] = useState(false);
+	const [toast, setToast] = useState(null);
 
-    useEffect(() => {
-        async function load() {
-            const data = await getProfile();
-            if (data) setProfile(data);
-        }
-        load();
-    }, [getProfile]);
+	useEffect(() => {
+		async function load() {
+			const data = await getProfile();
+			if (data) setProfile(data);
+		}
+		load();
+	}, [getProfile]);
 
-    const handleSaveProfile = async (payload, photoFile) => {
-        setIsSaving(true);
-        try {
-            const updatedUser = await updateProfile(payload, photoFile);
-            if (updatedUser) {
-                setProfile(updatedUser);
-                setToast({ message: t("profile.updated_success") });
-                setIsEditModalOpen(false);
-            }
-        } catch (err) {
-            setToast({ message: err.message || t("profile.update_failed"), type: "error" });
-        } finally {
-            setIsSaving(false);
-        }
-    };
+	const handleSaveProfile = async (payload, photoFile) => {
+		setIsSaving(true);
+		try {
+			const updatedUser = await updateProfile(payload, photoFile);
+			if (updatedUser) {
+				setProfile(updatedUser);
+				setToast({ message: t("profile.updated_success") });
+				setIsEditModalOpen(false);
+			}
+		} catch (err) {
+			setToast({
+				message: err.message || t("profile.update_failed"),
+				type: "error",
+			});
+		} finally {
+			setIsSaving(false);
+		}
+	};
 
-    const handleDeleteAccount = async () => {
-        const confirmed = window.confirm(t("profile.delete_confirm"));
-        if (!confirmed) return;
+	const handleDeleteAccount = async () => {
+		const confirmed = window.confirm(t("profile.delete_confirm"));
+		if (!confirmed) return;
 
-        setIsDeleting(true);
-        const success = await deleteAccount();
-        if (!success) {
-            setToast({ message: t("profile.delete_failed"), type: "error" });
-            setIsDeleting(false);
-        }
-    };
+		setIsDeleting(true);
+		const success = await deleteAccount();
+		if (!success) {
+			setToast({ message: t("profile.delete_failed"), type: "error" });
+			setIsDeleting(false);
+		}
+	};
 
-    if (isLoading && !profile) {
-        return <Loader size={48} text={t("profile.loading")} className="page-loader" />;
-    }
+	if (isLoading && !profile) {
+		return (
+			<Loader
+				size={48}
+				text={t("profile.loading")}
+				className="page-loader"
+			/>
+		);
+	}
 
-    if (error && !profile) {
-        return <ErrorState message={error} onRetry={getProfile} />;
-    }
+	if (error && !profile) {
+		return <ErrorState message={error} onRetry={getProfile} />;
+	}
 
-    if (profile && profile.role_id !== 2) {
-	    return (
-		    <ErrorState message={t("profile.admin_only_error")} />
-	    );
-    }
+	if (profile && profile.role_id !== 2) {
+		return <ErrorState message={t("profile.admin_only_error")} />;
+	}
 
-    const displayName = profile?.name || <ErrorState message={t("profile.name_required_error")} />;
-    const regDate = profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : "";
-    const metaText = profile?.email ? `${profile.email} ${regDate ? `• ${t("profile.joined")} ${regDate}` : ""}` : <ErrorState message={t("profile.email_required_error")} />;
+	const displayName = profile?.name || (
+		<ErrorState message={t("profile.name_required_error")} />
+	);
+	const regDate = profile?.created_at
+		? new Date(profile.created_at).toLocaleDateString()
+		: "";
+	const metaText = profile?.email ? (
+		`${profile.email} ${regDate ? `• ${t("profile.joined")} ${regDate}` : ""}`
+	) : (
+		<ErrorState message={t("profile.email_required_error")} />
+	);
 
-    return (
-        <div className="profile">
-            <div className="profile__container">
-                <section className="profile__header">
-                    <div className="profile__user">
-                        <div className="profile__avatar">
-                            {profile?.photo_url ? (
-                                <img
-                                    src={profile.photo_url}
-                                    alt={displayName}
-                                    className="profile__avatar-img"
-                                />
-                            ) : (
-                                <HiOutlineUser size={32} />
-                            )}
-                        </div>
-                        <div className="profile__identity">
-                            <h1 className="profile__name">{displayName}</h1>
-                            <p className="profile__meta">{metaText}</p>
-                        </div>
-                    </div>
-                    <div className="profile__actions">
-                        <Button
-                            variant="light"
-                            onClick={() => setIsEditModalOpen(true)}
-                        >
-                            {t("profile.edit_profile")}
-                        </Button>
-                        <Button
-                            variant="gray"
-                            onClick={logout}
-                        >
-                            {t("profile.logout")}
-                        </Button>
-                    </div>
-                </section>
+	return (
+		<div className="profile">
+			<div className="profile__container">
+				<section className="profile__header">
+					<div className="profile__user">
+						<div className="profile__avatar">
+							{profile?.photo_url ? (
+								<img
+									src={profile.photo_url}
+									alt={displayName}
+									className="profile__avatar-img"
+								/>
+							) : (
+								<HiOutlineUser size={32} />
+							)}
+						</div>
+						<div className="profile__identity">
+							<h1 className="profile__name">{displayName}</h1>
+							<p className="profile__meta">{metaText}</p>
+						</div>
+					</div>
+					<div className="profile__actions">
+						<Button
+							variant="light"
+							onClick={() => setIsEditModalOpen(true)}
+						>
+							{t("profile.edit_profile")}
+						</Button>
+						<Button variant="gray" onClick={logout}>
+							{t("profile.logout")}
+						</Button>
+					</div>
+				</section>
+			</div>
 
-            </div>
+			<Modal
+				isOpen={isEditModalOpen}
+				onClose={() => setIsEditModalOpen(false)}
+				title={t("profile.edit_profile")}
+			>
+				<ProfileEditForm
+					user={profile}
+					onSave={handleSaveProfile}
+					onDelete={handleDeleteAccount}
+					isSaving={isSaving}
+					isDeleting={isDeleting}
+				/>
+			</Modal>
 
-            <Modal
-                isOpen={isEditModalOpen}
-                onClose={() => setIsEditModalOpen(false)}
-                title={t("profile.edit_profile")}
-            >
-                <ProfileEditForm
-                    user={profile}
-                    onSave={handleSaveProfile}
-                    onDelete={handleDeleteAccount}
-                    isSaving={isSaving}
-                    isDeleting={isDeleting}
-                />
-            </Modal>
-
-            {toast && (
-                <Toast
-                    message={toast.message}
-                    className={toast.type === "error" ? "toast--error" : ""}
-                    onClose={() => setToast(null)}
-                />
-            )}
-        </div>
-    );
+			{toast && (
+				<Toast
+					message={toast.message}
+					className={toast.type === "error" ? "toast--error" : ""}
+					onClose={() => setToast(null)}
+				/>
+			)}
+		</div>
+	);
 }

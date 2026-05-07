@@ -44,7 +44,6 @@ body {
 }
 
 .auth-card__tab--inactive {
-
   background: var(--color-black);
   color: var(--color-white);
 }

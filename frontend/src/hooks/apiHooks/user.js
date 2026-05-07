@@ -29,41 +29,44 @@ export const useUser = () => {
 		}
 	}, [updateUser]);
 
-	const updateProfile = useCallback(async (payload, photoFile = null) => {
-		setIsLoading(true);
-		setError(null);
-		try {
-			let data = null;
-			if (photoFile) {
-				const formData = new FormData();
-				Object.keys(payload).forEach(key => {
-					formData.append(key, payload[key]);
-				});
-				formData.append("photo", photoFile);
+	const updateProfile = useCallback(
+		async (payload, photoFile = null) => {
+			setIsLoading(true);
+			setError(null);
+			try {
+				let data = null;
+				if (photoFile) {
+					const formData = new FormData();
+					Object.keys(payload).forEach((key) => {
+						formData.append(key, payload[key]);
+					});
+					formData.append("photo", photoFile);
 
-				data = await fetchData("/users/me", {
-					method: "PATCH",
-					body: formData,
-				});
-			} else {
-				data = await fetchData("/users/me", {
-					method: "PATCH",
-					body: JSON.stringify(payload),
-				});
-			}
+					data = await fetchData("/users/me", {
+						method: "PATCH",
+						body: formData,
+					});
+				} else {
+					data = await fetchData("/users/me", {
+						method: "PATCH",
+						body: JSON.stringify(payload),
+					});
+				}
 
-			if (data && data.user) {
-				updateUser(data.user);
-				return data.user;
+				if (data && data.user) {
+					updateUser(data.user);
+					return data.user;
+				}
+				return null;
+			} catch (err) {
+				setError(err.message);
+				throw err;
+			} finally {
+				setIsLoading(false);
 			}
-			return null;
-		} catch (err) {
-			setError(err.message);
-			throw err;
-		} finally {
-			setIsLoading(false);
-		}
-	}, [updateUser]);
+		},
+		[updateUser],
+	);
 
 	const deleteAccount = useCallback(async () => {
 		setIsLoading(true);
@@ -86,6 +89,6 @@ export const useUser = () => {
 		deleteAccount,
 		isLoading,
 		error,
-		setError
+		setError,
 	};
 };

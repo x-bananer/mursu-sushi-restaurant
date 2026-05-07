@@ -24,23 +24,37 @@ export default function ComboBuilder() {
 
 	const addIngredient = (ingredient) => {
 		setSelectedIngredients((prev) => {
-			const ingredientWithUid = { ...ingredient, uid: `${Date.now()}-${Math.random()}` };
+			const ingredientWithUid = {
+				...ingredient,
+				uid: `${Date.now()}-${Math.random()}`,
+			};
 			const type = ingredient?.type?.type;
 
 			if (type === "topping") {
-				const notToppingIngredients = prev.filter((item) => item?.type?.type !== "topping");
+				const notToppingIngredients = prev.filter(
+					(item) => item?.type?.type !== "topping",
+				);
 				return [...notToppingIngredients, ingredientWithUid];
 			}
 
 			if (type === "filling") {
-				const fillingIngredients = prev.filter((item) => item?.type?.type === "filling");
-				const notFillingIngredients = prev.filter((item) => item?.type?.type !== "filling");
-				const newFillingIngredients = [ingredientWithUid, ...fillingIngredients].slice(0, 3);
+				const fillingIngredients = prev.filter(
+					(item) => item?.type?.type === "filling",
+				);
+				const notFillingIngredients = prev.filter(
+					(item) => item?.type?.type !== "filling",
+				);
+				const newFillingIngredients = [
+					ingredientWithUid,
+					...fillingIngredients,
+				].slice(0, 3);
 				return [...notFillingIngredients, ...newFillingIngredients];
 			}
 
 			if (type === "base") {
-				const notBaseIngredients = prev.filter((item) => item?.type?.type !== "base");
+				const notBaseIngredients = prev.filter(
+					(item) => item?.type?.type !== "base",
+				);
 				return [...notBaseIngredients, ingredientWithUid];
 			}
 
@@ -49,7 +63,9 @@ export default function ComboBuilder() {
 	};
 
 	const removeIngredient = (uid) => {
-		setSelectedIngredients((prev) => prev.filter((item) => item?.uid !== uid));
+		setSelectedIngredients((prev) =>
+			prev.filter((item) => item?.uid !== uid),
+		);
 	};
 
 	const moveIngredient = (ingredient) => {
@@ -58,7 +74,10 @@ export default function ComboBuilder() {
 			const notFillings = prev.filter((i) => i.type.type !== "filling");
 
 			const updatedFillings = [...fillings];
-			const [ingredientToMove] = updatedFillings.splice(ingredient.fromIndex, 1);
+			const [ingredientToMove] = updatedFillings.splice(
+				ingredient.fromIndex,
+				1,
+			);
 			updatedFillings.splice(ingredient.toIndex, 0, ingredientToMove);
 
 			return [...notFillings, ...updatedFillings];
@@ -102,8 +121,12 @@ export default function ComboBuilder() {
 			<DndProvider backend={HTML5Backend}>
 				<div className="combo-page__main">
 					<div className="combo-page__hero">
-						<h1 className="combo-page__title">{t("combo.title")}</h1>
-						<p className="combo-page__subtitle">{t("combo.subtitle")}</p>
+						<h1 className="combo-page__title">
+							{t("combo.title")}
+						</h1>
+						<p className="combo-page__subtitle">
+							{t("combo.subtitle")}
+						</p>
 					</div>
 					{toppings.length > 0 && (
 						<ComboSection

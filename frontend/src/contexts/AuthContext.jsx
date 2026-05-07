@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
+import {
+	createContext,
+	useContext,
+	useState,
+	useEffect,
+	useMemo,
+	useCallback,
+} from "react";
 import { fetchData } from "../utils/fetchData";
 
 const AuthContext = createContext(null);
@@ -44,7 +51,9 @@ export function AuthProvider({ children }) {
 			}
 
 			try {
-				const data = await fetchData("/auth/refresh", { method: "POST" });
+				const data = await fetchData("/auth/refresh", {
+					method: "POST",
+				});
 				if (data?.user && data?.token) {
 					login(data.user, data.token);
 				} else {
@@ -62,20 +71,21 @@ export function AuthProvider({ children }) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const value = useMemo(() => ({
-		user,
-		token,
-		isLoading,
-		login,
-		logout,
-		updateUser,
-		isAdmin: user?.role_id === 2
-	}), [user, token, isLoading, login, logout, updateUser]);
+	const value = useMemo(
+		() => ({
+			user,
+			token,
+			isLoading,
+			login,
+			logout,
+			updateUser,
+			isAdmin: user?.role_id === 2,
+		}),
+		[user, token, isLoading, login, logout, updateUser],
+	);
 
 	return (
-		<AuthContext.Provider value={value}>
-			{children}
-		</AuthContext.Provider>
+		<AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 	);
 }
 

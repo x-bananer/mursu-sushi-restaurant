@@ -15,8 +15,13 @@ export default function AdminLayout() {
 				<AdminNavbar />
 			</header>
 
-			<div className={`admin-shell ${collapsed ? "admin-shell--collapsed" : ""}`}>
-				<AdminSideNav collapsed={collapsed} setCollapsed={setCollapsed} />
+			<div
+				className={`admin-shell ${collapsed ? "admin-shell--collapsed" : ""}`}
+			>
+				<AdminSideNav
+					collapsed={collapsed}
+					setCollapsed={setCollapsed}
+				/>
 
 				<main className="admin-main">
 					<Outlet />

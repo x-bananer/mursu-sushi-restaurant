@@ -39,7 +39,7 @@
 
 .journey__mode-btn--active .journey__mode-icon,
 .journey__mode-btn--active .journey__mode-label {
-  color: var(--color-white)
+  color: var(--color-white);
 }
 
 .journey__mode-icon {

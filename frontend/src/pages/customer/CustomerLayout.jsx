@@ -8,7 +8,9 @@ import { CartProvider } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
 
 export default function CustomerLayout() {
-	const [isLightTheme, setIsLightTheme] = useState(() => localStorage.getItem("theme") === "light",);
+	const [isLightTheme, setIsLightTheme] = useState(
+		() => localStorage.getItem("theme") === "light",
+	);
 
 	useEffect(() => {
 		document.documentElement.classList.toggle("light-theme", isLightTheme);
@@ -18,9 +20,8 @@ export default function CustomerLayout() {
 		return () => {
 			document.documentElement.classList.remove("light-theme");
 		};
-
 	}, [isLightTheme]);
-  
+
 	const { user } = useAuth();
 
 	if (user?.role_id === 2) {
