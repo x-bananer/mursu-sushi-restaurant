@@ -15,9 +15,11 @@ import "./user-profile.css";
 
 export default function UserProfile() {
 	const { user, logout } = useAuth();
+	console.log('user: ', user);
 	const { getProfile, updateProfile, deleteAccount, isLoading, error } = useUser();
-	
+
 	const [profile, setProfile] = useState(user);
+	console.log('profile: ', profile);
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
@@ -78,9 +80,9 @@ export default function UserProfile() {
 					<div className="profile__user">
 						<div className="profile__avatar">
 							{profile?.photo_url ? (
-								<img 
-									src={profile.photo_url} 
-									alt={displayName} 
+								<img
+									src={profile.photo_url}
+									alt={displayName}
 									className="profile__avatar-img"
 								/>
 							) : (
@@ -108,23 +110,33 @@ export default function UserProfile() {
 					</div>
 				</section>
 
+				{profile?.role_id ===1 && (
 				<section className="profile__stats">
-					<LoyaltyStamps 
-						stampCount={profile?.stamp_count || 0} 
-						isDiscountActive={profile?.is_stamp_discount_active} 
+					<LoyaltyStamps
+						stampCount={profile?.stamp_count || 0}
+						isDiscountActive={profile?.is_stamp_discount_active}
 					/>
-					
+
 					<div className="profile__stats-side">
-						<section className="profile-stat-card">
-							<p className="profile-stat-card__label">Next Milestone</p>
-							<p className="profile-stat-card__value">10% off</p>
-						</section>
+						{profile?.is_stamp_discount_active === 0 ? (
+							<section className="profile-stat-card">
+								<p className="profile-stat-card__label">You have no active discount</p>
+							</section>
+							) : (
+								<section className="profile-stat-card">
+									<p className="profile-stat-card__label">Next puchase you will get</p>
+									<p className="profile-stat-card__value">10% off</p>
+								</section>
+							)}
+
 						<section className="profile-stat-card profile-stat-card--light">
 							<p className="profile-stat-card__label">Rewards Earned</p>
 							<p className="profile-stat-card__value">{profile?.stamp_count || 0}</p>
 						</section>
 					</div>
 				</section>
+				)}
+
 			</div>
 
 			<Modal
@@ -132,9 +144,9 @@ export default function UserProfile() {
 				onClose={() => setIsEditModalOpen(false)}
 				title="Edit Profile"
 			>
-				<ProfileEditForm 
-					user={profile} 
-					onSave={handleSaveProfile} 
+				<ProfileEditForm
+					user={profile}
+					onSave={handleSaveProfile}
 					onDelete={handleDeleteAccount}
 					isSaving={isSaving}
 					isDeleting={isDeleting}
@@ -142,10 +154,10 @@ export default function UserProfile() {
 			</Modal>
 
 			{toast && (
-				<Toast 
-					message={toast.message} 
+				<Toast
+					message={toast.message}
 					className={toast.type === "error" ? "toast--error" : ""}
-					onClose={() => setToast(null)} 
+					onClose={() => setToast(null)}
 				/>
 			)}
 		</div>
