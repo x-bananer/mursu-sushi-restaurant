@@ -11,7 +11,7 @@ export async function initiate(req, res, next) {
 			address,
 			payment_result,
 			payment_method_id,
-		});
+		}, req.locale);
 
 		res.json(result);
 	} catch (err) {

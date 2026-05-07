@@ -81,6 +81,7 @@ function buildBase(order, activeOrdersAheadCount, restaurantCoords) {
     readyAt: kitchen.readyAt,
     queuePosition: kitchen.queuePosition,
     restaurantCoords,
+    locale: 'en',
   };
 }
 
@@ -94,6 +95,7 @@ async function buildDelivery(base, userCoords, restaurantCoords) {
   const route = await getCarRoute({
     from: restaurantCoords,
     to: userCoords,
+    locale: base.locale,
   });
 
   const travelMins =
@@ -131,6 +133,7 @@ async function buildPickup(base, userCoords, restaurantCoords) {
     from: userCoords,
     to: restaurantCoords,
     mode,
+    locale: base.locale,
   });
 
   const travelMins =
@@ -177,10 +180,12 @@ export async function orderEstimates(order, options = {}) {
     userCoords = null,
     serviceType,
     activeOrdersAheadCount = 0,
+    locale = 'en',
   } = options;
 
   const restaurantCoords = getRestaurantCoords();
   const base = buildBase(order, activeOrdersAheadCount, restaurantCoords);
+  base.locale = locale;
 
   switch (serviceType) {
     case SERVICE_TYPE.DELIVERY:
@@ -204,6 +209,7 @@ export async function getRouteForMode({
   order,
   userCoords,
   mode,
+  locale = 'en',
 }) {
   const restaurantCoords = getRestaurantCoords();
 
@@ -221,6 +227,7 @@ export async function getRouteForMode({
     const route = await getCarRoute({
       from: restaurantCoords,
       to: userCoords,
+      locale,
     });
 
     const duration =
@@ -242,6 +249,7 @@ export async function getRouteForMode({
     from: userCoords,
     to: restaurantCoords,
     mode,
+    locale,
   });
 
   const duration =

@@ -27,31 +27,30 @@ export default function RegisterUser() {
 	};
 
 	const handleSubmit = async (e) => {
-	e.preventDefault();
+		e.preventDefault();
 
-	const name = `${form.firstName} ${form.lastName}`.trim();
-    console.log('name: ', name);
+		const name = `${form.firstName} ${form.lastName}`.trim();
+		console.log('name: ', name);
 
-	if (!name) {
-    <ErrorState
-      message="Name is required"
-    />
-		return;
-	}
+		if (!name) {
+			alert("Name is required");
+			return;
+		}
 
-	try {
-		await register({
-			name,
-			email: form.email,
-			password: form.password,
-		});
-		if (localStorage.token) {
-        	navigate("/user-profile");
-      	}
-	} catch (err) {
-	  console.err(err);
-	}
-};
+		try {
+			const res = await register({
+				name,
+				email: form.email,
+				password: form.password,
+			});
+			
+			if (res?.token) {
+				navigate("/user-profile");
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	};
 
 	// LOADING STATE
 	if (loading) {
@@ -74,7 +73,6 @@ export default function RegisterUser() {
 					name="firstName"
 					value={form.firstName}
 					onChange={handleChange}
-					placeholder="YUKIO"
 				/>
 
 				<InputField
@@ -82,7 +80,6 @@ export default function RegisterUser() {
 					name="lastName"
 					value={form.lastName}
 					onChange={handleChange}
-					placeholder="MISHIMA"
 				/>
 			</div>
 

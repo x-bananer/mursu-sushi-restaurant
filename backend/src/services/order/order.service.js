@@ -8,6 +8,7 @@ import * as tracker from './order.tracker.js';
 import * as orderCheckout from './order.checkout.js';
 import { OrderEngine } from '../../models/engine/order.engine.js';
 import { withTransaction } from '../../models/db/connection.js';
+import { t } from '../../i18n/messages.js';
 
 // =========================================================
 // UTILS
@@ -107,11 +108,11 @@ function mapStatusToId(status) {
   }[status];
 }
 
-export async function updateOrderStatus(orderId, nextStatus) {
+export async function updateOrderStatus(orderId, nextStatus, locale) {
   const updatedOrderId = await withTransaction(async (conn) => {
 
     const order = await orderRepo.getOrderById(orderId);
-    if (!order) throw createHttpError(400, 'Order not found');
+    if (!order) throw createHttpError(400, t(locale, 'order', 'order_not_found'));
 
     const validation = OrderEngine.validateTransition(
       {
@@ -281,9 +282,9 @@ function getOrdersAhead(allOrders, currentOrder) {
     );
 }
 
-export async function getOrderRoute(orderId, userLocation) {
+export async function getOrderRoute(orderId, userLocation, locale) {
   const order = await getOrder(orderId);
-  if (!order) throw createHttpError(400, 'Order not found');
+  if (!order) throw createHttpError(400, t(locale, 'order', 'order_not_found'));
 
   const activeOrders = await orderRepo.getActiveOrders();
 
@@ -293,16 +294,18 @@ export async function getOrderRoute(orderId, userLocation) {
     userCoords: userLocation,
     serviceType: order.delivery_type.type,
     activeOrdersAheadCount: activeOrdersAhead.length,
+    locale,
   });
 }
 
-export async function getOrderRouteByMode(orderId, userLocation, mode) {
+export async function getOrderRouteByMode(orderId, userLocation, mode, locale) {
   const order = await getOrder(orderId);
-  if (!order) throw createHttpError(400, 'Order not found');
+  if (!order) throw createHttpError(400, t(locale, 'order', 'order_not_found'));
 
   return await orderCheckout.getRouteForMode({
     order,
     userCoords: userLocation,
     mode,
+    locale,
   });
 }

@@ -1,6 +1,7 @@
 import * as ingredientRepo from '../../models/db/repositories/dish/ingredients.repository.js';
 import * as cartService from '../cart/cart.service.js';
 import * as comboEngine from '../../models/engine/combo.engine.js';
+import { t } from '../../i18n/messages.js';
 
 function createHttpError(statusCode, message) {
     const error = /** @type {Error & { statusCode: number }} */ (new Error(message));
@@ -8,23 +9,25 @@ function createHttpError(statusCode, message) {
     return error;
 }
 
-export async function previewCombo(ingredientsFromClient = [], withValidation = false) {
-    const ingredientsFromDb = await ingredientRepo.getIngredients();
-	console.log(ingredientsFromDb);
-
-    const combo = comboEngine.buildCombo(ingredientsFromClient, ingredientsFromDb, withValidation);
-    return combo;
+export async function previewCombo(ingredientsFromClient = [], withValidation = false, locale) {
+    try {
+        const ingredientsFromDb = await ingredientRepo.getIngredients();
+        const combo = comboEngine.buildCombo(ingredientsFromClient, ingredientsFromDb, withValidation);
+        return combo;
+    } catch (error) {
+        throw createHttpError(400, error?.message || t(locale, 'combo', 'invalid_combo_data'));
+    }
 }
 
-export async function createCombo(sessionId, ingredientsFromClient) {
+export async function createCombo(sessionId, ingredientsFromClient, locale) {
     let validatedCombo;
     try {
-        validatedCombo = await previewCombo(ingredientsFromClient, true);
+        validatedCombo = await previewCombo(ingredientsFromClient, true, locale);
     } catch (error) {
-        throw createHttpError(400, error.message || 'Invalid combo data');
+        throw createHttpError(400, error.message || t(locale, 'combo', 'invalid_combo_data'));
     }
 
-    const currentCart = await cartService.getCartBySessionId(sessionId);
+    const currentCart = await cartService.getCartBySessionId(sessionId, locale);
 
     const currentCartItems = (currentCart?.items || []).map((item) => ({
         id: item.id,
@@ -48,7 +51,7 @@ export async function createCombo(sessionId, ingredientsFromClient) {
     };
 
     const updatedCartItems = [...currentCartItems, newCartItem];
-    const cart = await cartService.updateCartBySessionId(sessionId, updatedCartItems);
+    const cart = await cartService.updateCartBySessionId(sessionId, updatedCartItems, locale);
     return cart;
 }
 
@@ -75,21 +78,21 @@ export async function listIngredientTypes() {
     return ingredientRepo.getIngredientTypes();
 }
 
-export async function createIngredient(payload = {}) {
+export async function createIngredient(payload = {}, locale) {
     const name = String(payload?.name ?? "").trim();
     const price = Number(payload?.price);
     const ingredientTypeId = Number(payload?.ingredient_type_id);
 
     if (!name) {
-        throw createHttpError(400, "Ingredient name is required");
+        throw createHttpError(400, t(locale, 'combo', 'ingredient_name_required'));
     }
 
     if (Number.isNaN(price) || price < 0) {
-        throw createHttpError(400, "Valid ingredient price is required");
+        throw createHttpError(400, t(locale, 'combo', 'valid_ingredient_price_required'));
     }
 
     if (!Number.isInteger(ingredientTypeId) || ingredientTypeId <= 0) {
-        throw createHttpError(400, "Valid ingredient_type_id is required");
+        throw createHttpError(400, t(locale, 'combo', 'valid_ingredient_type_id_required'));
     }
 
     const ingredientId = await ingredientRepo.createIngredient({
@@ -101,9 +104,9 @@ export async function createIngredient(payload = {}) {
     return ingredientRepo.getIngredientById(ingredientId);
 }
 
-export async function updateIngredient(ingredientId, payload = {}) {
+export async function updateIngredient(ingredientId, payload = {}, locale) {
     if (!Number.isInteger(ingredientId) || ingredientId <= 0) {
-        throw createHttpError(400, "Valid ingredient id is required");
+        throw createHttpError(400, t(locale, 'combo', 'valid_ingredient_id_required'));
     }
 
     const updates = {};
@@ -116,7 +119,7 @@ export async function updateIngredient(ingredientId, payload = {}) {
     if (payload.name !== undefined) {
         const name = String(payload.name).trim();
         if (!name) {
-            throw createHttpError(400, "Ingredient name cannot be empty");
+            throw createHttpError(400, t(locale, 'combo', 'ingredient_name_empty'));
         }
         updates.name = name;
     }
@@ -124,7 +127,7 @@ export async function updateIngredient(ingredientId, payload = {}) {
     if (payload.price !== undefined) {
         const price = Number(payload.price);
         if (Number.isNaN(price) || price < 0) {
-            throw createHttpError(400, "Valid ingredient price is required");
+            throw createHttpError(400, t(locale, 'combo', 'valid_ingredient_price_required'));
         }
         updates.price = price;
     }
@@ -132,33 +135,33 @@ export async function updateIngredient(ingredientId, payload = {}) {
     if (payload.ingredient_type_id !== undefined) {
         const ingredientTypeId = Number(payload.ingredient_type_id);
         if (!Number.isInteger(ingredientTypeId) || ingredientTypeId <= 0) {
-            throw createHttpError(400, "Valid ingredient_type_id is required");
+            throw createHttpError(400, t(locale, 'combo', 'valid_ingredient_type_id_required'));
         }
         updates.ingredient_type_id = ingredientTypeId;
     }
 
     if (Object.keys(updates).length === 0) {
-        throw createHttpError(400, "No fields provided for update");
+        throw createHttpError(400, t(locale, 'combo', 'no_update_fields'));
     }
 
     const isUpdated = await ingredientRepo.updateIngredientById(ingredientId, updates);
 
     if (!isUpdated) {
-        throw createHttpError(404, "Ingredient not found");
+        throw createHttpError(404, t(locale, 'combo', 'ingredient_not_found'));
     }
 
     return ingredientRepo.getIngredientById(ingredientId);
 }
 
-export async function deleteIngredient(ingredientId) {
+export async function deleteIngredient(ingredientId, locale) {
     if (!Number.isInteger(ingredientId) || ingredientId <= 0) {
-        throw createHttpError(400, "Valid ingredient id is required");
+        throw createHttpError(400, t(locale, 'combo', 'valid_ingredient_id_required'));
     }
 
     const isDeleted = await ingredientRepo.deleteIngredientById(ingredientId);
 
     if (!isDeleted) {
-        throw createHttpError(404, "Ingredient not found");
+        throw createHttpError(404, t(locale, 'combo', 'ingredient_not_found'));
     }
 
     return true;

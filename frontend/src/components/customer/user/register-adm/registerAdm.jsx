@@ -32,19 +32,19 @@ export default function RegisterAdmin({ onSuccess }) {
 				alert("Admin secret is required");
 				return;
 			}
-			await register({
+			const res = await register({
 				name: form.name,
 				email: form.email,
 				password: form.password,
 				role_id: 2,
 				adminSecret: form.secret,
 			});
-			if (localStorage.token) {
+			if (res?.token) {
         		navigate("/adm");
       		}
 			onSuccess?.();
 		} catch (err) {
-			console.err(err);
+			console.error(err);
 		}
 	};
 
