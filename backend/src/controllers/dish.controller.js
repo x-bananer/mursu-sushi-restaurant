@@ -1,4 +1,4 @@
-import * as dishService from "../services/dish/dish.service.js";
+import * as dishService from '../services/dish/dish.service.js';
 
 /**
  * @api {get} /api/v1/dishes List dishes
@@ -72,7 +72,11 @@ export async function createCategory(req, res, next) {
 export async function updateCategory(req, res, next) {
 	try {
 		const categoryId = Number(req.params.id);
-		const category = await dishService.updateDishCategory(categoryId, req.body || {}, req.locale);
+		const category = await dishService.updateDishCategory(
+			categoryId,
+			req.body || {},
+			req.locale
+		);
 		return res.json({ category });
 	} catch (err) {
 		next(err);

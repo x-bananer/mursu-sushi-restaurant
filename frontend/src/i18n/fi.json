@@ -17,7 +17,8 @@
     "disabled": "Poistettu käytöstä",
     "enable": "Ota käyttöön",
     "disable": "Poista käytöstä",
-    "unknown": "Tuntematon"
+    "unknown": "Tuntematon",
+    "not_available": "Ei saatavilla"
   },
   "auth": {
     "sign_in": "Kirjaudu sisään",

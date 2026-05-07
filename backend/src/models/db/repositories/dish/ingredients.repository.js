@@ -1,38 +1,38 @@
-import { select, execute } from "../../db.js";
+import { select, execute } from '../../db.js';
 
 /**
  * @typedef {import("../../../../../types/db/dish.type.js").Ingredients} Ingredients
  */
 
 export async function getIngredients() {
-    const rows = await select(
-        `SELECT
+	const rows = await select(
+		`SELECT
         ingredients.id,
         ingredients.name,
         ingredients.ingredient_type_id,
         ingredients.price,
 		ingredients.is_available
         FROM ingredients`
-    );
+	);
 
-    return rows;
+	return rows;
 }
 
 export async function getIngredientTypes() {
-    const rows = await select(
-        `SELECT
+	const rows = await select(
+		`SELECT
         ingredient_type.id,
         ingredient_type.type,
         ingredient_type.name
         FROM ingredient_type`
-    );
+	);
 
-    return rows;
+	return rows;
 }
 
 export async function getIngredientById(id) {
-    const rows = await select(
-        `SELECT
+	const rows = await select(
+		`SELECT
         ingredients.id,
         ingredients.name,
         ingredients.ingredient_type_id,
@@ -40,68 +40,68 @@ export async function getIngredientById(id) {
 		ingredients.is_available
         FROM ingredients
         WHERE ingredients.id = ?`,
-        [id]
-    );
+		[id]
+	);
 
-    return rows[0] || null;
+	return rows[0] || null;
 }
 
 export async function createIngredient({ name, price, ingredient_type_id }) {
-    const result = await execute(
-        `INSERT INTO ingredients (name, price, ingredient_type_id)
+	const result = await execute(
+		`INSERT INTO ingredients (name, price, ingredient_type_id)
         VALUES (?, ?, ?)`,
-        [name, price, ingredient_type_id]
-    );
+		[name, price, ingredient_type_id]
+	);
 
-    return result.insertId || null;
+	return result.insertId || null;
 }
 
 export async function updateIngredientById(id, updates = {}) {
-    const updatingFields = [];
-    const params = [];
+	const updatingFields = [];
+	const params = [];
 
-    if (updates.name !== undefined) {
-        updatingFields.push("name = ?");
-        params.push(updates.name);
-    }
-
-    if (updates.price !== undefined) {
-        updatingFields.push("price = ?");
-        params.push(updates.price);
-    }
-
-    if (updates.ingredient_type_id !== undefined) {
-        updatingFields.push("ingredient_type_id = ?");
-        params.push(updates.ingredient_type_id);
-    }
-
-	if (updates.is_available !== undefined) {
-    	updatingFields.push("is_available = ?");
-    	params.push(updates.is_available ? 1 : 0);
+	if (updates.name !== undefined) {
+		updatingFields.push('name = ?');
+		params.push(updates.name);
 	}
 
-    if (updatingFields.length === 0) {
-        return 0;
-    }
+	if (updates.price !== undefined) {
+		updatingFields.push('price = ?');
+		params.push(updates.price);
+	}
 
-    params.push(id);
+	if (updates.ingredient_type_id !== undefined) {
+		updatingFields.push('ingredient_type_id = ?');
+		params.push(updates.ingredient_type_id);
+	}
 
-    const result = await execute(
-        `UPDATE ingredients
-        SET ${updatingFields.join(", ")}
+	if (updates.is_available !== undefined) {
+		updatingFields.push('is_available = ?');
+		params.push(updates.is_available ? 1 : 0);
+	}
+
+	if (updatingFields.length === 0) {
+		return 0;
+	}
+
+	params.push(id);
+
+	const result = await execute(
+		`UPDATE ingredients
+        SET ${updatingFields.join(', ')}
         WHERE id = ?`,
-        params
-    );
+		params
+	);
 
-    return result.affectedRows || 0;
+	return result.affectedRows || 0;
 }
 
 export async function deleteIngredientById(id) {
-    const result = await execute(
-        `DELETE FROM ingredients
+	const result = await execute(
+		`DELETE FROM ingredients
         WHERE id = ?`,
-        [id]
-    );
+		[id]
+	);
 
-    return result.affectedRows || 0;
+	return result.affectedRows || 0;
 }

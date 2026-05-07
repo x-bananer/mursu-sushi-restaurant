@@ -4,7 +4,6 @@
  * - POST /payments/stripe
  */
 
-
 /**
  * POST /orders
  * Create a new order from ready cart data
@@ -74,7 +73,6 @@
 /**
  * @typedef {OrderSuccessResponse | ErrorResponse} OrderResponse
  */
-
 
 /**
  * DELETE /orders/:id

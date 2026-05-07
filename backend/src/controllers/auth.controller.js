@@ -1,5 +1,5 @@
-import * as authService from "../services/auth/auth.service.js";
-import * as cartService from "../services/cart/cart.service.js";
+import * as authService from '../services/auth/auth.service.js';
+import * as cartService from '../services/cart/cart.service.js';
 
 /**
  * @api {post} /api/v1/auth/register Register user
@@ -19,7 +19,7 @@ export async function register(req, res, next) {
 		const result = await authService.register(req.body || {}, req.locale);
 
 		// Attach cart to user when user gets user_id after auth.
-		const sessionId = String(req.headers["x-session-id"] ?? "").trim();
+		const sessionId = String(req.headers['x-session-id'] ?? '').trim();
 		if (sessionId) {
 			await cartService.addUserIdToCart(sessionId, result?.user?.id, req.locale);
 		}
@@ -46,7 +46,7 @@ export async function login(req, res, next) {
 		const result = await authService.login(req.body || {}, req.locale);
 
 		// Attach cart to user when user gets user_id after auth.
-		const sessionId = String(req.headers["x-session-id"] ?? "").trim();
+		const sessionId = String(req.headers['x-session-id'] ?? '').trim();
 		if (sessionId) {
 			await cartService.addUserIdToCart(sessionId, result?.user?.id, req.locale);
 		}

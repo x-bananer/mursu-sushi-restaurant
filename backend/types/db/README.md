@@ -30,8 +30,7 @@ types/
 ├──  common.type.js        — order_statuses, delivery_types, order_item_types
 ```
 
-IMPORTANT: common.type tables are seeded once and never mutated at runtime. Repositories read them; services use their `id` values when inserting rows into other tables.
----
+## IMPORTANT: common.type tables are seeded once and never mutated at runtime. Repositories read them; services use their `id` values when inserting rows into other tables.
 
 ## How to use in a repository file
 
@@ -47,19 +46,18 @@ Import the type with a `@typedef` import at the top of the repository file, then
  * @returns {Promise<Orders|null>}
  */
 export async function getOrderById(id) {
-  const [rows] = await db.query('SELECT * FROM orders WHERE id = ?', [id]);
-  return rows[0] ?? null;
+	const [rows] = await db.query('SELECT * FROM orders WHERE id = ?', [id]);
+	return rows[0] ?? null;
 }
 
 /**
  * @returns {Promise<Orders[]>}
  */
 export async function getOrdersByUserId(userId) {
-  const [rows] = await db.query(
-    'SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC',
-    [userId]
-  );
-  return rows;
+	const [rows] = await db.query('SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC', [
+		userId,
+	]);
+	return rows;
 }
 ```
 
@@ -83,17 +81,16 @@ Services receive DB types from repositories and transform them before passing to
  * @returns {OrderResponse}
  */
 function toOrderResponse(order, items) {
-  return {
-    id:            order.id,
-    total_price:   order.total_price,
-    is_paid:       order.is_paid,
-    address:       order.address,
-    notes:         order.notes,
-    created_at:    order.created_at.Date(),
-    items:         items.map(toOrderItemResponse),
-  };
+	return {
+		id: order.id,
+		total_price: order.total_price,
+		is_paid: order.is_paid,
+		address: order.address,
+		notes: order.notes,
+		created_at: order.created_at.Date(),
+		items: items.map(toOrderItemResponse),
+	};
 }
 ```
 
 ---
-

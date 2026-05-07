@@ -1,4 +1,4 @@
-import { select, execute } from "../../db.js";
+import { select, execute } from '../../db.js';
 /* use select and execute wrappers. Pass queries to them. See models from Luaras order report. */
 
 /**
@@ -18,7 +18,7 @@ export async function getUserByEmail(email) {
 			WHERE email = ?
 			LIMIT 1
 		`,
-		[email],
+		[email]
 	);
 
 	if (rows.length === 0) {
@@ -41,10 +41,10 @@ export async function createUser(data) {
 			INSERT INTO users (name, email, password_hash, role_id, stamp_count, is_stamp_discount_active)
 			VALUES (?, ?, ?, ?, 0, 0)
 		`,
-		[data.name, data.email, data.passwordHash, roleId],
+		[data.name, data.email, data.passwordHash, roleId]
 	);
 
-	if (result && typeof result.insertId === "number") {
+	if (result && typeof result.insertId === 'number') {
 		return result.insertId;
 	}
 
@@ -64,7 +64,7 @@ export async function getUserById(userId) {
 			WHERE id = ?
 			LIMIT 1
 		`,
-		[userId],
+		[userId]
 	);
 
 	if (rows.length === 0) {
@@ -84,7 +84,7 @@ export async function listUsers() {
 			SELECT *
 			FROM users
 			ORDER BY id DESC
-		`,
+		`
 	);
 
 	return /** @type {Users[]} */ (rows);
@@ -103,7 +103,7 @@ export async function userExistsById(userId) {
 			WHERE id = ?
 			LIMIT 1
 		`,
-		[userId],
+		[userId]
 	);
 
 	if (rows.length === 0) {
@@ -126,7 +126,7 @@ export async function getUserDiscountStateById(userId) {
 			WHERE id = ?
 			LIMIT 1
 		`,
-		[userId],
+		[userId]
 	);
 
 	if (rows.length === 0) {
@@ -151,7 +151,7 @@ export async function userOwnsOrder(userId, orderId) {
 				AND user_id = ?
 			LIMIT 1
 		`,
-		[orderId, userId],
+		[orderId, userId]
 	);
 
 	if (rows.length === 0) {
@@ -174,7 +174,7 @@ export async function updateStampCount(userId, stampCount) {
 			SET stamp_count = ?
 			WHERE id = ?
 		`,
-		[stampCount, userId],
+		[stampCount, userId]
 	);
 }
 
@@ -191,7 +191,7 @@ export async function incrementStampCount(userId, incrementBy = 1) {
 			SET stamp_count = stamp_count + ?
 			WHERE id = ?
 		`,
-		[incrementBy, userId],
+		[incrementBy, userId]
 	);
 }
 
@@ -208,7 +208,7 @@ export async function updateIsStampDiscountActive(userId, isActive) {
 			SET is_stamp_discount_active = ?
 			WHERE id = ?
 		`,
-		[isActive, userId],
+		[isActive, userId]
 	);
 }
 
@@ -223,32 +223,32 @@ export async function updateUserById(userId, data) {
 	const params = [];
 
 	if (data.name !== undefined) {
-		fields.push("name = ?");
+		fields.push('name = ?');
 		params.push(data.name);
 	}
 
 	if (data.email !== undefined) {
-		fields.push("email = ?");
+		fields.push('email = ?');
 		params.push(data.email);
 	}
 
 	if (data.photo_url !== undefined) {
-		fields.push("photo_url = ?");
+		fields.push('photo_url = ?');
 		params.push(data.photo_url);
 	}
 
 	if (data.role_id !== undefined) {
-		fields.push("role_id = ?");
+		fields.push('role_id = ?');
 		params.push(data.role_id);
 	}
 
 	if (data.stamp_count !== undefined) {
-		fields.push("stamp_count = ?");
+		fields.push('stamp_count = ?');
 		params.push(data.stamp_count);
 	}
 
 	if (data.is_stamp_discount_active !== undefined) {
-		fields.push("is_stamp_discount_active = ?");
+		fields.push('is_stamp_discount_active = ?');
 		params.push(data.is_stamp_discount_active);
 	}
 
@@ -261,10 +261,10 @@ export async function updateUserById(userId, data) {
 	await execute(
 		`
 			UPDATE users
-			SET ${fields.join(", ")}
+			SET ${fields.join(', ')}
 			WHERE id = ?
 		`,
-		params,
+		params
 	);
 }
 
@@ -279,7 +279,7 @@ export async function deleteUserById(userId) {
 			DELETE FROM users
 			WHERE id = ?
 		`,
-		[userId],
+		[userId]
 	);
 
 	return Number(result?.affectedRows || 0);

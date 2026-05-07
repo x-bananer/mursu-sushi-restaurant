@@ -1,4 +1,4 @@
-import { select, execute } from "../../db.js";
+import { select, execute } from '../../db.js';
 
 /**
  * @typedef {import("../../../../../types/db/dish.type.js").Dishes} Dishes
@@ -35,7 +35,7 @@ export async function getDishCategories() {
 		SELECT id, name, sort_order
 		FROM dish_categories
 		ORDER BY sort_order ASC, id ASC
-		`,
+		`
 	);
 
 	return rows;
@@ -47,7 +47,7 @@ export async function createDishCategory({ name, sort_order = 0 }) {
 		INSERT INTO dish_categories (name, sort_order)
 		VALUES (?, ?);
 		`,
-		[name, sort_order],
+		[name, sort_order]
 	);
 
 	return result.insertId;
@@ -61,7 +61,7 @@ export async function getDishCategoryById(categoryId) {
 		WHERE id = ?
 		LIMIT 1;
 		`,
-		[categoryId],
+		[categoryId]
 	);
 
 	return rows[0] ?? null;
@@ -85,10 +85,10 @@ export async function updateDishCategoryById(categoryId, updates) {
 	const result = await execute(
 		`
 		UPDATE dish_categories
-		SET ${fields.join(", ")}
+		SET ${fields.join(', ')}
 		WHERE id = ?;
 		`,
-		values,
+		values
 	);
 
 	return result.affectedRows;
@@ -100,7 +100,7 @@ export async function deleteDishCategoryById(categoryId) {
 		DELETE FROM dish_categories
 		WHERE id = ?;
 		`,
-		[categoryId],
+		[categoryId]
 	);
 
 	return result.affectedRows;
@@ -128,19 +128,25 @@ export async function getDish(dishId) {
 		LEFT JOIN badge ON badge.id = dish_badges.badge_id
 		WHERE dishes.id = ?;
 		`,
-		[dishId],
+		[dishId]
 	);
 
 	return rows;
 }
 
-export async function createDish({ name, category_id = null, description, price, is_available = true }) {
+export async function createDish({
+	name,
+	category_id = null,
+	description,
+	price,
+	is_available = true,
+}) {
 	const result = await execute(
 		`
 		INSERT INTO dishes (name, category_id, description, price, is_available)
 		VALUES (?, ?, ?, ?, ?);
 		`,
-		[name, category_id, description ?? null, price, Boolean(is_available)],
+		[name, category_id, description ?? null, price, Boolean(is_available)]
 	);
 
 	return result.insertId;
@@ -164,10 +170,10 @@ export async function updateDishById(dishId, updates) {
 	const result = await execute(
 		`
 		UPDATE dishes
-		SET ${fields.join(", ")}
+		SET ${fields.join(', ')}
 		WHERE id = ?;
 		`,
-		values,
+		values
 	);
 
 	return result.affectedRows;
@@ -179,7 +185,7 @@ export async function deleteDishById(dishId) {
 		DELETE FROM dishes
 		WHERE id = ?;
 		`,
-		[dishId],
+		[dishId]
 	);
 
 	return result.affectedRows;

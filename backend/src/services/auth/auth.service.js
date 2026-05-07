@@ -1,7 +1,7 @@
-import argon2 from "argon2";
-import jwt from "jsonwebtoken";
-import * as userRepo from "../../models/db/repositories/user/user.repository.js";
-import { t } from "../../i18n/messages.js";
+import argon2 from 'argon2';
+import jwt from 'jsonwebtoken';
+import * as userRepo from '../../models/db/repositories/user/user.repository.js';
+import { t } from '../../i18n/messages.js';
 
 const ARGON2_OPTIONS = {
 	type: argon2.argon2id,
@@ -11,14 +11,14 @@ const ARGON2_OPTIONS = {
 };
 
 function createHttpError(statusCode, message) {
-    const error = /** @type {Error & { statusCode: number }} */ (new Error(message));
-    error.statusCode = statusCode;
-    return error;
+	const error = /** @type {Error & { statusCode: number }} */ (new Error(message));
+	error.statusCode = statusCode;
+	return error;
 }
 
 function normalizeEmail(email) {
-	if (typeof email !== "string") {
-		return "";
+	if (typeof email !== 'string') {
+		return '';
 	}
 
 	return email.trim().toLowerCase();
@@ -33,7 +33,7 @@ function getJwtSecret(locale) {
 	const secret = process.env.JWT_SECRET;
 
 	if (!secret) {
-		throw createHttpError(500, t(locale, "auth", "jwt_secret_not_configured"));
+		throw createHttpError(500, t(locale, 'auth', 'jwt_secret_not_configured'));
 	}
 
 	return secret;
@@ -52,8 +52,8 @@ function toPublicUser(user) {
 
 function signToken(user, locale) {
 	const secret = getJwtSecret(locale);
-	
-	const expiresIn = process.env.JWT_EXPIRES_IN || "7d";
+
+	const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
 
 	return jwt.sign(
 		{
@@ -61,40 +61,39 @@ function signToken(user, locale) {
 			roleId: user.role_id,
 		},
 		secret,
-		{ expiresIn },
+		{ expiresIn }
 	);
 }
 
 export async function register(payload, locale) {
-	const name = typeof payload?.name === "string" ? payload.name.trim() : "";
+	const name = typeof payload?.name === 'string' ? payload.name.trim() : '';
 	const email = normalizeEmail(payload?.email);
-	const password =
-		typeof payload?.password === "string" ? payload.password : "";
+	const password = typeof payload?.password === 'string' ? payload.password : '';
 
 	let roleId = 1;
 	if (Number(payload?.role_id) === 2) {
 		if (payload?.adminSecret !== process.env.ADMIN_SECRET) {
-			throw createHttpError(403, t(locale, "auth", "unauthorized_create_admin"));
+			throw createHttpError(403, t(locale, 'auth', 'unauthorized_create_admin'));
 		}
 		roleId = 2;
 	}
 
 	if (!name) {
-		throw createHttpError(400, t(locale, "auth", "name_required"));
+		throw createHttpError(400, t(locale, 'auth', 'name_required'));
 	}
 
 	if (!validateEmail(email)) {
-		throw createHttpError(400, t(locale, "auth", "valid_email_required"));
+		throw createHttpError(400, t(locale, 'auth', 'valid_email_required'));
 	}
 
 	if (password.length < 8) {
-		throw createHttpError(400, t(locale, "auth", "password_min_8"));
+		throw createHttpError(400, t(locale, 'auth', 'password_min_8'));
 	}
 
 	const existingUser = await userRepo.getUserByEmail(email);
 
 	if (existingUser) {
-		throw createHttpError(409, t(locale, "auth", "user_exists"));
+		throw createHttpError(409, t(locale, 'auth', 'user_exists'));
 	}
 
 	const passwordHash = await argon2.hash(password, ARGON2_OPTIONS);
@@ -106,13 +105,13 @@ export async function register(payload, locale) {
 	});
 
 	if (!userId) {
-		throw createHttpError(500, t(locale, "auth", "failed_create_user"));
+		throw createHttpError(500, t(locale, 'auth', 'failed_create_user'));
 	}
 
 	const createdUser = await userRepo.getUserById(userId);
 
 	if (!createdUser) {
-		throw createHttpError(500, t(locale, "auth", "created_user_not_loaded"));
+		throw createHttpError(500, t(locale, 'auth', 'created_user_not_loaded'));
 	}
 
 	const token = signToken(createdUser, locale);
@@ -125,33 +124,32 @@ export async function register(payload, locale) {
 
 export async function login(payload, locale) {
 	const email = normalizeEmail(payload?.email);
-	const password =
-		typeof payload?.password === "string" ? payload.password : "";
+	const password = typeof payload?.password === 'string' ? payload.password : '';
 
 	if (!validateEmail(email)) {
-		throw createHttpError(400, t(locale, "auth", "valid_email_required"));
+		throw createHttpError(400, t(locale, 'auth', 'valid_email_required'));
 	}
 
 	if (!password) {
-		throw createHttpError(400, t(locale, "auth", "password_required"));
+		throw createHttpError(400, t(locale, 'auth', 'password_required'));
 	}
 
 	const user = await userRepo.getUserByEmail(email);
 
 	if (!user) {
-		throw createHttpError(401, t(locale, "auth", "invalid_email_or_password"));
+		throw createHttpError(401, t(locale, 'auth', 'invalid_email_or_password'));
 	}
 
 	let isPasswordValid = false;
 
 	try {
 		isPasswordValid = await argon2.verify(user.password_hash, password);
-	} catch (error) {
-		throw createHttpError(401, t(locale, "auth", "invalid_email_or_password"));
+	} catch {
+		throw createHttpError(401, t(locale, 'auth', 'invalid_email_or_password'));
 	}
 
 	if (!isPasswordValid) {
-		throw createHttpError(401, t(locale, "auth", "invalid_email_or_password"));
+		throw createHttpError(401, t(locale, 'auth', 'invalid_email_or_password'));
 	}
 
 	const token = signToken(user, locale);
@@ -166,13 +164,13 @@ export async function refresh(userId) {
 	const parsedId = Number(userId);
 
 	if (!Number.isInteger(parsedId) || parsedId <= 0) {
-		throw createHttpError(401, "Invalid token payload");
+		throw createHttpError(401, 'Invalid token payload');
 	}
 
 	const user = await userRepo.getUserById(parsedId);
 
 	if (!user) {
-		throw createHttpError(404, "User not found");
+		throw createHttpError(404, 'User not found');
 	}
 
 	const token = signToken(user);

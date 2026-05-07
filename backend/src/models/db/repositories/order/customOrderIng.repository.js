@@ -10,8 +10,8 @@ import { select, execute } from '../../db.js';
  * @returns {Promise<CustomOrderItemIngredients[]>}
  */
 export async function getOrderIngredients(orderId) {
-  const rows = await select(
-    `
+	const rows = await select(
+		`
     SELECT
       custom_order_item_ingredients.id,
       custom_order_item_ingredients.order_item_id,
@@ -32,19 +32,19 @@ export async function getOrderIngredients(orderId) {
 
     WHERE order_items.order_id = ?
     `,
-    [orderId]
-  );
+		[orderId]
+	);
 
-  return /** @type {CustomOrderItemIngredients[]} */ (rows);
+	return /** @type {CustomOrderItemIngredients[]} */ (rows);
 }
 
 export async function listIngredientsByOrderIds(orderIds) {
-  if (!orderIds.length) return [];
+	if (!orderIds.length) return [];
 
-  const placeholders = orderIds.map(() => '?').join(',');
+	const placeholders = orderIds.map(() => '?').join(',');
 
-  const rows = await select(
-    `
+	const rows = await select(
+		`
     SELECT
       custom_order_item_ingredients.id,
       custom_order_item_ingredients.order_item_id,
@@ -65,23 +65,23 @@ export async function listIngredientsByOrderIds(orderIds) {
 
     WHERE order_items.order_id IN (${placeholders})
     `,
-    orderIds
-  );
+		orderIds
+	);
 
-  return /** @type {CustomOrderItemIngredients[]} */ (rows);
+	return /** @type {CustomOrderItemIngredients[]} */ (rows);
 }
 
 /**
  * Create a single order item ingedient - bulk version (snapshot of cart item)
  */
 export async function createCustomOrderItemIng(rows, conn) {
-  return await execute(
-    `
+	return await execute(
+		`
     INSERT INTO custom_order_item_ingredients
       (order_item_id, ingredient_id, quantity, position)
     VALUES ?
     `,
-    [rows],
-    conn
-  );
+		[rows],
+		conn
+	);
 }

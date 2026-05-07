@@ -1,4 +1,4 @@
-import { select, execute } from "../../db.js";
+import { select, execute } from '../../db.js';
 
 /**
  * @typedef {import("../../../../../types/db/dish.type.js").UserFavoriteDishes} UserFavoriteDishes
@@ -28,7 +28,7 @@ export async function getUserFavorites(userId) {
 		WHERE user_favorite_dishes.user_id = ?
 		GROUP BY dishes.id;
 		`,
-		[userId],
+		[userId]
 	);
 
 	return rows;
@@ -40,7 +40,7 @@ export async function addFavorite(userId, dishId) {
 		INSERT INTO user_favorite_dishes (user_id, dish_id)
 		VALUES (?, ?);
 		`,
-		[userId, dishId],
+		[userId, dishId]
 	);
 }
 
@@ -50,7 +50,7 @@ export async function removeFavorite(userId, dishId) {
 		DELETE FROM user_favorite_dishes
 		WHERE user_id = ? AND dish_id = ?;
 		`,
-		[userId, dishId],
+		[userId, dishId]
 	);
 
 	return result.affectedRows > 0;

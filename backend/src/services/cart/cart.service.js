@@ -9,479 +9,473 @@ import * as cartEngine from '../../models/engine/cart.engine.js';
 import { t } from '../../i18n/messages.js';
 
 function createHttpError(statusCode, message) {
-    const error = /** @type {Error & { statusCode: number }} */ (new Error(message));
-    error.statusCode = statusCode;
-    return error;
+	const error = /** @type {Error & { statusCode: number }} */ (new Error(message));
+	error.statusCode = statusCode;
+	return error;
 }
 
 // Create cart for session
 export const createCartBySessionId = async (sessionId, items = [], locale) => {
-    if (!sessionId) {
-        throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
-    }
+	if (!sessionId) {
+		throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
+	}
 
-    let cart = await cartRepo.getCartBySessionId(sessionId);
+	let cart = await cartRepo.getCartBySessionId(sessionId);
 
-    if (cart) {
-        await cartItemsRepo.deleteCartItemsByCartId(cart.id);
-        await cartRepo.updateCartBySessionId(sessionId);
-    } else {
-        await cartRepo.createCartBySessionId(sessionId);
-        cart = await cartRepo.getCartBySessionId(sessionId);
-    }
+	if (cart) {
+		await cartItemsRepo.deleteCartItemsByCartId(cart.id);
+		await cartRepo.updateCartBySessionId(sessionId);
+	} else {
+		await cartRepo.createCartBySessionId(sessionId);
+		cart = await cartRepo.getCartBySessionId(sessionId);
+	}
 
-    if (!cart) {
-        throw new Error(t(locale, 'cart', 'cart_not_created'));
-    }
+	if (!cart) {
+		throw new Error(t(locale, 'cart', 'cart_not_created'));
+	}
 
-    for (const item of items) {
-        const itemPrice = await getItemPrice(item, locale);
+	for (const item of items) {
+		const itemPrice = await getItemPrice(item, locale);
 
-        const cartItemId = await cartItemsRepo.createCartItem({
-            cart_id: cart.id,
-            dish_id: item.dish_id,
-            quantity: item.quantity,
-            price: itemPrice,
-            item_type_id: item.item_type_id,
-        });
+		const cartItemId = await cartItemsRepo.createCartItem({
+			cart_id: cart.id,
+			dish_id: item.dish_id,
+			quantity: item.quantity,
+			price: itemPrice,
+			item_type_id: item.item_type_id,
+		});
 
-        if (item.ingredients) {
-            await createCartItemIngredients(cartItemId, item.ingredients);
-        }
-    }
+		if (item.ingredients) {
+			await createCartItemIngredients(cartItemId, item.ingredients);
+		}
+	}
 
-    return getCartBySessionId(sessionId, locale);
-}
+	return getCartBySessionId(sessionId, locale);
+};
 
 // Get cart for session
 export const getCartBySessionId = async (sessionId, locale) => {
-    if (!sessionId) {
-        throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
-    }
+	if (!sessionId) {
+		throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
+	}
 
-    const cart = await cartRepo.getCartBySessionId(sessionId);
+	const cart = await cartRepo.getCartBySessionId(sessionId);
 
-    if (!cart) {
-        return null;
-    }
+	if (!cart) {
+		return null;
+	}
 
-    const items = await cartItemsRepo.getCartItemsByCartId(cart.id);
-    const ingredients = await getCartIngredients(items);
-    const {totalPrice, discount} = await getCartTotalPrice(cart, items);
+	const items = await cartItemsRepo.getCartItemsByCartId(cart.id);
+	const ingredients = await getCartIngredients(items);
+	const { totalPrice, discount } = await getCartTotalPrice(cart, items);
 
-    return cartMapper.toCartDTO(
-        cart,
-        items,
-        ingredients,
-        totalPrice,
-        discount,
-        locale
-    );
-}
+	return cartMapper.toCartDTO(cart, items, ingredients, totalPrice, discount, locale);
+};
 
 // Update/create the whole cart for session
 export const updateCartBySessionId = async (sessionId, items = [], locale) => {
-    if (!sessionId) {
-        throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
-    }
+	if (!sessionId) {
+		throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
+	}
 
-    const cart = await cartRepo.getCartBySessionId(sessionId);
+	const cart = await cartRepo.getCartBySessionId(sessionId);
 
-    if (!cart) {
-        return createCartBySessionId(sessionId, items, locale);
-    }
+	if (!cart) {
+		return createCartBySessionId(sessionId, items, locale);
+	}
 
-    const filteredItems = items.filter(item => {
-        return !(item.item_type_id === 2 && (!item.ingredients || item.ingredients.length === 0));
-    });
+	const filteredItems = items.filter((item) => {
+		return !(item.item_type_id === 2 && (!item.ingredients || item.ingredients.length === 0));
+	});
 
-    if (filteredItems.length === 0) {
-        await cartItemsRepo.deleteCartItemsByCartId(cart.id);
-        await cartRepo.updateCartBySessionId(sessionId);
-        return getCartBySessionId(sessionId, locale);
-    }
+	if (filteredItems.length === 0) {
+		await cartItemsRepo.deleteCartItemsByCartId(cart.id);
+		await cartRepo.updateCartBySessionId(sessionId);
+		return getCartBySessionId(sessionId, locale);
+	}
 
-    const oldItems = await cartItemsRepo.getCartItemsByCartId(cart.id);
-    const oldItemIds = oldItems.map(item => item.id);
-    const oldIngredients = await cartItemIngredientsRepository.getCartItemIngredientsByCartItemIds(oldItemIds);
-    const filteredItemsMap = {};
-    const oldIngredientsMap = {};
+	const oldItems = await cartItemsRepo.getCartItemsByCartId(cart.id);
+	const oldItemIds = oldItems.map((item) => item.id);
+	const oldIngredients =
+		await cartItemIngredientsRepository.getCartItemIngredientsByCartItemIds(oldItemIds);
+	const filteredItemsMap = {};
+	const oldIngredientsMap = {};
 
-    for (const ingredient of oldIngredients) {
-        if (!oldIngredientsMap[ingredient.cart_item_id]) {
-            oldIngredientsMap[ingredient.cart_item_id] = [];
-        }
+	for (const ingredient of oldIngredients) {
+		if (!oldIngredientsMap[ingredient.cart_item_id]) {
+			oldIngredientsMap[ingredient.cart_item_id] = [];
+		}
 
-        oldIngredientsMap[ingredient.cart_item_id].push(ingredient);
-    }
+		oldIngredientsMap[ingredient.cart_item_id].push(ingredient);
+	}
 
-    for (const item of filteredItems) {
-        if (item.id) {
-            filteredItemsMap[item.id] = true;
-        }
-    }
+	for (const item of filteredItems) {
+		if (item.id) {
+			filteredItemsMap[item.id] = true;
+		}
+	}
 
-    for (const oldItem of oldItems) {
-        if (!filteredItemsMap[oldItem.id]) {
-            await deleteCartItemIngredients(oldIngredientsMap[oldItem.id] || []);
-            await cartItemsRepo.deleteCartItem(oldItem.id);
-        }
-    }
+	for (const oldItem of oldItems) {
+		if (!filteredItemsMap[oldItem.id]) {
+			await deleteCartItemIngredients(oldIngredientsMap[oldItem.id] || []);
+			await cartItemsRepo.deleteCartItem(oldItem.id);
+		}
+	}
 
-    for (const item of filteredItems) {
-        if (item.id) {
-            const itemPrice = await getItemPrice(item, locale);
+	for (const item of filteredItems) {
+		if (item.id) {
+			const itemPrice = await getItemPrice(item, locale);
 
-            await cartItemsRepo.updateCartItem({
-                id: item.id,
-                dish_id: item.dish_id,
-                quantity: item.quantity,
-                price: itemPrice,
-                item_type_id: item.item_type_id,
-            });
+			await cartItemsRepo.updateCartItem({
+				id: item.id,
+				dish_id: item.dish_id,
+				quantity: item.quantity,
+				price: itemPrice,
+				item_type_id: item.item_type_id,
+			});
 
-            await deleteCartItemIngredients(oldIngredientsMap[item.id] || []);
+			await deleteCartItemIngredients(oldIngredientsMap[item.id] || []);
 
-            if (item.ingredients) {
-                await createCartItemIngredients(item.id, item.ingredients);
-            }
-        } else {
-            const itemPrice = await getItemPrice(item, locale);
+			if (item.ingredients) {
+				await createCartItemIngredients(item.id, item.ingredients);
+			}
+		} else {
+			const itemPrice = await getItemPrice(item, locale);
 
-            const cartItemId = await cartItemsRepo.createCartItem({
-                cart_id: cart.id,
-                dish_id: item.dish_id,
-                quantity: item.quantity,
-                price: itemPrice,
-                item_type_id: item.item_type_id,
-            });
+			const cartItemId = await cartItemsRepo.createCartItem({
+				cart_id: cart.id,
+				dish_id: item.dish_id,
+				quantity: item.quantity,
+				price: itemPrice,
+				item_type_id: item.item_type_id,
+			});
 
-            if (item.ingredients) {
-                await createCartItemIngredients(cartItemId, item.ingredients);
-            }
-        }
-    }
+			if (item.ingredients) {
+				await createCartItemIngredients(cartItemId, item.ingredients);
+			}
+		}
+	}
 
-    await cartRepo.updateCartBySessionId(sessionId);
+	await cartRepo.updateCartBySessionId(sessionId);
 
-    return getCartBySessionId(sessionId, locale);
-}
+	return getCartBySessionId(sessionId, locale);
+};
 
 // Update/create ona cart dish for session
 export const updateCartDishBySessionId = async (sessionId, dishId, quantity, locale) => {
-    if (!sessionId) {
-        throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
-    }
+	if (!sessionId) {
+		throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
+	}
 
-    if (!Number(dishId)) {
-        throw createHttpError(400, t(locale, 'cart', 'valid_dish_id_required'));
-    }
+	if (!Number(dishId)) {
+		throw createHttpError(400, t(locale, 'cart', 'valid_dish_id_required'));
+	}
 
-    if (Number.isNaN(Number(quantity)) || Number(quantity) < 0) {
-        throw createHttpError(400, t(locale, 'cart', 'valid_quantity_required'));
-    }
+	if (Number.isNaN(Number(quantity)) || Number(quantity) < 0) {
+		throw createHttpError(400, t(locale, 'cart', 'valid_quantity_required'));
+	}
 
-    let cart = await cartRepo.getCartBySessionId(sessionId);
-    if (!cart) {
-        await cartRepo.createCartBySessionId(sessionId);
-        cart = await cartRepo.getCartBySessionId(sessionId);
-    }
+	let cart = await cartRepo.getCartBySessionId(sessionId);
+	if (!cart) {
+		await cartRepo.createCartBySessionId(sessionId);
+		cart = await cartRepo.getCartBySessionId(sessionId);
+	}
 
-    const cartItems = await cartItemsRepo.getCartItemsByCartId(cart.id);
+	const cartItems = await cartItemsRepo.getCartItemsByCartId(cart.id);
 
-    const existingDishItem = cartItems.find((item) => {
-        return Number(item.item_type_id) === 1 && Number(item.dish_id) === Number(dishId);
-    });
+	const existingDishItem = cartItems.find((item) => {
+		return Number(item.item_type_id) === 1 && Number(item.dish_id) === Number(dishId);
+	});
 
-    if (Number(quantity) === 0) {
-        if (existingDishItem) {
-            await cartItemsRepo.deleteCartItem(existingDishItem.id);
-            await cartRepo.updateCartBySessionId(sessionId);
-        }
+	if (Number(quantity) === 0) {
+		if (existingDishItem) {
+			await cartItemsRepo.deleteCartItem(existingDishItem.id);
+			await cartRepo.updateCartBySessionId(sessionId);
+		}
 
-        return getCartBySessionId(sessionId, locale);
-    }
+		return getCartBySessionId(sessionId, locale);
+	}
 
-    const itemPrice = await getDishItemPrice({ dish_id: Number(dishId) }, locale);
+	const itemPrice = await getDishItemPrice({ dish_id: Number(dishId) }, locale);
 
-    if (existingDishItem) {
-        await cartItemsRepo.updateCartItem({
-            id: existingDishItem.id,
-            dish_id: Number(dishId),
-            quantity: Number(quantity),
-            price: itemPrice,
-            item_type_id: 1,
-        });
-    } else {
-        await cartItemsRepo.createCartItem({
-            cart_id: cart.id,
-            dish_id: Number(dishId),
-            quantity: Number(quantity),
-            price: itemPrice,
-            item_type_id: 1,
-        });
-    }
+	if (existingDishItem) {
+		await cartItemsRepo.updateCartItem({
+			id: existingDishItem.id,
+			dish_id: Number(dishId),
+			quantity: Number(quantity),
+			price: itemPrice,
+			item_type_id: 1,
+		});
+	} else {
+		await cartItemsRepo.createCartItem({
+			cart_id: cart.id,
+			dish_id: Number(dishId),
+			quantity: Number(quantity),
+			price: itemPrice,
+			item_type_id: 1,
+		});
+	}
 
-    await cartRepo.updateCartBySessionId(sessionId);
-    return getCartBySessionId(sessionId, locale);
-}
+	await cartRepo.updateCartBySessionId(sessionId);
+	return getCartBySessionId(sessionId, locale);
+};
 
 // Clear cart for session
 export const clearCartBySessionId = async (sessionId, locale) => {
-    if (!sessionId) {
-        throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
-    }
+	if (!sessionId) {
+		throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
+	}
 
-    const cart = await cartRepo.getCartBySessionId(sessionId);
+	const cart = await cartRepo.getCartBySessionId(sessionId);
 
-    if (!cart) {
-        return false;
-    }
+	if (!cart) {
+		return false;
+	}
 
-    await cartItemsRepo.deleteCartItemsByCartId(cart.id);
-    await cartRepo.updateCartBySessionId(sessionId);
+	await cartItemsRepo.deleteCartItemsByCartId(cart.id);
+	await cartRepo.updateCartBySessionId(sessionId);
 
-    return true;
-}
+	return true;
+};
 
 export const addUserIdToCart = async (sessionId, userId, locale) => {
-    if (!sessionId) {
-        throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
-    }
+	if (!sessionId) {
+		throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
+	}
 
-    if (!userId) {
-        throw createHttpError(400, t(locale, 'cart', 'missing_user_id'));
-    }
+	if (!userId) {
+		throw createHttpError(400, t(locale, 'cart', 'missing_user_id'));
+	}
 
-    let cart = await cartRepo.getCartBySessionId(sessionId);
-    if (!cart) {
-        await cartRepo.createCartBySessionId(sessionId);
-        cart = await cartRepo.getCartBySessionId(sessionId);
-    }
+	let cart = await cartRepo.getCartBySessionId(sessionId);
+	if (!cart) {
+		await cartRepo.createCartBySessionId(sessionId);
+		cart = await cartRepo.getCartBySessionId(sessionId);
+	}
 
-    const sessionCartItems = await cartItemsRepo.getCartItemsByCartId(cart.id);
+	const sessionCartItems = await cartItemsRepo.getCartItemsByCartId(cart.id);
 
-    if (sessionCartItems.length === 0) {
-        await cartRepo.deleteCartById(cart.id);
-        await cartRepo.updateCartSessionIdByUserId(userId, sessionId);
-        const userCartInSession = await cartRepo.getCartBySessionId(sessionId);
+	if (sessionCartItems.length === 0) {
+		await cartRepo.deleteCartById(cart.id);
+		await cartRepo.updateCartSessionIdByUserId(userId, sessionId);
+		const userCartInSession = await cartRepo.getCartBySessionId(sessionId);
 
-        if (!userCartInSession) {
-            await cartRepo.createCartBySessionId(sessionId);
-        }
+		if (!userCartInSession) {
+			await cartRepo.createCartBySessionId(sessionId);
+		}
 
-        const refreshedCart = await cartRepo.getCartBySessionId(sessionId);
-        if (refreshedCart && !refreshedCart.user_id) {
-            await cartRepo.addUserIdToCart(sessionId, userId);
-        }
+		const refreshedCart = await cartRepo.getCartBySessionId(sessionId);
+		if (refreshedCart && !refreshedCart.user_id) {
+			await cartRepo.addUserIdToCart(sessionId, userId);
+		}
 
-        return;
-    }
+		return;
+	}
 
-    await cartRepo.addUserIdToCart(sessionId, userId);
-}
+	await cartRepo.addUserIdToCart(sessionId, userId);
+};
 
 export const checkoutCartBySessionId = async (sessionId, userId, checkoutData, locale) => {
-    if (!sessionId) {
-        throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
-    }
+	if (!sessionId) {
+		throw createHttpError(400, t(locale, 'cart', 'missing_session_id'));
+	}
 
-    if (!Number.isInteger(userId)) {
-        throw createHttpError(401, t(locale, 'access', 'unauthorized'));
-    }
+	if (!Number.isInteger(userId)) {
+		throw createHttpError(401, t(locale, 'access', 'unauthorized'));
+	}
 
-    if (!checkoutData.delivery_type_id) {
-        throw createHttpError(400, t(locale, 'cart', 'missing_checkout_data'));
-    }
+	if (!checkoutData.delivery_type_id) {
+		throw createHttpError(400, t(locale, 'cart', 'missing_checkout_data'));
+	}
 
-    if (Number(checkoutData.delivery_type_id) === 3 && !String(checkoutData.address).trim()) {
-        throw createHttpError(400, t(locale, 'cart', 'address_required_for_delivery'));
-    }
+	if (Number(checkoutData.delivery_type_id) === 3 && !String(checkoutData.address).trim()) {
+		throw createHttpError(400, t(locale, 'cart', 'address_required_for_delivery'));
+	}
 
-    const cart = await getCartBySessionId(sessionId, locale);
+	const cart = await getCartBySessionId(sessionId, locale);
 
-    if (!cart) {
-        throw createHttpError(404, t(locale, 'cart', 'cart_not_found'));
-    }
+	if (!cart) {
+		throw createHttpError(404, t(locale, 'cart', 'cart_not_found'));
+	}
 
-    if (!cart.items.length) {
-        throw createHttpError(400, t(locale, 'cart', 'cart_empty'));
-    }
+	if (!cart.items.length) {
+		throw createHttpError(400, t(locale, 'cart', 'cart_empty'));
+	}
 
-    const orderItems = cart.items.map((item) => {
-        if (item.type.type === 'custom') {
-            return {
-                dish_id: null,
-                name: item.type.name || 'Custom Combo',
-                quantity: Number(item.quantity),
-                price: Number(item.price),
-                item_type_id: item.type.id,
-                ingredients: (item.ingredients || []).map((ingredient) => ({
-                    ingredient_id: ingredient.ingredient.id,
-                    quantity: Number(ingredient.quantity),
-                    position: Number(ingredient.position),
-                })),
-            };
-        }
+	const orderItems = cart.items.map((item) => {
+		if (item.type.type === 'custom') {
+			return {
+				dish_id: null,
+				name: item.type.name || 'Custom Combo',
+				quantity: Number(item.quantity),
+				price: Number(item.price),
+				item_type_id: item.type.id,
+				ingredients: (item.ingredients || []).map((ingredient) => ({
+					ingredient_id: ingredient.ingredient.id,
+					quantity: Number(ingredient.quantity),
+					position: Number(ingredient.position),
+				})),
+			};
+		}
 
-        return {
-            dish_id: item.dish?.id || null,
-            name: item.dish?.name || '',
-            quantity: Number(item.quantity),
-            price: Number(item.price),
-            item_type_id: item.type.id,
-            ingredients: [],
-        };
-    });
+		return {
+			dish_id: item.dish?.id || null,
+			name: item.dish?.name || '',
+			quantity: Number(item.quantity),
+			price: Number(item.price),
+			item_type_id: item.type.id,
+			ingredients: [],
+		};
+	});
 
-    const order = await orderService.createOrder({
-        user_id: userId,
-        delivery_type_id: checkoutData.delivery_type_id,
-        address: String(checkoutData.address ?? '').trim(),
-        total_price: Number(cart.total_price),
-        order_items: orderItems,
-    });
+	const order = await orderService.createOrder({
+		user_id: userId,
+		delivery_type_id: checkoutData.delivery_type_id,
+		address: String(checkoutData.address ?? '').trim(),
+		total_price: Number(cart.total_price),
+		order_items: orderItems,
+	});
 
-    const userDiscountData = await userRepo.getUserDiscountStateById(userId);
+	const userDiscountData = await userRepo.getUserDiscountStateById(userId);
 
-    if (userDiscountData.is_stamp_discount_active) {
-        await userRepo.updateIsStampDiscountActive(userId, false);
-        await userRepo.updateStampCount(userId, 0);
-    } else {
-        const nextStampCount = userDiscountData.stamp_count + 1;
-        await userRepo.updateStampCount(userId, nextStampCount);
+	if (userDiscountData.is_stamp_discount_active) {
+		await userRepo.updateIsStampDiscountActive(userId, false);
+		await userRepo.updateStampCount(userId, 0);
+	} else {
+		const nextStampCount = userDiscountData.stamp_count + 1;
+		await userRepo.updateStampCount(userId, nextStampCount);
 
-        if (nextStampCount >= 5) {
-            await userRepo.updateIsStampDiscountActive(userId, true);
-        }
-    }
+		if (nextStampCount >= 5) {
+			await userRepo.updateIsStampDiscountActive(userId, true);
+		}
+	}
 
-    return order;
-}
+	return order;
+};
 
 export const getDeliveryTypes = async () => {
-    return cartRepo.getDeliveryTypes();
-}
+	return cartRepo.getDeliveryTypes();
+};
 
 // Get item price
 // item: { dish_id: 1, quantity: 2, item_type_id: 1 }
 const getItemPrice = async (item, locale) => {
-    try {
-        if (item.item_type_id === 1) {
-            return await getDishItemPrice(item, locale);
-        }
+	try {
+		if (item.item_type_id === 1) {
+			return await getDishItemPrice(item, locale);
+		}
 
-        if (item.item_type_id === 2) {
-            return await getCustomItemPrice(item, locale);
-        }
+		if (item.item_type_id === 2) {
+			return await getCustomItemPrice(item, locale);
+		}
 
-        throw new Error(t(locale, 'cart', 'invalid_cart_item_type'));
-    } catch (error) {
-        throw toInvalidCartDataError(error, locale);
-    }
-}
+		throw new Error(t(locale, 'cart', 'invalid_cart_item_type'));
+	} catch (error) {
+		throw toInvalidCartDataError(error, locale);
+	}
+};
 
 // Get saved dish price from DB
 const getDishItemPrice = async (item, locale) => {
-    // dish: { id: 1, name: 'Sake Sashimi', price: 12 }
-    const dish = await cartItemsRepo.getDishById(item.dish_id);
+	// dish: { id: 1, name: 'Sake Sashimi', price: 12 }
+	const dish = await cartItemsRepo.getDishById(item.dish_id);
 
-    if (!dish) {
-        throw new Error(t(locale, 'cart', 'dish_not_found'));
-    }
+	if (!dish) {
+		throw new Error(t(locale, 'cart', 'dish_not_found'));
+	}
 
-    return Number(dish.price);
-}
+	return Number(dish.price);
+};
 
 // Calculate custom item price from selected ingredients
 // item: { item_type_id: 2, quantity: 1, ingredients: [{ ingredient_id: 1, quantity: 1, position: 1 }] }
 const getCustomItemPrice = async (item, locale) => {
-    // itemIngredients: [{ ingredient_id: 1, quantity: 1, position: 1 }]
-    const itemIngredients = item.ingredients || [];
-    // itemIngredientIds: [1, 12, 21]
-    const itemIngredientIds = itemIngredients.map((ingredient) => ingredient.ingredient_id);
+	// itemIngredients: [{ ingredient_id: 1, quantity: 1, position: 1 }]
+	const itemIngredients = item.ingredients || [];
+	// itemIngredientIds: [1, 12, 21]
+	const itemIngredientIds = itemIngredients.map((ingredient) => ingredient.ingredient_id);
 
-    // ingredients: [{ id: 1, name: 'Shari Rice', price: 5 }]
-    const ingredients = await cartItemIngredientsRepository.getIngredientsByIds(itemIngredientIds);
+	// ingredients: [{ id: 1, name: 'Shari Rice', price: 5 }]
+	const ingredients = await cartItemIngredientsRepository.getIngredientsByIds(itemIngredientIds);
 
-    // totalPrice: 23
-    let totalPrice = 0;
+	// totalPrice: 23
+	let totalPrice = 0;
 
-    // itemIngredient: { ingredient_id: 1, quantity: 1, position: 1 }
-    for (const itemIngredient of itemIngredients) {
-        // ingredient: { id: 1, name: 'Shari Rice', price: 5 }
-        const ingredient = ingredients.find(
-            (dbIngredient) => dbIngredient.id === itemIngredient.ingredient_id
-        );
+	// itemIngredient: { ingredient_id: 1, quantity: 1, position: 1 }
+	for (const itemIngredient of itemIngredients) {
+		// ingredient: { id: 1, name: 'Shari Rice', price: 5 }
+		const ingredient = ingredients.find(
+			(dbIngredient) => dbIngredient.id === itemIngredient.ingredient_id
+		);
 
-        if (!ingredient) {
-            throw new Error(t(locale, 'cart', 'ingredient_not_found'));
-        }
+		if (!ingredient) {
+			throw new Error(t(locale, 'cart', 'ingredient_not_found'));
+		}
 
-        totalPrice += Number(ingredient.price) * Number(itemIngredient.quantity);
-    }
+		totalPrice += Number(ingredient.price) * Number(itemIngredient.quantity);
+	}
 
-    return totalPrice;
-}
+	return totalPrice;
+};
 
 // Get all ingredients for cart items
 // items: [{ id: 1, price: 12, quantity: 2 }]
 const getCartIngredients = async (items) => {
-    // ingredients: [{ id: 1, cart_item_id: 2, ingredient_id: 1, quantity: 1, position: 1 }]
-    let ingredients = [];
+	// ingredients: [{ id: 1, cart_item_id: 2, ingredient_id: 1, quantity: 1, position: 1 }]
+	let ingredients = [];
 
-    for (const item of items) {
-        // itemIngredients: [{ id: 1, cart_item_id: 2, ingredient_id: 1, quantity: 1, position: 1 }]
-        const itemIngredients = await cartItemIngredientsRepository.getCartItemIngredientsByCartItemId(item.id);
-        ingredients = ingredients.concat(itemIngredients);
-    }
+	for (const item of items) {
+		// itemIngredients: [{ id: 1, cart_item_id: 2, ingredient_id: 1, quantity: 1, position: 1 }]
+		const itemIngredients =
+			await cartItemIngredientsRepository.getCartItemIngredientsByCartItemId(item.id);
+		ingredients = ingredients.concat(itemIngredients);
+	}
 
-    return ingredients;
-}
+	return ingredients;
+};
 
 // Create ingredients for one cart item
 // cartItemId: 2
 // ingredients: [{ ingredient_id: 1, quantity: 1, position: 1 }]
 const createCartItemIngredients = async (cartItemId, ingredients) => {
-    for (const ingredient of ingredients) {
-        await cartItemIngredientsRepository.createCartItemIngredient({
-            cart_item_id: cartItemId,
-            ingredient_id: ingredient.ingredient_id,
-            quantity: ingredient.quantity,
-            position: ingredient.position,
-        });
-    }
-}
+	for (const ingredient of ingredients) {
+		await cartItemIngredientsRepository.createCartItemIngredient({
+			cart_item_id: cartItemId,
+			ingredient_id: ingredient.ingredient_id,
+			quantity: ingredient.quantity,
+			position: ingredient.position,
+		});
+	}
+};
 
 // Delete ingredients for one cart item
 // ingredients: [{ id: 1, cart_item_id: 2, ingredient_id: 1, quantity: 1, position: 1 }]
 const deleteCartItemIngredients = async (ingredients) => {
-    for (const ingredient of ingredients) {
-        await cartItemIngredientsRepository.deleteCartItemIngredient(ingredient.id);
-    }
-}
+	for (const ingredient of ingredients) {
+		await cartItemIngredientsRepository.deleteCartItemIngredient(ingredient.id);
+	}
+};
 
 // Calculate final cart total price from cart items
 // items: [{ id: 1, price: 12, quantity: 2 }]
 const getCartTotalPrice = async (cart, items) => {
-    try {
-        let hasStampDiscount = false;
-        if (cart?.user_id) {
-            const userDiscountData = await userRepo.getUserDiscountStateById(cart.user_id);
-            hasStampDiscount = userDiscountData?.is_stamp_discount_active;
-        }
+	try {
+		let hasStampDiscount = false;
+		if (cart?.user_id) {
+			const userDiscountData = await userRepo.getUserDiscountStateById(cart.user_id);
+			hasStampDiscount = userDiscountData?.is_stamp_discount_active;
+		}
 
-        const dailySpecials = await dailySpecialRepo.getDailySpecial();
-        const dailySpecialsIds = dailySpecials.map((dish) => Number(dish.id));
+		const dailySpecials = await dailySpecialRepo.getDailySpecial();
+		const dailySpecialsIds = dailySpecials.map((dish) => Number(dish.id));
 
-        return cartEngine.calculateCartTotalPrice(items, hasStampDiscount, dailySpecialsIds);
-
-    } catch (error) {
-        throw toInvalidCartDataError(error);
-    }
-}
+		return cartEngine.calculateCartTotalPrice(items, hasStampDiscount, dailySpecialsIds);
+	} catch (error) {
+		throw toInvalidCartDataError(error);
+	}
+};
 
 const toInvalidCartDataError = (error, locale) => {
-    console.error('Cart validation failed:', error);
-    return new Error(t(locale, 'common', 'internal_error'));
-}
+	console.error('Cart validation failed:', error);
+	return new Error(t(locale, 'common', 'internal_error'));
+};

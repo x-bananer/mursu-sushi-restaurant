@@ -1,4 +1,4 @@
-import { select, execute } from "../../db.js";
+import { select, execute } from '../../db.js';
 
 /**
  * @typedef {import("../../../../../types/db/dish.type.js").DailySpecials} DailySpecials
@@ -67,7 +67,7 @@ export async function createDailySpecial({ dishId, validOn }) {
 		INSERT INTO daily_specials (dish_id, valid_on)
 		VALUES (?, ?);
 		`,
-		[dishId, validOn],
+		[dishId, validOn]
 	);
 
 	return result.insertId;
@@ -79,7 +79,7 @@ export async function deleteDailySpecialByValidOn(validOn) {
 		DELETE FROM daily_specials
 		WHERE valid_on = ?;
 		`,
-		[validOn],
+		[validOn]
 	);
 
 	return result.affectedRows;
@@ -93,7 +93,7 @@ export async function getDailySpecialById(id) {
 		WHERE id = ?
 		LIMIT 1;
 		`,
-		[id],
+		[id]
 	);
 
 	return rows[0] ?? null;
@@ -106,7 +106,7 @@ export async function updateDailySpecialByDishId(dishId, validOn) {
 		SET valid_on = ?
 		WHERE dish_id = ?;
 		`,
-		[validOn, dishId],
+		[validOn, dishId]
 	);
 
 	return result.affectedRows;
@@ -118,7 +118,7 @@ export async function deleteDailySpecialByDishId(dishId) {
 		DELETE FROM daily_specials
 		WHERE dish_id = ?;
 		`,
-		[dishId],
+		[dishId]
 	);
 
 	return result.affectedRows;

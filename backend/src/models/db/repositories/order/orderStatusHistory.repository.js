@@ -10,17 +10,17 @@ import { select, execute } from '../../db.js';
  * @returns {Promise<OrderStatusHistory[]>}
  */
 export async function getHistoryByOrderId(orderId) {
-  const rows = await select(
-    `
+	const rows = await select(
+		`
     SELECT *
     FROM order_status_history
     WHERE order_id = ?
     ORDER BY changed_at ASC
     `,
-    [orderId]
-  );
+		[orderId]
+	);
 
-  return /** @type {OrderStatusHistory[]} */ (rows);
+	return /** @type {OrderStatusHistory[]} */ (rows);
 }
 
 /**
@@ -29,12 +29,12 @@ export async function getHistoryByOrderId(orderId) {
  * @param {number} statusId
  */
 export async function insertStatusChange(orderId, statusId, conn) {
-  return await execute(
-    `
+	return await execute(
+		`
     INSERT INTO order_status_history (order_id, status_id, changed_at)
     VALUES (?, ?, NOW())
     `,
-    [orderId, statusId],
-    conn
-  );
+		[orderId, statusId],
+		conn
+	);
 }

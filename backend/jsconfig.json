@@ -1,23 +1,23 @@
 {
-  "compilerOptions": {
-    "checkJs": true,
-    "strict": false,
-    "module": "Node16",
-    "moduleResolution": "node16",
-    "target": "ES2020",
+	"compilerOptions": {
+		"checkJs": true,
+		"strict": false,
+		"module": "Node16",
+		"moduleResolution": "node16",
+		"target": "ES2020",
 
-    "paths": {
-      "@controllers/*": ["./src/controllers/*"],
-      "@services/*": ["./src/services/*"],
-      "@repositories/*": ["./src/models/db/repositories/*"],
-      "@engine/*": ["./src/models/engine/*"],
-      "@utils/*": ["./src/utils/*"],
+		"paths": {
+			"@controllers/*": ["./src/controllers/*"],
+			"@services/*": ["./src/services/*"],
+			"@repositories/*": ["./src/models/db/repositories/*"],
+			"@engine/*": ["./src/models/engine/*"],
+			"@utils/*": ["./src/utils/*"],
 
-      "@dto/*": ["./types/dto/*"],
-      "@db-types/*": ["./types/db/*"],
-      "@controllers-types/*": ["./types/controllers/*"],
-    }
-  },
-  "include": ["./src/**/*.js"],
-  "exclude": ["node_modules"]
+			"@dto/*": ["./types/dto/*"],
+			"@db-types/*": ["./types/db/*"],
+			"@controllers-types/*": ["./types/controllers/*"]
+		}
+	},
+	"include": ["./src/**/*.js"],
+	"exclude": ["node_modules"]
 }

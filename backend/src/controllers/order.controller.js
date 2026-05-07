@@ -19,12 +19,12 @@ import { t } from '../i18n/messages.js';
  * @apiSuccess {Object[]} orders Active orders.
  */
 export async function list(req, res, next) {
-  try {
-    const orders = await orderService.getActiveOrders();
-    res.json({ orders });
-  } catch (err) {
-    next(err);
-  }
+	try {
+		const orders = await orderService.getActiveOrders();
+		res.json({ orders });
+	} catch (err) {
+		next(err);
+	}
 }
 
 /**
@@ -38,21 +38,21 @@ export async function list(req, res, next) {
  */
 export async function get(req, res, next) {
 	try {
-    const orderId = Number(req.params.id);
-	if (Number.isNaN(orderId)) {
-      return res.status(400).json({ message: t(req.locale, 'order', 'invalid_order_id') });
-    }
+		const orderId = Number(req.params.id);
+		if (Number.isNaN(orderId)) {
+			return res.status(400).json({ message: t(req.locale, 'order', 'invalid_order_id') });
+		}
 
-    const order = await orderService.getOrder(orderId);
+		const order = await orderService.getOrder(orderId);
 
-    if (!order) {
-      return res.status(404).json({ message: t(req.locale, 'order', 'order_not_found') });
-    }
+		if (!order) {
+			return res.status(404).json({ message: t(req.locale, 'order', 'order_not_found') });
+		}
 
-    res.json({ order });
-  } catch (err) {
-    next(err);
-  }
+		res.json({ order });
+	} catch (err) {
+		next(err);
+	}
 }
 
 /**
@@ -65,18 +65,18 @@ export async function get(req, res, next) {
  */
 export async function updateStatus(req, res, next) {
 	try {
-    const orderId = Number(req.params.id);
-    const { status } = req.body;
-	if (Number.isNaN(orderId)) {
-      return res.status(400).json({ message: t(req.locale, 'order', 'invalid_order_id') });
-    }
+		const orderId = Number(req.params.id);
+		const { status } = req.body;
+		if (Number.isNaN(orderId)) {
+			return res.status(400).json({ message: t(req.locale, 'order', 'invalid_order_id') });
+		}
 
-    await orderService.updateOrderStatus(orderId, status, req.locale);
+		await orderService.updateOrderStatus(orderId, status, req.locale);
 
-    res.json({ success: true });
-  } catch (err) {
-    next(err);
-  }
+		res.json({ success: true });
+	} catch (err) {
+		next(err);
+	}
 }
 
 /**
@@ -86,12 +86,12 @@ export async function updateStatus(req, res, next) {
  * @apiSuccess {Object[]} stats Count items by status.
  */
 export async function statusCount(req, res, next) {
-  try {
-    const stats = await orderService.getOrderCountsByStatus();
-    res.json({ stats });
-  } catch (err) {
-    next(err);
-  }
+	try {
+		const stats = await orderService.getOrderCountsByStatus();
+		res.json({ stats });
+	} catch (err) {
+		next(err);
+	}
 }
 
 /**
@@ -101,19 +101,19 @@ export async function statusCount(req, res, next) {
  * @apiSuccess {String} event Stream events.
  */
 export function streamAdmOrders(req, res) {
-  res.writeHead(200, {
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
-    Connection: 'keep-alive',
-  });
+	res.writeHead(200, {
+		'Content-Type': 'text/event-stream',
+		'Cache-Control': 'no-cache',
+		Connection: 'keep-alive',
+	});
 
-  res.write('\n');
+	res.write('\n');
 
-  // ADMIN scope subscription (NO orderId needed)
-  tracker.subscribe(res, {
-    scope: 'admin',
-    userId: req.user?.id ?? null,
-  });
+	// ADMIN scope subscription (NO orderId needed)
+	tracker.subscribe(res, {
+		scope: 'admin',
+		userId: req.user?.id ?? null,
+	});
 }
 
 /**
@@ -127,12 +127,12 @@ export function streamAdmOrders(req, res) {
  * @apiSuccess (201) {Object} order Created order.
  */
 export async function create(req, res, next) {
-  try {
-    const order = await orderService.createOrder(req.body);
-    res.status(201).json({ order });
-  } catch (err) {
-    next(err);
-  }
+	try {
+		const order = await orderService.createOrder(req.body);
+		res.status(201).json({ order });
+	} catch (err) {
+		next(err);
+	}
 }
 
 /**
@@ -145,17 +145,17 @@ export async function create(req, res, next) {
  */
 export async function getActive(req, res, next) {
 	try {
-	if (!req.user) {
-      return res.status(401).json({ message: t(req.locale, 'access', 'unauthorized') });
-    }
-    const userId = req.user.id;
+		if (!req.user) {
+			return res.status(401).json({ message: t(req.locale, 'access', 'unauthorized') });
+		}
+		const userId = req.user.id;
 
-    const order = await orderService.getActiveOrderByUser(userId);
+		const order = await orderService.getActiveOrderByUser(userId);
 
-    res.json({ order });
-  } catch (err) {
-    next(err);
-  }
+		res.json({ order });
+	} catch (err) {
+		next(err);
+	}
 }
 
 /**
@@ -167,17 +167,17 @@ export async function getActive(req, res, next) {
  */
 export async function tracking(req, res, next) {
 	try {
-    const orderId = Number(req.params.id);
-	if (Number.isNaN(orderId)) {
-      return res.status(400).json({ message: t(req.locale, 'order', 'invalid_order_id') });
-    }
+		const orderId = Number(req.params.id);
+		if (Number.isNaN(orderId)) {
+			return res.status(400).json({ message: t(req.locale, 'order', 'invalid_order_id') });
+		}
 
-    const history = await orderService.getOrderHistory(orderId);
+		const history = await orderService.getOrderHistory(orderId);
 
-    res.json({ history });
-  } catch (err) {
-    next(err);
-  }
+		res.json({ history });
+	} catch (err) {
+		next(err);
+	}
 }
 
 /**
@@ -189,25 +189,25 @@ export async function tracking(req, res, next) {
  */
 
 export function streamOrders(req, res) {
-  res.writeHead(200, {
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
-    Connection: 'keep-alive',
-  });
+	res.writeHead(200, {
+		'Content-Type': 'text/event-stream',
+		'Cache-Control': 'no-cache',
+		Connection: 'keep-alive',
+	});
 
-  res.write('\n');
+	res.write('\n');
 
-  const orderId = Number(req.params.id);
+	const orderId = Number(req.params.id);
 
-  if (Number.isNaN(orderId)) {
-    return res.status(400).json({ message: t(req.locale, 'order', 'invalid_order_id') });
-  }
+	if (Number.isNaN(orderId)) {
+		return res.status(400).json({ message: t(req.locale, 'order', 'invalid_order_id') });
+	}
 
-  tracker.subscribe(res, {
-    scope: 'user',
-    orderId,
-    userId: req.user?.id ?? null
-  });
+	tracker.subscribe(res, {
+		scope: 'user',
+		orderId,
+		userId: req.user?.id ?? null,
+	});
 }
 
 /**
@@ -220,27 +220,27 @@ export function streamOrders(req, res) {
  * @apiSuccess {Object} estimate Estimate payload.
  */
 export async function estimate(req, res, next) {
-  try {
-    const orderId = Number(req.params.id);
+	try {
+		const orderId = Number(req.params.id);
 
-    const lat = Number(req.params.lat);
-    const lon = Number(req.params.lon);
+		const lat = Number(req.params.lat);
+		const lon = Number(req.params.lon);
 
-    if (Number.isNaN(orderId)) {
-      return res.status(400).json({ message: t(req.locale, 'order', 'invalid_order_id') });
-    }
+		if (Number.isNaN(orderId)) {
+			return res.status(400).json({ message: t(req.locale, 'order', 'invalid_order_id') });
+		}
 
-    let userCoords = null;
-    if (!Number.isNaN(lat) && !Number.isNaN(lon)) {
-      userCoords = { lat, lon };
-    }
+		let userCoords = null;
+		if (!Number.isNaN(lat) && !Number.isNaN(lon)) {
+			userCoords = { lat, lon };
+		}
 
-    const result = await orderService.getOrderRoute(orderId, userCoords, req.locale);
+		const result = await orderService.getOrderRoute(orderId, userCoords, req.locale);
 
-    res.json({ estimate: result });
-  } catch (err) {
-    next(err);
-  }
+		res.json({ estimate: result });
+	} catch (err) {
+		next(err);
+	}
 }
 
 /**
@@ -254,36 +254,32 @@ export async function estimate(req, res, next) {
  * @apiSuccess {Object} route Route payload.
  */
 export async function routeByMode(req, res, next) {
-  try {
-    const orderId = Number(req.params.id);
-    const mode = req.params.mode;
+	try {
+		const orderId = Number(req.params.id);
+		const mode = req.params.mode;
 
-    const lat = Number(req.params.lat);
-    const lon = Number(req.params.lon);
+		const lat = Number(req.params.lat);
+		const lon = Number(req.params.lon);
 
-    if (Number.isNaN(orderId)) {
-      return res.status(400).json({ message: t(req.locale, 'order', 'invalid_order_id') });
-    }
+		if (Number.isNaN(orderId)) {
+			return res.status(400).json({ message: t(req.locale, 'order', 'invalid_order_id') });
+		}
 
-    if (!mode) {
-      return res.status(400).json({ message: t(req.locale, 'order', 'mode_required') });
-    }
+		if (!mode) {
+			return res.status(400).json({ message: t(req.locale, 'order', 'mode_required') });
+		}
 
-    const userCoords =
-      !Number.isNaN(lat) && !Number.isNaN(lon)
-        ? { lat, lon }
-        : null;
+		const userCoords = !Number.isNaN(lat) && !Number.isNaN(lon) ? { lat, lon } : null;
 
-    const result = await orderService.getOrderRouteByMode(
-      orderId,
-      userCoords,
-      mode,
-      req.locale
-    );
+		const result = await orderService.getOrderRouteByMode(
+			orderId,
+			userCoords,
+			mode,
+			req.locale
+		);
 
-    res.json({ route: result });
-
-  } catch (err) {
-    next(err);
-  }
+		res.json({ route: result });
+	} catch (err) {
+		next(err);
+	}
 }

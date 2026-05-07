@@ -1,7 +1,7 @@
 /**
  * @typedef {import('../../../types/dto/cart.type.js').CartDTO} CartDTO
  */
-import { t } from "../../i18n/messages.js";
+import { t } from '../../i18n/messages.js';
 
 // Make cart DTO (data transfer object) - this is the cart shape that will be sent to the frontend
 // cart: { id, user_id, session_id, created_at, updated_at }
@@ -9,7 +9,7 @@ import { t } from "../../i18n/messages.js";
 // ingredients: [{ id, cart_item_id, ingredient_id, quantity, position, ingredient_name, ingredient_price }]
 export const toCartDTO = (cart, items, ingredients, totalPrice, discount, locale) => {
 	if (!cart) {
-		throw new Error(t(locale, "cart", "cart_required"));
+		throw new Error(t(locale, 'cart', 'cart_required'));
 	}
 
 	// ingredientsByCartItemId: { 2: [{ id: 1, ingredient: { id: 1, name: 'Shari Rice', price: 5 }, quantity: 1, position: 1 }] }
@@ -68,7 +68,7 @@ export const toCartDTO = (cart, items, ingredients, totalPrice, discount, locale
 				created_at: item.dish_created_at || null,
 				badges: [],
 				is_favorite: false,
-			}
+			};
 			cartDtoItems.push(cartDtoItem);
 		}
 	}
@@ -83,4 +83,4 @@ export const toCartDTO = (cart, items, ingredients, totalPrice, discount, locale
 		updated_at: cart.updated_at,
 		items: cartDtoItems,
 	};
-}
+};
