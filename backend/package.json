@@ -7,6 +7,10 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "db:setup": "node src/models/db/schemas/setup.db.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --write",
+    "fix": "eslint . --fix && prettier . --write",
     "test:integration": "NODE_ENV=test node --experimental-vm-modules ./node_modules/jest/bin/jest.js --config jest.config.js --runInBand --detectOpenHandles",
     "test:user-flow": "node tests/user.test.js",
     "test:combo-flow": "node tests/combo.test.js"
@@ -28,8 +32,12 @@
     "stripe": "^22.1.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "eslint": "^9.39.4",
+    "globals": "^17.4.0",
     "jest": "^30.3.0",
     "nodemon": "^3.1.14",
+    "prettier": "^3.6.2",
     "supertest": "^7.2.2"
   }
 }
