@@ -20,6 +20,7 @@ import {
 } from "../../../hooks/apiHooks/adm/dailySpecial";
 
 export default function WeeklySpecial() {
+	const { t } = useTranslation();
 	const {
 		dishes,
 		loading: dishesLoading,
@@ -86,7 +87,7 @@ export default function WeeklySpecial() {
 	/* ── STATES ───────────────────────────── */
 
 	if (dishesLoading || specialsLoading) {
-		return <Loader text="Loading weekly specials..." />;
+		return <Loader text={t("admin.loading_dishes")} />;
 	}
 
 	if (dishesError || specialsError) {
@@ -100,8 +101,8 @@ export default function WeeklySpecial() {
 	if (!dishes.length) {
 		return (
 			<EmptyState
-				title="No dishes available"
-				description="Create dishes before assigning weekly specials."
+				title={t("admin.no_dishes_title")}
+				description={t("admin.no_dishes_description")}
 			/>
 		);
 	}
@@ -112,7 +113,7 @@ export default function WeeklySpecial() {
 		const dishId = inputs[date];
 
 		if (!dishId) {
-			setToast("Please select a dish first");
+			setToast(t("admin.select_dish_first"));
 			return;
 		}
 
@@ -121,9 +122,9 @@ export default function WeeklySpecial() {
 
 			await save(Number(dishId), date);
 
-			setToast("Special saved successfully");
+			setToast(t("admin.special_saved"));
 		} catch (err) {
-			setToast(err.message || "Failed to save special");
+			setToast(err.message || t("admin.special_save_failed"));
 		} finally {
 			setSavingDay(null);
 		}
@@ -133,7 +134,7 @@ export default function WeeklySpecial() {
 		const dishId = inputs[date];
 
 		if (!dishId) {
-			setToast("Nothing to delete");
+			setToast(t("admin.nothing_to_delete"));
 			return;
 		}
 
@@ -147,9 +148,9 @@ export default function WeeklySpecial() {
 				[date]: "",
 			}));
 
-			setToast("Special deleted successfully");
+			setToast(t("admin.special_deleted"));
 		} catch (err) {
-			setToast(err.message || "Failed to delete special");
+			setToast(err.message || t("admin.special_delete_failed"));
 		} finally {
 			setSavingDay(null);
 		}
@@ -160,7 +161,7 @@ export default function WeeklySpecial() {
 	return (
 		<section className="admin-main" id="page-weekly-special">
 			<h2 className="admin-section-title">
-				Weekly Specials
+				{t("admin.weekly_specials")}
 			</h2>
 
 			<div className="weekly-grid">
@@ -185,7 +186,7 @@ export default function WeeklySpecial() {
 							disabled={savingDay === day.date}
 						>
 							<option value="">
-								Select dish
+								{t("admin.select_dish")}
 							</option>
 
 							{dishes.map((dish) => (
@@ -209,8 +210,8 @@ export default function WeeklySpecial() {
 								}
 							>
 								{savingDay === day.date
-									? "Saving..."
-									: "Save"}
+									? t("admin.saving")
+									: t("common.save")}
 							</Button>
 
 							<Button
@@ -221,7 +222,7 @@ export default function WeeklySpecial() {
 									deleteLoading
 								}
 							>
-								Delete
+								{t("common.delete")}
 							</Button>
 						</div>
 					</div>
@@ -237,4 +238,3 @@ export default function WeeklySpecial() {
 		</section>
 	);
 }
-
