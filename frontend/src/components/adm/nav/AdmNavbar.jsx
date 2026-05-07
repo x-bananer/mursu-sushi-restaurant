@@ -24,7 +24,7 @@ export default function AdminNavbar() {
 		<NavBase
 			center={<Logo />}
 			right={[
-				{ to: "/user-profile", content: <UserIcon />, isIcon: true },
+				{ to: "/adm/profile", content: <UserIcon />, isIcon: true },
 			]}
 		/>
 	);

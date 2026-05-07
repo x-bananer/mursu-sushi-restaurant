@@ -69,6 +69,12 @@ export default function UserProfile() {
 		return <ErrorState message={error} onRetry={getProfile} />;
 	}
 
+	if (profile && profile.role_id !== 1) {
+		return (
+			<ErrorState message="User type must be customer account." />
+		);
+	}
+
 	const displayName = profile?.name || "Guest";
 	const regDate = profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : "";
 	const metaText = profile?.email ? `${profile.email} ${regDate ? `• Joined ${regDate}` : ""}` : "";
@@ -110,7 +116,6 @@ export default function UserProfile() {
 					</div>
 				</section>
 
-				{profile?.role_id ===1 && (
 				<section className="profile__stats">
 					<LoyaltyStamps
 						stampCount={profile?.stamp_count || 0}
@@ -135,7 +140,6 @@ export default function UserProfile() {
 						</section>
 					</div>
 				</section>
-				)}
 
 			</div>
 
