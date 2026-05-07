@@ -1,4 +1,5 @@
 import Button from "../../shared/button/Button";
+import { useTranslation } from "react-i18next";
 
 export default function ActionButtons({
   onEdit,
@@ -6,6 +7,8 @@ export default function ActionButtons({
   onToggle,
   isActive,
 }) {
+  const { t } = useTranslation();
+
   return (
     <div className="table__actions">
       {onToggle && (
@@ -15,7 +18,7 @@ export default function ActionButtons({
           className="btn--xsmall"
           onClick={onToggle}
         >
-          {isActive ? "Not available" : "available"}
+          {isActive ? t("common.available") : t("common.not_available")}
         </Button>
       )}
 
@@ -26,7 +29,7 @@ export default function ActionButtons({
           className="btn--xsmall"
           onClick={onEdit}
         >
-          Edit
+          {t("common.edit")}
         </Button>
       )}
 
@@ -38,7 +41,7 @@ export default function ActionButtons({
           className="btn--xsmall"
           onClick={onDelete}
         >
-          Delete
+          {t("common.delete")}
         </Button>
       )}
     </div>

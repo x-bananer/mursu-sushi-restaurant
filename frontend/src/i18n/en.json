@@ -17,7 +17,8 @@
     "disabled": "Disabled",
     "enable": "Enable",
     "disable": "Disable",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "not_available": "Not available"
   },
   "auth": {
     "sign_in": "Sign in",
