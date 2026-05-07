@@ -83,22 +83,20 @@ router.delete('/adm/ingredients/:id', auth, adminOnly, comboController.deleteIng
 // ORDERS
 // ─────────────────────────────────────────────────────────────────────────────
 /* ETA + ROUTING (USER TRACKING UI) */
-router.get('/orders/:id/estimate/:lat/:lon', orderController.estimate);
-router.get('/orders/:id/route/:mode/:lat/:lon', orderController.routeByMode);
+router.get('/orders/:id/estimate/:lat/:lon', auth, orderController.estimate);
+router.get('/orders/:id/route/:mode/:lat/:lon',  auth, orderController.routeByMode);
 /* LOGGED USER */
 router.get('/orders/active', auth, orderController.getActive);
-router.get('/orders/:id/tracking', orderController.tracking);
+router.get('/orders/:id/tracking', auth, orderController.tracking);
 /* REAL TIME ORDER TRACKER STREAMER */
-router.get('/orders/:id/stream', orderController.streamOrders);
+router.get('/orders/:id/stream', orderController.streamOrders); // SSE do not support headers
 
 /* ADMIN only */
-router.get('/adm/orders/stream', orderController.streamAdmOrders);
-router.get('/adm/orders/status/count', auth, orderController.statusCount);
-router.patch('/adm/orders/:id/status', orderController.updateStatus);
+router.get('/adm/orders/stream', orderController.streamAdmOrders); // SSE do not support headers
+router.get('/adm/orders/status/count', auth, adminOnly, orderController.statusCount);
+router.patch('/adm/orders/:id/status', auth, adminOnly, orderController.updateStatus);
 router.get('/adm/orders/:id', auth, adminOnly, orderController.get);
-router.get('/adm/orders', orderController.list);
-// remove create from front end access once cart is implemented:
-router.post('/adm/orders', orderController.create);
+router.get('/adm/orders', auth, adminOnly, orderController.list);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CART
