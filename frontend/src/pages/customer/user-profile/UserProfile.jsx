@@ -124,7 +124,7 @@ export default function UserProfile() {
 
 					<div className="profile__stats-side">
 						{profile?.is_stamp_discount_active === 0 ? (
-							<section className="profile-stat-card">
+							<section className="profile-stat-card profile-stat-card--light">
 								<p className="profile-stat-card__label">You have no active discount</p>
 							</section>
 							) : (
@@ -133,11 +133,6 @@ export default function UserProfile() {
 									<p className="profile-stat-card__value">10% off</p>
 								</section>
 							)}
-
-						<section className="profile-stat-card profile-stat-card--light">
-							<p className="profile-stat-card__label">Rewards Earned</p>
-							<p className="profile-stat-card__value">{profile?.stamp_count || 0}</p>
-						</section>
 					</div>
 				</section>
 
