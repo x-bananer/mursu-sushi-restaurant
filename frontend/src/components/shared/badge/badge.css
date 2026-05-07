@@ -16,3 +16,8 @@
   border-color: var(--color-light-gray);
   color: var(--color-dark-gray);
 }
+
+.card-base--light .badge {
+  color: var(--color-black);
+  border-color: var(--color-gray);
+}

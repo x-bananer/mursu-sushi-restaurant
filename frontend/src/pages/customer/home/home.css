@@ -175,14 +175,22 @@
 
 .home-hero__title--erase::after {
   right: -10px;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7));
+  background: linear-gradient(
+    to right,
+    rgba(var(--title-fade-rgb), 0),
+    rgba(var(--title-fade-rgb), 0.7)
+  );
   filter: blur(10px);
   opacity: 0.85;
 }
 
 .home-hero__title--reveal::after {
   left: -10px;
-  background: linear-gradient(to left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7));
+  background: linear-gradient(
+    to left,
+    rgba(var(--title-fade-rgb), 0),
+    rgba(var(--title-fade-rgb), 0.7)
+  );
   filter: blur(10px);
   opacity: 0.85;
 }
@@ -279,6 +287,10 @@
   max-width: 500px;
   height: auto;
   margin-top: -420px;
+}
+
+.light-theme .home-bonsai__image {
+  filter: brightness(0.72) contrast(1.06) saturate(0.92);
 }
 
 /* Home Info Cards Component */
