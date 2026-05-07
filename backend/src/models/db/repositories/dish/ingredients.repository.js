@@ -10,7 +10,8 @@ export async function getIngredients() {
         ingredients.id,
         ingredients.name,
         ingredients.ingredient_type_id,
-        ingredients.price
+        ingredients.price,
+		ingredients.is_available
         FROM ingredients`
     );
 
@@ -35,7 +36,8 @@ export async function getIngredientById(id) {
         ingredients.id,
         ingredients.name,
         ingredients.ingredient_type_id,
-        ingredients.price
+        ingredients.price,
+		ingredients.is_available
         FROM ingredients
         WHERE ingredients.id = ?`,
         [id]
@@ -72,6 +74,11 @@ export async function updateIngredientById(id, updates = {}) {
         updatingFields.push("ingredient_type_id = ?");
         params.push(updates.ingredient_type_id);
     }
+
+	if (updates.is_available !== undefined) {
+    	updatingFields.push("is_available = ?");
+    	params.push(updates.is_available ? 1 : 0);
+	}
 
     if (updatingFields.length === 0) {
         return 0;
