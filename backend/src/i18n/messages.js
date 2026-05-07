@@ -52,6 +52,7 @@ const messages = {
 			each_ingredient_quantity_positive: "Each ingredient quantity must be > 0",
 			each_ingredient_position_positive: "Each ingredient position must be > 0",
 			ingredient_not_found_by_id: "Ingredient #{id} not found",
+			ingredient_unavailable: "Ingredient is unavailable",
 		},
 		dish: {
 			valid_category_id_required: "Valid category id is required",
@@ -192,6 +193,7 @@ const messages = {
 			each_ingredient_position_positive:
 				"Jokaisen ainesosan asema pitää olla > 0",
 			ingredient_not_found_by_id: "Ainesosaa #{id} ei löytynyt",
+			ingredient_unavailable: "Ainesosa ei ole saatavilla",
 		},
 		dish: {
 			valid_category_id_required: "Kelvollinen kategoria-id vaaditaan",
