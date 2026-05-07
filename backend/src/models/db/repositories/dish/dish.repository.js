@@ -16,8 +16,8 @@ export async function getDishes() {
 		dishes.created_at,
 		JSON_ARRAYAGG(
 			JSON_OBJECT(
-				"id", badge.id,
-				"name", badge.name
+				'id', badge.id,
+				'name', badge.name
 			)
 		) AS badges
 	FROM dishes
@@ -119,8 +119,8 @@ export async function getDish(dishId) {
   			dishes.created_at,
 			JSON_ARRAYAGG(
 				JSON_OBJECT(
-					"id", badge.id,
-					"name", badge.name
+					'id', badge.id,
+					'name', badge.name
 				)
 			) AS badges
 		FROM dishes

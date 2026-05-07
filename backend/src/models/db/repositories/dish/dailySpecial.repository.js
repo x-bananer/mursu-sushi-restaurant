@@ -16,8 +16,8 @@ export async function getDailySpecial() {
   			dishes.created_at,
 			JSON_ARRAYAGG(
 				JSON_OBJECT(
-					"id", badge.id,
-					"name", badge.name
+					'id', badge.id,
+					'name', badge.name
 				)
 			) AS badges
 		FROM daily_specials
@@ -46,8 +46,8 @@ export async function getAllDailySpecials() {
 			dishes.created_at,
 			JSON_ARRAYAGG(
 				JSON_OBJECT(
-					"id", badge.id,
-					"name", badge.name
+					'id', badge.id,
+					'name', badge.name
 				)
 			) AS badges
 		FROM daily_specials

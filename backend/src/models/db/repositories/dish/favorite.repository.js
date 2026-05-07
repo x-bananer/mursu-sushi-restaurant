@@ -17,8 +17,8 @@ export async function getUserFavorites(userId) {
   			dishes.created_at,
 			JSON_ARRAYAGG(
 				JSON_OBJECT(
-					"id", badge.id,
-					"name", badge.name
+					'id', badge.id,
+					'name', badge.name
 				)
 			) AS badges
 		FROM user_favorite_dishes
