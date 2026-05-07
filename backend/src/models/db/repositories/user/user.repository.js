@@ -30,11 +30,11 @@ export async function getUserByEmail(email) {
 
 /**
  * Create a new user account.
- * @param {{ name: string, email: string, passwordHash: string, roleId?: number }} data
+ * @param {{ name: string, email: string, passwordHash: string, role_id?: number }} data
  * @returns {Promise<number>} inserted user id
  */
 export async function createUser(data) {
-	const roleId = Number(data.roleId ?? data.role_id ?? 1);
+	const roleId = Number(data.role_id ?? 1);
 
 	const result = await execute(
 		`
