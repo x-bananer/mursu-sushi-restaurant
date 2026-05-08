@@ -154,7 +154,7 @@ You can test the application using the deployed version or by running it locally
 
 Open the deployed site:
 
-TODO add a link here
+[https://mursu-sushi-restaurant.vercel.app/](https://mursu-sushi-restaurant.vercel.app/) 🍣
 
 After that, follow the instructions in [Autonomous testing](#autonomous-testing).
 
