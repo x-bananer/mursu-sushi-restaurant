@@ -3,25 +3,9 @@
 **Mursu Sushi Restaurant** is a fullstack student project for the course **Web‑projekti TX00EY24-3012**.
 This is a web application for a sushi restaurant: a client-facing site where users can browse the menu and place orders, with an admin panel for managing menu items, orders, and restaurant data.
 
-## Demo video
-
-Watch the demo video to see the full customer and admin flow in action, including menu browsing, combo builder, checkout, live order tracking, and admin management tools.
-
-Demo video: https://youtu.be/jREubOZPitI
-
 ## Deployed application
 
 ### [MursuSushi](https://mursu-sushi-restaurant.vercel.app/) 🍣
-
-## Evaluation and Support
-
-If you are a developer and want to evaluate the project, please use the evaluation form:
-
-https://forms.gle/3uTGABkuHVZcW7h2A
-
-If you want to provide feedback, have questions or need help, please use this support form:
-
-https://forms.gle/kPwvDc3ysCv5uBqy5
 
 ## Maintainers and contributors
 
@@ -283,3 +267,19 @@ In another browser window, verify for an authenticated customer that the stamp c
 
 - Failed payment: `4000 0000 0000 0002`, use any future date and any CVC.
 - Successful payment: `4242 4242 4242 4242`, use any future date and any CVC.
+
+## Demo video
+
+Watch the demo video to see the full customer and admin flow in action, including menu browsing, combo builder, checkout, live order tracking, and admin management tools.
+
+Demo video: https://youtu.be/jREubOZPitI
+
+## Evaluation and Support
+
+If you are a developer and want to evaluate the project, please use the evaluation form:
+
+https://forms.gle/3uTGABkuHVZcW7h2A
+
+If you want to provide feedback, have questions or need help, please use this support form:
+
+https://forms.gle/kPwvDc3ysCv5uBqy5
