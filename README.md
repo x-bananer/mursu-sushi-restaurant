@@ -5,7 +5,7 @@ This is a web application for a sushi restaurant: a client-facing site where use
 
 ## Deployed application
 
-### [MursuSushi](https://mursu-sushi-restaurant.vercel.app/) 🍣
+### [https://mursu-sushi-restaurant.vercel.app/](https://mursu-sushi-restaurant.vercel.app/) 🍣
 
 ## Maintainers and contributors
 
