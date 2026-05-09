@@ -7,6 +7,13 @@ This is a web application for a sushi restaurant: a client-facing site where use
 
 ### [https://mursu-sushi-restaurant.vercel.app/](https://mursu-sushi-restaurant.vercel.app/) 🍣
 
+
+## Demo video
+
+Watch the demo video to see the full customer and admin flow.
+
+Demo video: https://youtu.be/jREubOZPitI
+
 ## Maintainers and contributors
 
 Team #8
@@ -97,12 +104,6 @@ Target audience:
 - real-time status updates;
 - view users.
 
-## External API integrations
-
-- **HSL / Digitransit**: public transport routing in the order tracker.
-- **OpenRouteService**: car routing in the order tracker.
-- **Stripe**: payment at checkout.
-
 ## Why this project is useful
 
 - **For customers:**
@@ -144,6 +145,12 @@ Target audience:
 Public API docs:
 https://x-bananer.github.io/mursu-sushi-restaurant/
 
+### External API integrations
+
+- **HSL / Digitransit**: public transport routing in the order tracker.
+- **OpenRouteService**: car routing in the order tracker.
+- **Stripe**: payment at checkout.
+
 ## Testing guide
 
 You can test the application using the deployed version or by running it locally.
@@ -156,7 +163,7 @@ Open the deployed site:
 
 [https://mursu-sushi-restaurant.vercel.app/](https://mursu-sushi-restaurant.vercel.app/) 🍣
 
-After that, follow the instructions in [Autonomous testing](#autonomous-testing).
+After that, follow the instructions in [Manual testing](#manual-testing).
 
 **Local version (for developers)**
 
@@ -197,19 +204,7 @@ npm run dev
 
 Frontend runs at http://localhost:5173
 
-After startup, continue with [Autonomous testing](#autonomous-testing).
-
-### Autonomous testing
-
-Run backend integration tests from the `backend` app directory:
-
-```bash
-cd backend
-npm install
-npm run test:integration
-```
-
-This command runs the full integration suite (`tests/integration/*`): 6 suits, 18 tests.
+After startup, continue with [Manual testing](#manual-testing).
 
 ### Manual testing
 
@@ -268,11 +263,17 @@ In another browser window, verify for an authenticated customer that the stamp c
 - Failed payment: `4000 0000 0000 0002`, use any future date and any CVC.
 - Successful payment: `4242 4242 4242 4242`, use any future date and any CVC.
 
-## Demo video
+### Autonomous testing
 
-Watch the demo video to see the full customer and admin flow in action, including menu browsing, combo builder, checkout, live order tracking, and admin management tools.
+Run backend integration tests from the `backend` app directory:
 
-Demo video: https://youtu.be/jREubOZPitI
+```bash
+cd backend
+npm install
+npm run test:integration
+```
+
+This command runs the full integration suite (`tests/integration/*`): 6 suits, 18 tests.
 
 ## Evaluation and Support
 
