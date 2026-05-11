@@ -435,6 +435,12 @@
   }
 }
 
+@media (max-width: 1024px) {
+   .home-bonsai__image {
+    display: none;
+   }
+}
+
 @media (max-width: 960px) {
   .system-core__container {
     grid-template-columns: 1fr;

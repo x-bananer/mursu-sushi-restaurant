@@ -130,7 +130,6 @@ export default function MenuDishCard({
 							size="small"
 							variant={addButtonVariant}
 							onClick={handleAddToCart}
-							disabled={isPending}
 						>
 							+ Add
 						</Button>
@@ -138,8 +137,8 @@ export default function MenuDishCard({
 						<ButtonCounter
 							value={visibleQuantity}
 							variant={counterVariant}
-							onMinus={isPending ? undefined : handleDecrease}
-							onPlus={isPending ? undefined : handleIncrease}
+							onMinus={handleDecrease}
+							onPlus={handleIncrease}
 						/>
 					)}
 				</>

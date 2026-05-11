@@ -4,6 +4,37 @@ const CartContext = createContext(null);
 
 import { useCart, useCartActions } from "../hooks/apiHooks/cart";
 
+const updateDishInCart = (cart, dishId, quantity) => {
+	const safeCart = cart ?? { items: [] };
+	const items = Array.isArray(safeCart.items) ? safeCart.items : [];
+	const itemIndex = items.findIndex((item) => item?.dish?.id === dishId);
+
+	if (quantity <= 0) {
+		return {
+			...safeCart,
+			items: items.filter((item) => item?.dish?.id !== dishId),
+		};
+	}
+
+	if (itemIndex >= 0) {
+		const nextItems = [...items];
+		nextItems[itemIndex] = { ...nextItems[itemIndex], quantity };
+		return { ...safeCart, items: nextItems };
+	}
+
+	return {
+		...safeCart,
+		items: [
+			...items,
+			{
+				id: `optimistic-${dishId}`,
+				quantity,
+				dish: { id: dishId },
+			},
+		],
+	};
+};
+
 const CartProvider = ({ children }) => {
 	const [sessionId, setSessionId] = useState("");
 	const { cart, setCart, loadLoading, loadError } = useCart(sessionId);
@@ -27,9 +58,17 @@ const CartProvider = ({ children }) => {
 	}, []);
 
 	const addDishToCart = async (dishId, quantity) => {
+		let previousCart = null;
+		setCart((currentCart) => {
+			previousCart = currentCart;
+			return updateDishInCart(currentCart, dishId, quantity);
+		});
+
 		const updatedCart = await addDishToCartApi(sessionId, dishId, quantity);
 		if (updatedCart) {
 			setCart(updatedCart);
+		} else {
+			setCart(previousCart);
 		}
 		return updatedCart;
 	};
