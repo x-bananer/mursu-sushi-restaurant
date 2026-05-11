@@ -38,6 +38,7 @@
   line-height: 1;
   letter-spacing: 8px;
   text-transform: uppercase;
+  word-break: break-word;
 }
 
 .menu-page__subtitle {
