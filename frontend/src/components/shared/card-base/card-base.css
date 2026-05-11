@@ -43,8 +43,8 @@
 
 .card-base__title {
   font-family: var(--font-title);
-  font-size: 48px;
-  font-weight: 700;
+  font-size: 40px;
+  font-weight: 500;
   line-height: 48px;
   letter-spacing: 1px;
   text-transform: uppercase;

@@ -69,7 +69,6 @@
 .system-item__title {
   font-family: var(--font-title);
   font-size: 34px;
-  letter-spacing: 2px;
   margin-bottom: 4px;
   text-transform: uppercase;
 }
@@ -135,25 +134,27 @@
   font-size: 14px;
   color: var(--color-light-gray);
   line-height: 1.5;
+  margin-bottom: 40px;
 }
 
 .home-hero__title {
   font-size: 96px;
   color: var(--text-color);
   margin-bottom: 16px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1;
   letter-spacing: 8px;
   position: relative;
   z-index: 1;
   display: inline-block;
-  white-space: nowrap;
+  white-space: normal;
   overflow: hidden;
   position: relative;
 }
 
 .home-hero__title-text {
-  display: inline-block;
+  display: block;
+  white-space: pre-line;
 }
 
 .home-hero__title--erase {
@@ -287,7 +288,7 @@
   width: 100%;
   max-width: 500px;
   height: auto;
-  margin-top: -420px;
+  margin-top: -530px;
 }
 
 .light-theme .home-bonsai__image {
@@ -374,6 +375,13 @@
   font-size: 14px;
   color: var(--color-dark-gray);
   letter-spacing: 1px;
+}
+
+@media (max-width: 1180px) {
+  .home-bonsai__image {
+    opacity: 0.5;
+  }
+
 }
 
 @media (max-width: 1024px) {

@@ -24,7 +24,7 @@
 		"sign_in": "Sign in",
 		"register": "Register",
 		"reset_password": "Reset Password",
-		"admin_sign": "Admin Sign",
+		"admin_sign": "Register an admin",
 		"email": "EMAIL ADDRESS",
 		"password": "PASSWORD",
 		"new_password": "NEW PASSWORD",
@@ -51,8 +51,8 @@
 		"toggle_theme": "Toggle theme"
 	},
 	"home": {
-		"hero_title_main": "Mursu Sushi",
-		"hero_title_alt": "Sushi, crafted with intent",
+		"hero_title_main": "Mursu\nSushi",
+		"hero_title_alt": "Sushi,\ncrafted with intent",
 		"hero_line_1": "Mursu Sushi is not just a sushi restaurant. It is a story.",
 		"hero_line_2": "When we started our exquisite voyage into the world of the utmost delicate tastes, we did not think it would become something of this magnitude.",
 		"hero_line_3": "Be it visiting our restaurant or ordering online, our number one priority is ensuring that our customers get the best dining experience possible.",

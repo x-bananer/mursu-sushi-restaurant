@@ -86,7 +86,6 @@ body {
   padding: 6px 0 10px;
   outline: none;
   transition: border-color 0.3s;
-  text-transform: uppercase;
   width: 100%;
   box-sizing: border-box;
 }

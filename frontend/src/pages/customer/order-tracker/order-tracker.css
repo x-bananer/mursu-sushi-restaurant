@@ -15,7 +15,7 @@
 .order__title {
   font-family: var(--font-title);
   font-size: 96px;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 0.9;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -103,7 +103,7 @@
 .accordion__title {
   font-family: var(--font-button);
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 2.5px;
   text-transform: uppercase;
   color: #131313;
