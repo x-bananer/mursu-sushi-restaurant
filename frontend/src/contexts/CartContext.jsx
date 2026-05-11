@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 
 const CartContext = createContext(null);
 
@@ -35,8 +35,18 @@ const updateDishInCart = (cart, dishId, quantity) => {
 	};
 };
 
+const removeItemFromCart = (cart, itemId) => {
+	const safeCart = cart ?? { items: [] };
+	const items = Array.isArray(safeCart.items) ? safeCart.items : [];
+	return {
+		...safeCart,
+		items: items.filter((item) => item?.id !== itemId),
+	};
+};
+
 const CartProvider = ({ children }) => {
 	const [sessionId, setSessionId] = useState("");
+	const timersRef = useRef({});
 	const { cart, setCart, loadLoading, loadError } = useCart(sessionId);
 	const {
 		addDishToCart: addDishToCartApi,
@@ -57,14 +67,56 @@ const CartProvider = ({ children }) => {
 		setSessionId(sessionId);
 	}, []);
 
+	useEffect(() => {
+		const t = timersRef.current;
+		return () => {
+			Object.values(t).forEach((id) => clearTimeout(id));
+		};
+	}, []);
+
 	const addDishToCart = async (dishId, quantity) => {
-		let previousCart = null;
 		setCart((currentCart) => {
-			previousCart = currentCart;
 			return updateDishInCart(currentCart, dishId, quantity);
 		});
 
-		const updatedCart = await addDishToCartApi(sessionId, dishId, quantity);
+		if (timersRef.current[dishId]) {
+			clearTimeout(timersRef.current[dishId]);
+		}
+
+		timersRef.current[dishId] = setTimeout(async () => {
+			const updatedCart = await addDishToCartApi(
+				sessionId,
+				dishId,
+				quantity,
+			);
+			if (updatedCart) {
+				setCart(updatedCart);
+			}
+			delete timersRef.current[dishId];
+		}, 300);
+	};
+
+	const addComboToCart = async (ingredients) => {
+		let previousCart = null;
+		setCart((currentCart) => {
+			previousCart = currentCart;
+			const safeCart = currentCart ?? { items: [] };
+			const items = Array.isArray(safeCart.items) ? safeCart.items : [];
+			return {
+				...safeCart,
+				items: [
+					...items,
+					{
+						id: `optimistic-combo-${Date.now()}`,
+						quantity: 1,
+						type: { type: "combo" },
+						ingredients: [],
+					},
+				],
+			};
+		});
+
+		const updatedCart = await addComboToCartApi(ingredients);
 		if (updatedCart) {
 			setCart(updatedCart);
 		} else {
@@ -73,15 +125,10 @@ const CartProvider = ({ children }) => {
 		return updatedCart;
 	};
 
-	const addComboToCart = async (ingredients) => {
-		const updatedCart = await addComboToCartApi(ingredients);
-		if (updatedCart) {
-			setCart(updatedCart);
-		}
-		return updatedCart;
-	};
-
 	const removeCartItem = async (itemId) => {
+		const previousCart = cart;
+		setCart((currentCart) => removeItemFromCart(currentCart, itemId));
+
 		const currentItems = cart?.items || [];
 		const updateItems = currentItems
 			.filter((item) => item.id !== itemId)
@@ -103,6 +150,8 @@ const CartProvider = ({ children }) => {
 
 		if (updatedCart) {
 			setCart(updatedCart);
+		} else {
+			setCart(previousCart);
 		}
 
 		return updatedCart;

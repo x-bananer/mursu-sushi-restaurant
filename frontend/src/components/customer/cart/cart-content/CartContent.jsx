@@ -1,10 +1,9 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { useCartContext } from "../../../../hooks/contextHooks/cart";
 import { usePayment } from "../../../../hooks/apiHooks/cart";
-import { debounce } from "../../../../utils/debounce";
 
 import CartItem from "../cart-item/CartItem";
 import CartDelivery from "../cart-delivery/CartDelivery";
@@ -39,8 +38,6 @@ export default function CartContent() {
 	const [address, setAddress] = useState("");
 	const [payError, setPayError] = useState(null);
 	const [visibleQuantities, setVisibleQuantities] = useState({});
-	const debouncedByItemRef = useRef({});
-	const debouncedRemoveRef = useRef(null);
 
 	// TODO Fix after auth is done
 	const isAuthorized = Boolean(localStorage.getItem("token"));
@@ -53,35 +50,6 @@ export default function CartContent() {
 		});
 		setVisibleQuantities(next);
 	}, [items]);
-
-	if (!debouncedRemoveRef.current) {
-		debouncedRemoveRef.current = debounce((itemId) => {
-			removeCartItem(itemId);
-		}, 300);
-	}
-
-	const getDebouncedUpdateByItemId = (itemId) => {
-		if (!debouncedByItemRef.current[itemId]) {
-			debouncedByItemRef.current[itemId] = debounce(
-				(dishId, newQuantity) => {
-					addDishToCart(dishId, newQuantity);
-				},
-				300,
-			);
-		}
-		return debouncedByItemRef.current[itemId];
-	};
-
-	useEffect(() => {
-		return () => {
-			Object.values(debouncedByItemRef.current).forEach((fn) =>
-				fn.cancel(),
-			);
-			if (debouncedRemoveRef.current) {
-				debouncedRemoveRef.current.cancel();
-			}
-		};
-	}, []);
 
 	if (loadLoading) {
 		return <Loader isLight text={t("cart.loading")} />;
@@ -105,7 +73,7 @@ export default function CartContent() {
 		const currentQuantity = visibleQuantities[item.id] ?? item.quantity;
 		const newQuantity = currentQuantity + 1;
 		setVisibleQuantities((prev) => ({ ...prev, [item.id]: newQuantity }));
-		getDebouncedUpdateByItemId(item.id)(item.dish.id, newQuantity);
+		addDishToCart(item.dish.id, newQuantity);
 	};
 
 	const handleDecrease = (item) => {
@@ -122,15 +90,15 @@ export default function CartContent() {
 		}));
 
 		if (newQuantity > 0) {
-			getDebouncedUpdateByItemId(item.id)(item.dish.id, newQuantity);
+			addDishToCart(item.dish.id, newQuantity);
 		} else {
-			debouncedRemoveRef.current(item.id);
+			removeCartItem(item.id);
 		}
 	};
 
 	const handleRemove = (item) => {
 		setVisibleQuantities((prev) => ({ ...prev, [item.id]: 0 }));
-		debouncedRemoveRef.current(item.id);
+		removeCartItem(item.id);
 	};
 
 	const handlePay = async () => {

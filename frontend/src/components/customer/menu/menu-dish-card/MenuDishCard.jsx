@@ -16,7 +16,6 @@ export default function MenuDishCard({
 	onToggleFavorite,
 	isFavoritePending = false,
 }) {
-	const [isPending, setIsPending] = useState(false);
 	const [visibleQuantity, setVisibleQuantity] = useState(0);
 	const navigate = useNavigate();
 
@@ -41,19 +40,6 @@ export default function MenuDishCard({
 		setVisibleQuantity(quantity);
 	}, [quantity]);
 
-	const debouncedAddToCart = useMemo(
-		() =>
-			debounce(async (newQuantity) => {
-				try {
-					setIsPending(true);
-					await addDishToCart(item.id, newQuantity);
-				} finally {
-					setIsPending(false);
-				}
-			}, 300),
-		[addDishToCart, item.id],
-	);
-
 	const debouncedToggleFavorite = useMemo(
 		() =>
 			debounce(() => {
@@ -69,38 +55,32 @@ export default function MenuDishCard({
 
 	useEffect(() => {
 		return () => {
-			debouncedAddToCart.cancel();
 			debouncedToggleFavorite.cancel();
 		};
-	}, [debouncedAddToCart, debouncedToggleFavorite]);
+	}, [debouncedToggleFavorite]);
 
 	const handleAddToCart = () => {
 		setVisibleQuantity(1);
-		debouncedAddToCart(1);
+		addDishToCart(item.id, 1);
 	};
 
 	const handleIncrease = () => {
 		const newQuantity = visibleQuantity + 1;
 		setVisibleQuantity(newQuantity);
-		debouncedAddToCart(newQuantity);
+		addDishToCart(item.id, newQuantity);
 	};
 
-	const handleDecrease = async () => {
+	const handleDecrease = () => {
 		if (visibleQuantity <= 0) return;
 		const newQuantity = visibleQuantity - 1;
 		setVisibleQuantity(newQuantity);
 
 		if (newQuantity <= 0) {
-			try {
-				setIsPending(true);
-				await removeCartItem(cartItem.id);
-			} finally {
-				setIsPending(false);
-			}
+			removeCartItem(cartItem.id);
 			return;
 		}
 
-		debouncedAddToCart(newQuantity);
+		addDishToCart(item.id, newQuantity);
 	};
 
 	const handleFavoriteClick = () => {
