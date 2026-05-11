@@ -25,7 +25,7 @@
 .combo-page__title {
   max-width: 680px;
   font-family: var(--font-title);
-  font-size: 96px;
+  font-size: 80px;
   font-weight: 500;
   line-height: 1;
   letter-spacing: 8px;
@@ -54,7 +54,7 @@
   }
 
   .combo-page__title {
-    font-size: 96px;
+    font-size: 80px;
   }
 }
 

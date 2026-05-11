@@ -43,10 +43,11 @@
 
 .profile__name {
   font-family: var(--font-title);
-  font-size: 96px;
+  font-size: 60px;
   line-height: 1;
   letter-spacing: 8px;
   text-transform: uppercase;
+  word-break: break-word;
 }
 
 .profile__meta {
