@@ -1,6 +1,7 @@
 import "./home.css";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 import bonsaiImage from "../../../assets/images/Bonsai.png";
 import mapImage from "../../../assets/images/Map.png";
 
@@ -143,12 +144,12 @@ export default function Home() {
 					</p>
 				</div>
 				<div className="home-hero__actions">
-					<a href="/menu" className="btn btn--light">
+					<Link href="/menu" className="btn btn--light">
 						{t("home.view_menu")}
-					</a>
-					<a href="/combo-builder" className="btn">
+					</Link>
+					<Link to="/combo-builder" className="btn">
 						{t("home.build_set")}
-					</a>
+					</Link>
 				</div>
 			</div>
 			<section className="home-bonsai">
